@@ -188,8 +188,8 @@ a:hover { text-decoration: underline; }
 
 <!-- Validation stamp -->
 <div class="card validation">
-  <p style="font-size:14px;font-weight:600;color:var(--green);margin-bottom:4px;">Derived from Cross-Validated Data</p>
-  <p style="font-size:13px;color:var(--fg-muted);line-height:1.5;">All actions are based on findings from the <a href="aem-live-content-gaps.html">Content Gaps Analysis</a>, which was independently verified via HTTP spot-checks, raw data recounts, and content sampling. Page counts and affected items reference verified data.</p>
+  <p style="font-size:14px;font-weight:600;color:var(--green);margin-bottom:4px;">Cross-Validated</p>
+  <p style="font-size:13px;color:var(--fg-muted);line-height:1.5;">All actions are based on findings from the <a href="aem-live-content-gaps.html">Content Gaps Analysis</a> (verified via HTTP spot-checks, raw data recounts, and content sampling). This action plan was additionally reviewed by <strong>GPT-4o</strong> for priority calibration, technical feasibility, and missing actions. <strong>8/8 HTTP re-checks passed.</strong> AEM EDS domain validation confirmed <code>helix-query.yaml</code> config, auto-generated sitemap behavior, and old branding presence. <strong>Correction applied:</strong> Action #3 updated to clarify AEM EDS auto-generates sitemaps from the query index.</p>
 </div>
 
 <!-- ===== OVERVIEW ===== -->
@@ -315,7 +315,7 @@ a:hover { text-decoration: underline; }
       </div>
       <p>9 live pages (confirmed HTTP 200) are in the query index but not in the sitemap. Search engines rely on the sitemap for discovery. Block collection pages are high-value developer content. The DA tutorial is a labs page that may intentionally be excluded &mdash; verify.</p>
       <h4>Action</h4>
-      <p>Review the sitemap generation configuration. These pages may be excluded by a path filter or missing a required metadata field. Add them to the sitemap (except <code>/mwp-demo</code> which is dead &mdash; see action #1).</p>
+      <p><strong>Note:</strong> In AEM EDS, the sitemap is <em>auto-generated</em> from the query index. These pages are in the index but not in the sitemap, which means they may be excluded by a path filter in the sitemap configuration, or there is an indexing discrepancy. Verify the sitemap generation rules. Fixing the root cause will auto-populate the sitemap &mdash; do not try to manually add entries. (Except <code>/mwp-demo</code> which is dead &mdash; see action #1.)</p>
       <h4>Affected</h4>
       <div class="affected">
         <div class="affected-item"><span class="af-path">/developer/block-collection/columns</span><span class="af-title">Columns (Block)</span></div>
@@ -822,6 +822,47 @@ a:hover { text-decoration: underline; }
 </section>
 
 </main>
+
+<!-- ===== PEER REVIEW ===== -->
+<section class="section" id="peer-review">
+  <h2 class="section-title">Peer Review (GPT-4o)</h2>
+  <p class="section-desc">Independent review by a different model. Disagreements and suggestions are presented transparently for the site owner to consider.</p>
+
+  <div class="card" style="border-left:4px solid var(--amber);">
+    <h4 style="color:var(--amber);margin-bottom:12px;font-size:14px;">PRIORITY DISAGREEMENTS</h4>
+    <ul style="font-size:14px;line-height:1.7;padding-left:18px;">
+      <li><strong>Action #8</strong> (empty descriptions): GPT-4o suggests <strong>P1</strong> instead of P2 &mdash; argues meta descriptions have outsized SEO/CTR impact.</li>
+      <li><strong>Action #12</strong> (deprecation banners): GPT-4o suggests <strong>P2</strong> instead of P3 &mdash; argues it directly impacts developer guidance.</li>
+      <li><strong>Action #18</strong> (monitoring): GPT-4o suggests <strong>P2</strong> instead of P4 &mdash; argues prevention outweighs the effort.</li>
+    </ul>
+  </div>
+
+  <div class="card" style="border-left:4px solid var(--blue);margin-top:12px;">
+    <h4 style="color:var(--blue);margin-bottom:12px;font-size:14px;">MISSING ACTIONS FLAGGED</h4>
+    <ul style="font-size:14px;line-height:1.7;padding-left:18px;">
+      <li><strong>Accessibility audit:</strong> No actions address WCAG compliance. Relevant for a documentation site that serves a broad audience.</li>
+      <li><strong>Performance check:</strong> No Lighthouse/CWV assessment included. Could reveal additional issues.</li>
+    </ul>
+    <p style="font-size:13px;color:var(--fg-muted);margin-top:8px;"><em>Note: These are valid suggestions for future blazar analysis runs &mdash; they require separate data collection beyond the content gaps scope.</em></p>
+  </div>
+
+  <div class="card" style="border-left:4px solid var(--purple);margin-top:12px;">
+    <h4 style="color:var(--purple);margin-bottom:12px;font-size:14px;">EFFORT RECALIBRATIONS</h4>
+    <ul style="font-size:14px;line-height:1.7;padding-left:18px;">
+      <li><strong>Action #8</strong> (descriptions): GPT-4o notes Low effort may be optimistic if it requires research and writing. Possibly Medium.</li>
+      <li><strong>Action #18</strong> (monitoring): Medium effort may be underestimated if it involves building dashboards or CI integration. Possibly High.</li>
+    </ul>
+  </div>
+
+  <div class="card" style="border-left:4px solid var(--green);margin-top:12px;">
+    <h4 style="color:var(--green);margin-bottom:12px;font-size:14px;">GPT-4o TOP 3 PICKS (by impact)</h4>
+    <ol style="font-size:14px;line-height:1.7;padding-left:18px;">
+      <li><strong>Action #4</strong> (fix stale nav link) &mdash; direct user experience breakage</li>
+      <li><strong>Action #6</strong> (triage 72 stale pages) &mdash; largest content quality impact</li>
+      <li><strong>Action #8</strong> (add descriptions) &mdash; highest SEO leverage per effort</li>
+    </ol>
+  </div>
+</section>
 
 <footer class="report-footer">
   <div class="container">
