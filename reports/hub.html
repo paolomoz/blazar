@@ -146,19 +146,69 @@ a:hover { text-decoration: underline; }
 }
 .node:hover { z-index: 20; }
 
-/* Central hub node */
+/* Central hub node — mini browser screenshot */
 .node-hub {
-  width: 120px; height: 120px;
-  background: linear-gradient(135deg, var(--blue), var(--purple));
-  border-radius: 50%;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  color: white;
-  box-shadow: 0 4px 24px rgba(59, 99, 251, 0.3);
+  width: 150px; height: 120px;
+  background: #1b1b2f;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 6px 28px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.08);
   cursor: default;
+  display: flex; flex-direction: column;
 }
-.node-hub .hub-icon { font-size: 28px; font-weight: 900; margin-bottom: 2px; }
-.node-hub .hub-label { font-size: 12px; font-weight: 700; }
+.node-hub .browser-chrome {
+  height: 18px; min-height: 18px;
+  background: #2a2a3d;
+  display: flex; align-items: center;
+  padding: 0 7px; gap: 4px;
+}
+.node-hub .browser-dot {
+  width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+}
+.node-hub .browser-dot:nth-child(1) { background: #ff5f57; }
+.node-hub .browser-dot:nth-child(2) { background: #febc2e; }
+.node-hub .browser-dot:nth-child(3) { background: #28c840; }
+.node-hub .browser-url {
+  flex: 1; background: rgba(255,255,255,0.08); border-radius: 3px;
+  height: 10px; margin-left: 5px; font-size: 7px; color: rgba(255,255,255,0.5);
+  display: flex; align-items: center; padding: 0 5px;
+  font-family: system-ui, sans-serif; letter-spacing: 0.02em;
+}
+.node-hub .site-body { flex: 1; display: flex; flex-direction: column; }
+.node-hub .site-nav {
+  height: 10px; background: #16163a; display: flex; align-items: center;
+  padding: 0 8px; gap: 6px;
+}
+.node-hub .site-nav span {
+  width: 14px; height: 3px; border-radius: 1px; background: rgba(255,255,255,0.25);
+}
+.node-hub .site-nav span:first-child {
+  width: 18px; height: 5px; border-radius: 2px; background: rgba(255,255,255,0.6);
+}
+.node-hub .site-hero {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  background: linear-gradient(180deg, #1b1b2f 0%, #0d0d26 100%);
+  padding: 4px 8px; gap: 3px;
+}
+.node-hub .site-hero .hero-tagline {
+  font-size: 8px; font-weight: 800; color: #fff;
+  letter-spacing: 0.03em; text-align: center; line-height: 1.2;
+}
+.node-hub .site-hero .hero-sub {
+  font-size: 5px; color: rgba(255,255,255,0.4); text-align: center;
+}
+.node-hub .site-hero .hero-cta {
+  margin-top: 2px; padding: 2px 8px; border-radius: 3px;
+  background: var(--blue); font-size: 5px; color: #fff; font-weight: 700;
+}
+.node-hub .site-blocks {
+  height: 22px; background: #f5f5f5; display: flex;
+  align-items: center; justify-content: center; gap: 4px; padding: 0 6px;
+}
+.node-hub .site-blocks span {
+  flex: 1; height: 12px; border-radius: 2px; background: #e0e0e0;
+}
 
 /* Category node */
 .node-category {
@@ -769,7 +819,22 @@ function buildMindmap() {
       el.className = 'node node-hub';
       el.style.left = n.sx + 'px';
       el.style.top = n.sy + 'px';
-      el.innerHTML = '<div class="hub-icon">&#x26A1;</div><div class="hub-label">aem.live</div>';
+      el.innerHTML = `
+        <div class="browser-chrome">
+          <span class="browser-dot"></span><span class="browser-dot"></span><span class="browser-dot"></span>
+          <span class="browser-url">aem.live</span>
+        </div>
+        <div class="site-body">
+          <div class="site-nav">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <div class="site-hero">
+            <div class="hero-tagline">Build. Author.<br>Publish.</div>
+            <div class="hero-sub">Your Edge Delivery Services site</div>
+            <div class="hero-cta">Get started</div>
+          </div>
+          <div class="site-blocks"><span></span><span></span><span></span></div>
+        </div>`;
       canvas.appendChild(el);
     } else if (n.type === 'category') {
       const el = document.createElement('div');
@@ -886,10 +951,36 @@ function formatDate(dateStr) {
 }
 
 /* ────────────────────────────────────────────
+   Dynamic manifest — merge generated reports
+   ──────────────────────────────────────────── */
+async function loadDynamicManifest() {
+  try {
+    const resp = await fetch('/api/manifest');
+    if (!resp.ok) return;
+    const entries = await resp.json();
+    if (!Array.isArray(entries) || entries.length === 0) return;
+    const existingIds = new Set(manifest.map(r => r.id));
+    let added = 0;
+    entries.forEach(entry => {
+      if (!existingIds.has(entry.id)) {
+        manifest.push(entry);
+        added++;
+      }
+    });
+    if (added > 0) {
+      buildMindmap();
+      buildTimeline();
+      applyTransform();
+    }
+  } catch {}
+}
+
+/* ────────────────────────────────────────────
    Init
    ──────────────────────────────────────────── */
 buildMindmap();
 buildTimeline();
+loadDynamicManifest();
 
 window.addEventListener('resize', () => {
   buildMindmap();

@@ -1,3 +1,11 @@
 name = "blazar"
 pages_build_output_dir = "reports"
 compatibility_date = "2024-12-01"
+
+[[kv_namespaces]]
+binding = "REPORTS"
+id = "a97865120909451fa5cbd95d50112062"
+
+[[kv_namespaces]]
+binding = "MANIFEST"
+id = "7ed310651743498aaed275510f6f1294"

@@ -19,6 +19,7 @@
   let abortController = null;
   let discoveryPrompts = null;
   let historyOpen = false;
+  let writeMode = false;
 
   /* ── Styles ── */
   const css = `
@@ -74,7 +75,7 @@
     .blazar-chat-header {
       padding: 16px 20px;
       display: flex; align-items: center; justify-content: space-between;
-      border-bottom: 1px solid #EBEBEB;
+      border-bottom: none;
       flex-shrink: 0;
     }
     .blazar-chat-header-title {
@@ -82,10 +83,12 @@
     }
     .blazar-chat-new {
       font-size: 13px; color: #999; background: none; border: none;
-      cursor: pointer; font-family: inherit; padding: 4px 8px; border-radius: 6px;
+      cursor: pointer; font-family: inherit; padding: 6px 10px; border-radius: 6px;
+      display: inline-flex; align-items: center; gap: 4px;
       transition: all 0.15s;
     }
     .blazar-chat-new:hover { color: #1A1A1A; background: #F5F5F5; }
+    .blazar-chat-new svg { width: 15px; height: 15px; flex-shrink: 0; }
 
     /* Messages area */
     .blazar-chat-messages {
@@ -290,7 +293,7 @@
     }
     .blazar-chat-textarea::placeholder { color: #BBB; }
     .blazar-chat-input-actions {
-      display: flex; align-items: center; justify-content: flex-end;
+      display: flex; align-items: center; justify-content: space-between;
       padding: 4px 8px 8px;
     }
     .blazar-chat-send {
@@ -304,6 +307,28 @@
     .blazar-chat-send:not(:disabled):hover { opacity: 0.8; }
     .blazar-chat-send svg { width: 16px; height: 16px; }
     .blazar-chat-send.blazar-chat-stop { background: #1A1A1A; }
+
+    /* Write mode toggle */
+    .blazar-chat-write-toggle {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 10px 4px 7px;
+      border-radius: 20px;
+      border: 1px solid #E0E0E0;
+      background: #FFFFFF;
+      font-family: inherit; font-size: 12px; font-weight: 500;
+      color: #999;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .blazar-chat-write-toggle:hover { border-color: #CCC; color: #666; }
+    .blazar-chat-write-toggle.active {
+      background: #1A1A1A; border-color: #1A1A1A;
+      color: #FFFFFF;
+    }
+    .blazar-chat-write-toggle.active:hover { background: #333; border-color: #333; }
+    .blazar-chat-write-toggle svg { width: 13px; height: 13px; flex-shrink: 0; }
 
     /* Bottom spacer for scroll */
     .blazar-chat-spacer { height: 20px; flex-shrink: 0; }
@@ -320,6 +345,7 @@
     }
     .blazar-chat-tabs::-webkit-scrollbar { display: none; }
     .blazar-chat-tabs.blazar-chat-tabs-hidden { display: none; }
+    .blazar-chat-tabs.blazar-chat-tabs-hidden + .blazar-chat-messages { border-top: 1px solid #EBEBEB; }
     .blazar-chat-tab {
       display: flex; align-items: center; gap: 6px;
       padding: 8px 12px;
@@ -341,8 +367,8 @@
     }
     .blazar-chat-tab-close {
       display: inline-flex; align-items: center; justify-content: center;
-      width: 16px; height: 16px; border-radius: 50%;
-      font-size: 11px; line-height: 1;
+      width: 24px; height: 24px; border-radius: 50%;
+      font-size: 12px; line-height: 1;
       color: #CCC; background: none; border: none;
       cursor: pointer; flex-shrink: 0;
       transition: color 0.15s, background 0.15s;
@@ -381,11 +407,16 @@
       font-size: 13px; font-weight: 600; color: #1A1A1A;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
+    .blazar-chat-history-item-preview {
+      font-size: 12px; color: #999;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      margin-top: 2px;
+    }
     .blazar-chat-history-item-time { font-size: 11px; color: #999; margin-top: 1px; }
     .blazar-chat-history-item-del {
       display: inline-flex; align-items: center; justify-content: center;
-      width: 20px; height: 20px; border-radius: 50%;
-      font-size: 12px; color: #CCC; background: none; border: none;
+      width: 28px; height: 28px; border-radius: 50%;
+      font-size: 13px; color: #CCC; background: none; border: none;
       cursor: pointer; flex-shrink: 0;
       transition: color 0.15s, background 0.15s;
     }
@@ -393,6 +424,66 @@
     .blazar-chat-history-empty {
       padding: 20px 14px; text-align: center;
       font-size: 13px; color: #999;
+    }
+
+    /* Generation progress card */
+    .blazar-chat-generation-card {
+      margin: 16px 20px 0;
+      padding: 16px;
+      background: #F7F7F8;
+      border: 1px solid #EBEBEB;
+      border-radius: 12px;
+    }
+    .blazar-chat-generation-card .gen-header {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 10px; font-size: 13px; font-weight: 600; color: #1A1A1A;
+    }
+    .blazar-chat-generation-card .gen-header svg { width: 16px; height: 16px; }
+    .blazar-chat-generation-card .gen-status {
+      font-size: 13px; color: #666; margin-bottom: 8px;
+    }
+    .blazar-chat-generation-card .gen-bar {
+      height: 4px; background: #E8E8E8; border-radius: 2px; overflow: hidden;
+    }
+    .blazar-chat-generation-card .gen-bar-fill {
+      height: 100%; background: #1A1A1A; border-radius: 2px;
+      width: 0%; transition: width 0.3s ease;
+    }
+    .blazar-chat-generation-card.gen-indeterminate .gen-bar-fill {
+      width: 40%;
+      animation: blazar-gen-slide 1.5s ease-in-out infinite;
+    }
+    @keyframes blazar-gen-slide {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(350%); }
+    }
+    .blazar-chat-generation-card .gen-link {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 12px; margin-top: 10px;
+      background: #FFFFFF; border: 1px solid #EBEBEB; border-radius: 8px;
+      text-decoration: none; color: #1A1A1A;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .blazar-chat-generation-card .gen-link:hover {
+      border-color: #CCC; box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .blazar-chat-generation-card .gen-link-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: #1A1A1A; color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; flex-shrink: 0;
+    }
+    .blazar-chat-generation-card .gen-link-body { flex: 1; min-width: 0; }
+    .blazar-chat-generation-card .gen-link-title {
+      font-size: 14px; font-weight: 600; color: #1A1A1A;
+    }
+    .blazar-chat-generation-card .gen-link-url {
+      font-size: 12px; color: #999; margin-top: 1px;
+    }
+    .blazar-chat-generation-card .gen-error {
+      margin-top: 8px; padding: 8px 10px;
+      background: #FFF5F5; border: 1px solid #FFE0E0; border-radius: 8px;
+      color: #CC3333; font-size: 13px;
     }
 
     /* Responsive */
@@ -457,8 +548,25 @@
     </a>`;
   }
 
+  /* ── Report spec extraction ── */
+  function extractReportSpec(text) {
+    const match = text.match(/:::REPORT_SPEC\s*\n([\s\S]*?)\n:::/);
+    if (!match) return null;
+    try {
+      return JSON.parse(match[1]);
+    } catch {
+      return null;
+    }
+  }
+
+  function stripReportSpec(text) {
+    return text.replace(/:::REPORT_SPEC\s*\n[\s\S]*?\n:::/g, '').trim();
+  }
+
   /* ── Markdown renderer ── */
   function renderMarkdown(text) {
+    // Strip report spec blocks before rendering
+    text = stripReportSpec(text);
     // Code blocks
     text = text.replace(/```(\w*)\n([\s\S]*?)```/g, (_, lang, code) =>
       `<pre><code>${esc(code.trim())}</code></pre>`
@@ -700,6 +808,7 @@
   let messagesEl, textarea, sendBtn, panel, toggleBtn, tabsEl, historyDropdownEl;
 
   const SPARKLE_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.582a.5.5 0 0 1 0 .963L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>`;
+  const WRITE_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>`;
   const SEND_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 16 12 8"/><polyline points="8 12 12 8 16 12"/></svg>`;
   const STOP_SVG = `<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>`;
 
@@ -718,10 +827,10 @@
         <div class="blazar-chat-header-title">Blazar</div>
         <div style="display:flex;align-items:center;gap:4px;">
           <div class="blazar-chat-history-wrap">
-            <button class="blazar-chat-new" aria-label="Chat history" data-history>History</button>
+            <button class="blazar-chat-new" aria-label="Chat history" data-history><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>History</button>
             <div class="blazar-chat-history-dropdown"></div>
           </div>
-          <button class="blazar-chat-new" aria-label="New tab" data-newtab>+</button>
+          <button class="blazar-chat-new" aria-label="New tab" data-newtab><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
         </div>
       </div>
       <div class="blazar-chat-tabs blazar-chat-tabs-hidden"></div>
@@ -729,8 +838,9 @@
       <div class="blazar-chat-spacer"></div>
       <div class="blazar-chat-input-area">
         <div class="blazar-chat-input-wrap">
-          <textarea class="blazar-chat-textarea" placeholder="Send message to Blazar" rows="1"></textarea>
+          <textarea class="blazar-chat-textarea" placeholder="Ask about reports..." rows="1"></textarea>
           <div class="blazar-chat-input-actions">
+            <button class="blazar-chat-write-toggle" aria-label="Toggle write mode" data-write-toggle>${WRITE_SVG}</button>
             <button class="blazar-chat-send" aria-label="Send message" disabled>${SEND_SVG}</button>
           </div>
         </div>
@@ -813,6 +923,14 @@
       textarea.focus();
     });
 
+    const writeToggleBtn = panel.querySelector('[data-write-toggle]');
+    writeToggleBtn.addEventListener('click', () => {
+      writeMode = !writeMode;
+      writeToggleBtn.classList.toggle('active', writeMode);
+      textarea.placeholder = writeMode ? 'Ask anything or request a new report...' : 'Ask about reports...';
+      textarea.focus();
+    });
+
     historyBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       historyOpen = !historyOpen;
@@ -867,7 +985,8 @@
   /* ── Render ── */
   function renderTabs() {
     if (!tabsEl) return;
-    const shouldHide = store.openTabs.length <= 1 && getActiveChat() && getActiveChat().messages.length === 0;
+    const hasHistory = store.chats.some(c => !new Set(store.openTabs).has(c.id) && c.messages.length > 0);
+    const shouldHide = store.openTabs.length <= 1 && getActiveChat() && getActiveChat().messages.length === 0 && !hasHistory;
     tabsEl.classList.toggle('blazar-chat-tabs-hidden', shouldHide);
 
     tabsEl.innerHTML = '';
@@ -908,10 +1027,14 @@
     closed.forEach(chat => {
       const row = document.createElement('div');
       row.className = 'blazar-chat-history-item';
+      const lastMsg = chat.messages.length > 0 ? chat.messages[chat.messages.length - 1] : null;
+      const preview = lastMsg ? (lastMsg.content || '').replace(/[#*_`\n]+/g, ' ').trim().slice(0, 60) : '';
+      const count = chat.messages.length;
       row.innerHTML = `
         <div class="blazar-chat-history-item-body">
           <div class="blazar-chat-history-item-title">${esc(chat.title)}</div>
-          <div class="blazar-chat-history-item-time">${relativeTime(chat.ts)}</div>
+          ${preview ? `<div class="blazar-chat-history-item-preview">${esc(preview)}</div>` : ''}
+          <div class="blazar-chat-history-item-time">${count} msg${count !== 1 ? 's' : ''} \u00b7 ${relativeTime(chat.ts)}</div>
         </div>
         <button class="blazar-chat-history-item-del" data-del="${chat.id}" aria-label="Delete">\u2715</button>
       `;
@@ -966,6 +1089,8 @@
         el.className = 'blazar-chat-msg-error';
         el.textContent = msg.content;
         messagesEl.appendChild(el);
+      } else if (msg.role === 'generation') {
+        messagesEl.appendChild(renderGenerationCard(msg));
       } else if (msg.role === 'user') {
         const el = document.createElement('div');
         el.className = 'blazar-chat-msg-user';
@@ -996,6 +1121,121 @@
     if (last) {
       const body = last.querySelector('.blazar-chat-msg-body');
       if (body) { body.innerHTML = renderMarkdown(content); messagesEl.scrollTop = messagesEl.scrollHeight; }
+    }
+  }
+
+  /* ── Report generation ── */
+  function renderGenerationCard(msg) {
+    const card = document.createElement('div');
+    card.className = 'blazar-chat-generation-card' + (msg.genState === 'generating' ? ' gen-indeterminate' : '');
+    const BOLT_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`;
+
+    let inner = `<div class="gen-header">${BOLT_SVG} Generating Report</div>`;
+    inner += `<div class="gen-status">${esc(msg.genStatus || 'Starting...')}</div>`;
+
+    if (msg.genState === 'generating') {
+      inner += `<div class="gen-bar"><div class="gen-bar-fill"></div></div>`;
+    } else if (msg.genState === 'done' && msg.genUrl) {
+      const title = msg.genTitle || 'Generated Report';
+      inner += `<a class="gen-link" href="${msg.genUrl}">
+        <div class="gen-link-icon">\u{1F4CB}</div>
+        <div class="gen-link-body">
+          <div class="gen-link-title">${esc(title)}</div>
+          <div class="gen-link-url">${msg.genUrl}</div>
+        </div>
+      </a>`;
+    } else if (msg.genState === 'error') {
+      inner += `<div class="gen-error">${esc(msg.genError || 'Generation failed')}</div>`;
+    }
+
+    card.innerHTML = inner;
+    return card;
+  }
+
+  async function triggerGeneration(spec, chat) {
+    // Add a generation message to the chat
+    const genMsg = {
+      role: 'generation',
+      genState: 'generating',
+      genStatus: 'Starting report generation...',
+      genTitle: spec.title,
+      content: '',
+    };
+    chat.messages.push(genMsg);
+    chat.ts = Date.now();
+    saveStore();
+    renderMessages();
+
+    try {
+      const resp = await fetch('/api/generate-report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ spec }),
+      });
+
+      if (!resp.ok) {
+        genMsg.genState = 'error';
+        genMsg.genError = `API error (${resp.status})`;
+        saveStore();
+        renderMessages();
+        return;
+      }
+
+      const reader = resp.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+          if (line.startsWith('event: ')) {
+            var currentEvent = line.slice(7).trim();
+          } else if (line.startsWith('data: ') && currentEvent) {
+            try {
+              const data = JSON.parse(line.slice(6));
+              if (currentEvent === 'progress') {
+                genMsg.genStatus = data.status;
+                renderMessages();
+              } else if (currentEvent === 'chunk') {
+                genMsg.genStatus = `Generating HTML... (${Math.round(data.length / 1024)}KB)`;
+                renderMessages();
+              } else if (currentEvent === 'done') {
+                genMsg.genState = 'done';
+                genMsg.genUrl = data.reportUrl;
+                genMsg.genStatus = 'Report generated successfully!';
+                chat.ts = Date.now();
+                saveStore();
+                renderMessages();
+              } else if (currentEvent === 'error') {
+                genMsg.genState = 'error';
+                genMsg.genError = data.message;
+                saveStore();
+                renderMessages();
+              }
+            } catch {}
+            currentEvent = null;
+          }
+        }
+      }
+
+      // If we finished reading but never got a 'done' event
+      if (genMsg.genState === 'generating') {
+        genMsg.genState = 'error';
+        genMsg.genError = 'Stream ended without completion';
+        saveStore();
+        renderMessages();
+      }
+    } catch (err) {
+      genMsg.genState = 'error';
+      genMsg.genError = err.message || 'Network error';
+      saveStore();
+      renderMessages();
     }
   }
 
@@ -1034,7 +1274,7 @@
       const resp = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: apiMessages }),
+        body: JSON.stringify({ messages: apiMessages, mode: writeMode ? 'write' : 'read' }),
         signal: abortController.signal,
       });
       if (!resp.ok) throw new Error(`API error (${resp.status})`);
@@ -1068,6 +1308,15 @@
       chat.ts = Date.now();
       saveStore();
       renderMessages();
+
+      // Check for report spec in the completed assistant message
+      const lastMsg = chat.messages[chat.messages.length - 1];
+      if (lastMsg && lastMsg.role === 'assistant') {
+        const spec = extractReportSpec(lastMsg.content);
+        if (spec && spec.id && spec.title) {
+          triggerGeneration(spec, chat);
+        }
+      }
     } catch (err) {
       if (err.name === 'AbortError') {
         if (chat.messages.length > 0 && chat.messages[chat.messages.length - 1].role === 'assistant' && !chat.messages[chat.messages.length - 1].content) chat.messages.pop();
