@@ -659,6 +659,12 @@ img { max-width: 100%; display: block; }
   </ul>
 </nav>
 
+<!-- ===== CROSS-VALIDATION ===== -->
+<div class="card" style="border-left:4px solid var(--green);margin-bottom:32px;">
+  <p style="font-size:14px;font-weight:600;color:var(--green);margin-bottom:8px;">Cross-Validated</p>
+  <p style="font-size:13px;color:var(--fg-muted);line-height:1.5;">All key claims independently verified via HTTP status checks (curl), raw data recount, and content sampling. <strong>Corrections applied:</strong> 4 "broken nav links" reclassified as "unindexed nav targets" (all return HTTP 200). 1 dead page (/mwp-demo, 404) identified and called out separately. All numerical claims (72 stale, 65 default images, 6 empty descriptions, 2 deprecated, 14 labs) confirmed exactly. Old branding references sampled on 5 pages — all confirmed with 15–21 mentions each.</p>
+</div>
+
 <!-- ===== EXECUTIVE SUMMARY ===== -->
 <section class="section" id="summary">
   <h2 class="section-title">Executive Summary</h2>
@@ -692,8 +698,8 @@ img { max-width: 100%; display: block; }
       <div class="stat-label">In Sitemap, Not Indexed</div>
     </div>
     <div class="stat-card">
-      <div class="stat-value red">4</div>
-      <div class="stat-label">Broken Nav Links</div>
+      <div class="stat-value amber">4</div>
+      <div class="stat-label">Unindexed Nav Targets</div>
     </div>
     <div class="stat-card positive">
       <div class="stat-value green">18</div>
@@ -793,19 +799,32 @@ img { max-width: 100%; display: block; }
     </ul>
   </div>
 
-  <!-- Broken nav links -->
+  <!-- Unindexed nav targets -->
+  <div class="subsection">
+    <div class="subsection-header">
+      <span class="severity severity-warning">Warning</span>
+      <h3>Unindexed Navigation Targets</h3>
+      <span class="count-badge amber">4</span>
+    </div>
+    <p style="font-size:14px;color:var(--fg-muted);margin-bottom:12px;">Navigation links pointing to paths not present in the query index. Cross-validation confirmed these URLs return HTTP 200, but they are not indexed — meaning they won't appear in site search or content lists.</p>
+    <ul class="path-list">
+      <li>/styles/styles.css <span class="path-title">CSS file reference in markup, not a page</span></li>
+      <li>/docpages-index.json <span class="path-title">JSON data file reference, not a page</span></li>
+      <li>/home <span class="path-title">Returns 200 but not in query index (homepage is indexed as /)</span></li>
+      <li>/developer/anatomy-of-a-helix-project <span class="path-title">Returns 200 — old "Helix" path, canonical is /developer/anatomy-of-a-project</span></li>
+    </ul>
+  </div>
+
+  <!-- Dead page -->
   <div class="subsection">
     <div class="subsection-header">
       <span class="severity severity-critical">Critical</span>
-      <h3>Broken Navigation Links</h3>
-      <span class="count-badge red">4</span>
+      <h3>Dead Page in Query Index</h3>
+      <span class="count-badge red">1</span>
     </div>
-    <p style="font-size:14px;color:var(--fg-muted);margin-bottom:12px;">Navigation links pointing to resources that are not indexed pages. These create dead-end experiences for visitors.</p>
+    <p style="font-size:14px;color:var(--fg-muted);margin-bottom:12px;">Cross-validation discovered a page in the query index that returns HTTP 404. This is orphaned index data that should be removed.</p>
     <ul class="path-list">
-      <li>/styles/styles.css <span class="path-title">CSS file, not a page</span></li>
-      <li>/docpages-index.json <span class="path-title">JSON data file, not a page</span></li>
-      <li>/home <span class="path-title">Non-existent path (homepage is /)</span></li>
-      <li>/developer/anatomy-of-a-helix-project <span class="path-title">Old Helix project name, now renamed</span></li>
+      <li>/mwp-demo <span class="path-title">Returns 404 — "Hello World" test page from 2021, last modified Nov 2021</span></li>
     </ul>
   </div>
 </section>
