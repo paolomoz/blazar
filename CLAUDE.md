@@ -14,6 +14,7 @@ LLM-driven content and experience management and optimization system. Enables or
 - **Design system:** When building visual HTML interfaces, read and follow `/Users/paolo/excat/nova/DESIGN.md`.
 - **Visual UIs:** Every relevant artifact gets a visual HTML interface for business users. See `reports/README.md` for the system — includes a hub with chronological and mind map navigation. UIs must be updated when context changes.
 - **Keep context in sync:** After any change that affects multiple artifacts, run the update process (see `.claude/commands/update.md`). Reports, hub, journal, and CLAUDE.md must stay consistent. Use `/update` for a full sweep.
+- **Cross-validate:** Every report must be independently verified before being declared complete. Run HTTP spot-checks, recount raw data, sample content. Claude must not grade its own work. Add a validation stamp to the report showing what was checked and what was corrected.
 - **Don't bloat this file.** Keep instructions short. Reference separate files for details.
 
 ## Architecture
