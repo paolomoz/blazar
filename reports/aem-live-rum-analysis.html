@@ -7,143 +7,36 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700;900&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="blazar-reports.css">
 <style>
-:root {
-  --blue: #3B63FB;
-  --blue-light: #EBF0FF;
-  --blue-dark: #2A4AD4;
-  --bg: #F8F8F8;
-  --bg-white: #FFFFFF;
-  --fg: #292929;
-  --fg-heading: #131313;
-  --fg-muted: #717171;
-  --border: #E1E1E1;
-  --red: #D7373F;
-  --red-bg: #FFF0F0;
-  --amber: #CB6F10;
-  --amber-bg: #FFF5EB;
-  --green: #12805C;
-  --green-bg: #EDFCF2;
-  --purple: #7A6AFD;
-  --purple-bg: #F3F0FF;
-  --cyan: #0D7899;
-  --cyan-bg: #E8F8FF;
-  --shadow-card: 0 2px 8px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04), 0 0 1px rgba(0,0,0,0.08);
-  --shadow-elevated: 0 8px 24px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08);
-  --radius-sm: 4px;
-  --radius: 8px;
-  --radius-lg: 12px;
-  --radius-pill: 9999px;
-  --font: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: 'Source Code Pro', Monaco, 'Cascadia Code', monospace;
-}
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; font-size: 16px; }
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
-}
-body { font-family: var(--font); color: var(--fg); background: var(--bg); line-height: 1.5; -webkit-font-smoothing: antialiased; }
-:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; border-radius: 2px; }
-a { color: var(--blue); text-decoration: none; }
-a:hover { text-decoration: underline; }
+/* ── Report-specific overrides ── */
 
-/* ── Report Nav ── */
-.report-nav {
-  position: sticky; top: 0; z-index: 200;
-  background: var(--bg-white);
-  border-bottom: 1px solid var(--border);
-  padding: 8px 24px;
-  display: flex; align-items: center; gap: 8px;
-  font-size: 13px; font-weight: 600;
-}
-.report-nav a {
-  display: inline-flex; align-items: center; gap: 5px;
-  padding: 4px 12px; border-radius: 9999px;
-  color: var(--fg-muted); transition: all 0.15s;
-  text-decoration: none;
-}
-.report-nav a:hover { background: var(--blue-light); color: var(--blue); text-decoration: none; }
-.report-nav .nav-hub { font-weight: 700; color: var(--fg-heading); }
-.report-nav .nav-hub:hover { color: var(--blue); }
-.report-nav .nav-sep { color: var(--border); margin: 0 2px; user-select: none; }
-.report-nav .nav-related { background: var(--bg); border: 1px solid var(--border); }
-.report-nav .nav-related:hover { background: var(--blue-light); border-color: var(--blue); color: var(--blue); }
+/* Header — larger title */
+.report-header h1 { font-size: 42px; line-height: 1.15; letter-spacing: -0.02em; }
 
-/* ── Layout ── */
-.container { max-width: 1200px; margin: 0 auto; padding: 0 24px 80px; }
-@media (max-width: 640px) { .container { padding: 0 16px 60px; } }
+/* Section title — red accent instead of blue */
+.section-title { border-bottom-color: var(--red); }
 
-/* ── Header ── */
-.report-header {
-  background: var(--bg-white);
-  border-bottom: 1px solid var(--border);
-  padding: 32px 24px;
-  margin-bottom: 32px;
-}
-.report-header-inner {
-  max-width: 1200px; margin: 0 auto;
-  display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 16px;
-}
-.report-header h1 { font-size: 42px; font-weight: 900; color: var(--fg-heading); line-height: 1.15; letter-spacing: -0.02em; }
-.report-header .subtitle { font-size: 16px; color: var(--fg-muted); margin-top: 4px; }
-.report-branding { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: var(--blue); }
-.report-branding .logo-mark {
-  width: 28px; height: 28px; background: var(--blue); border-radius: 6px;
-  display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 900;
-}
-.report-date { font-size: 13px; color: var(--fg-muted); background: var(--bg); padding: 4px 12px; border-radius: var(--radius-pill); font-weight: 600; }
+/* Stat card — extra border */
+.stat-card { border: 1px solid var(--border); }
 
-/* ── Jump Nav ── */
-.jump-nav { background: var(--bg-white); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 24px; margin-bottom: 32px; box-shadow: var(--shadow-card); }
-.jump-nav-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--fg-muted); margin-bottom: 12px; }
-.jump-nav-links { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; }
-.jump-nav-links a { display: inline-block; padding: 6px 14px; border-radius: var(--radius-pill); font-size: 14px; font-weight: 600; color: var(--blue); background: var(--blue-light); transition: background 0.15s, color 0.15s; }
-.jump-nav-links a:hover { background: var(--blue); color: #fff; text-decoration: none; }
-
-/* ── Section ── */
-.section { margin-bottom: 48px; }
-.section-title { font-size: 22px; font-weight: 900; color: var(--fg-heading); margin-bottom: 8px; padding-bottom: 8px; border-bottom: 2px solid var(--red); display: inline-block; }
-.section-desc { font-size: 15px; color: var(--fg-muted); margin-bottom: 20px; max-width: 720px; }
-
-/* ── Summary Cards ── */
-.summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
-@media (max-width: 900px) { .summary-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 500px) { .summary-grid { grid-template-columns: 1fr; } }
-.stat-card { background: var(--bg-white); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow-card); text-align: center; border-top: 3px solid var(--border); }
-.stat-card.critical { border-top-color: var(--red); }
-.stat-card.warning { border-top-color: var(--amber); }
-.stat-card.accent { border-top-color: var(--blue); }
-.stat-card.positive { border-top-color: var(--green); }
-.stat-card.info { border-top-color: var(--purple); }
-.stat-value { font-size: 36px; font-weight: 900; color: var(--fg-heading); line-height: 1; margin-bottom: 4px; }
-.stat-label { font-size: 13px; font-weight: 600; color: var(--fg-muted); text-transform: uppercase; letter-spacing: 0.03em; }
-
-/* ── Card ── */
-.card { background: var(--bg-white); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 16px; box-shadow: var(--shadow-card); }
-.card h3 { font-size: 17px; font-weight: 700; color: var(--fg-heading); margin-bottom: 8px; }
+/* Card — combined p/li rule */
 .card p, .card li { font-size: 15px; color: var(--fg); line-height: 1.6; }
-.card ul { padding-left: 20px; margin-top: 8px; }
-.card li { margin-bottom: 6px; }
 
 /* ── Validation ── */
 .validation { border-left: 4px solid var(--green); }
 
-/* ── Bar Chart ── */
+/* ── Bar Chart — significant overrides ── */
 .bar-chart { margin-bottom: 24px; }
-.bar-row { display: flex; align-items: center; margin-bottom: 8px; gap: 12px; }
-.bar-label { width: 200px; font-size: 13px; font-weight: 600; text-align: right; flex-shrink: 0; color: var(--fg); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.bar-track { flex: 1; height: 28px; background: var(--bg); border-radius: var(--radius-sm); overflow: hidden; position: relative; }
-.bar-fill { height: 100%; border-radius: var(--radius-sm); display: flex; align-items: center; padding-left: 10px; font-size: 13px; font-weight: 700; color: #fff; min-width: 36px; transition: width 0.5s ease-out; }
-.bar-count { font-size: 13px; font-weight: 600; color: var(--fg-muted); min-width: 60px; text-align: right; }
+.bar-row { gap: 12px; }
+.bar-label { width: 200px; flex: unset; text-align: right; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bar-track { height: 28px; border-radius: var(--radius-sm); position: relative; }
+.bar-fill { border-radius: var(--radius-sm); padding-left: 10px; padding-right: 0; font-size: 13px; min-width: 36px; transition: width 0.5s ease-out; }
+.bar-count { flex: unset; font-size: 13px; font-weight: 600; min-width: 60px; padding-left: 0; }
 @media (max-width: 640px) { .bar-label { width: 120px; font-size: 12px; } }
 
-/* ── Data Table ── */
-.table-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); background: var(--bg-white); box-shadow: var(--shadow-card); margin-bottom: 20px; }
-.data-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+/* ── Data Table — interactive sort headers ── */
 .data-table thead th {
-  background: var(--bg); padding: 10px 14px; text-align: left; font-weight: 700; font-size: 12px;
-  text-transform: uppercase; letter-spacing: 0.04em; color: var(--fg-muted); border-bottom: 1px solid var(--border);
   white-space: nowrap; cursor: pointer; user-select: none; position: sticky; top: 0; z-index: 2;
 }
 .data-table thead th:hover { color: var(--blue); }
@@ -151,15 +44,14 @@ a:hover { text-decoration: underline; }
 .data-table thead th.sorted .sort-arrow { opacity: 1; color: var(--blue); }
 .data-table tbody tr { border-bottom: 1px solid var(--border); }
 .data-table tbody tr:last-child { border-bottom: none; }
-.data-table tbody tr:hover { background: #FAFBFF; }
 .data-table tbody td { padding: 10px 14px; vertical-align: top; color: var(--fg); }
 .data-table .col-path { font-family: var(--font-mono); font-size: 12px; color: var(--fg-muted); max-width: 280px; word-break: break-all; }
 .data-table .col-title { font-weight: 600; max-width: 300px; }
 .data-table .col-num { text-align: right; font-family: var(--font-mono); font-size: 13px; }
 .data-table .col-date { white-space: nowrap; font-size: 13px; font-family: var(--font-mono); color: var(--fg-muted); }
 
-/* ── Severity / Priority Badges ── */
-.badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: var(--radius-pill); font-size: 11px; font-weight: 700; letter-spacing: 0.3px; text-transform: uppercase; white-space: nowrap; }
+/* ── Severity / Priority Badges — overrides + report-specific ── */
+.badge { padding: 3px 10px; letter-spacing: 0.3px; }
 .badge-p1 { background: var(--red); color: white; }
 .badge-p2 { background: var(--amber); color: white; }
 .badge-p3 { background: var(--blue); color: white; }
@@ -372,7 +264,7 @@ a:hover { text-decoration: underline; }
     </div>
     <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
       <span class="report-date">Feb 24, 2026</span>
-      <div class="report-branding"><span class="logo-mark">B</span> Blazar</div>
+      <div class="report-branding"><img src="blazar-logo-16.svg" width="28" height="28" alt="" class="logo-mark"> Blazar</div>
     </div>
   </div>
 </header>

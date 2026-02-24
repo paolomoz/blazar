@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" width="36" height="36">
+  <defs>
+    <radialGradient id="core36" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="50%" stop-color="#4da6ff"/>
+      <stop offset="100%" stop-color="#0044aa" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="jetUp36" x1="0.5" y1="1" x2="0.5" y2="0">
+      <stop offset="0%" stop-color="#4da6ff" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#99d6ff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="jetDown36" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0%" stop-color="#4da6ff" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#99d6ff" stop-opacity="0"/>
+    </linearGradient>
+    <clipPath id="rs36">
+      <rect width="36" height="36" rx="8" ry="8"/>
+    </clipPath>
+  </defs>
+
+  <g clip-path="url(#rs36)">
+    <!-- Background -->
+    <rect width="36" height="36" fill="#060b14"/>
+
+    <!-- Jet up -->
+    <polygon points="16,15 20,15 19,2 17,2" fill="url(#jetUp36)" opacity="0.8"/>
+
+    <!-- Jet down -->
+    <polygon points="16,21 20,21 19,34 17,34" fill="url(#jetDown36)" opacity="0.8"/>
+
+    <!-- Accretion disk -->
+    <ellipse cx="18" cy="18" rx="12" ry="2.5" fill="none" stroke="#4488dd" stroke-width="1.2" opacity="0.6"/>
+    <ellipse cx="18" cy="18" rx="8" ry="1.5" fill="none" stroke="#66aaff" stroke-width="0.8" opacity="0.5"/>
+
+    <!-- Core glow -->
+    <circle cx="18" cy="18" r="5" fill="#0055cc" opacity="0.3"/>
+
+    <!-- Core -->
+    <circle cx="18" cy="18" r="3.5" fill="url(#core36)"/>
+
+    <!-- Bright center -->
+    <circle cx="18" cy="18" r="1.5" fill="#ffffff"/>
+  </g>
+
+  <!-- Border -->
+  <rect x="0.5" y="0.5" width="35" height="35" rx="7.5" ry="7.5" fill="none" stroke="#1a2a44" stroke-width="0.5" opacity="0.5"/>
+</svg>

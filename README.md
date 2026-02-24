@@ -1,6 +1,11 @@
+<div align="center">
+<br/>
+<img src="docs/blazar-logo-36.svg" width="64" height="64" alt="Blazar logo" />
+
 # Blazar
 
 **A CMS that runs itself.**
+</div>
 
 Blazar is a content and experience management system that autonomously analyzes, audits, and optimizes digital experiences. Point it at a website and it generates a comprehensive intelligence suite — content gaps, brand consistency, traffic patterns, competitive positioning, performance validation — all as interconnected visual reports that reference and reshape each other.
 

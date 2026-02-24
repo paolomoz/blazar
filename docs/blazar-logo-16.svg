@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
+  <defs>
+    <clipPath id="rs16">
+      <rect width="16" height="16" rx="3.5" ry="3.5"/>
+    </clipPath>
+  </defs>
+
+  <g clip-path="url(#rs16)">
+    <!-- Background -->
+    <rect width="16" height="16" fill="#060b14"/>
+
+    <!-- Jet up -->
+    <line x1="8" y1="6" x2="8" y2="1" stroke="#4da6ff" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+
+    <!-- Jet down -->
+    <line x1="8" y1="10" x2="8" y2="15" stroke="#4da6ff" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+
+    <!-- Disk -->
+    <ellipse cx="8" cy="8" rx="5.5" ry="1.2" fill="none" stroke="#5599ee" stroke-width="0.8" opacity="0.7"/>
+
+    <!-- Core -->
+    <circle cx="8" cy="8" r="2.2" fill="#4da6ff" opacity="0.7"/>
+
+    <!-- Bright center -->
+    <circle cx="8" cy="8" r="1" fill="#ffffff"/>
+  </g>
+</svg>

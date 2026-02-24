@@ -2,20 +2,23 @@
 (function () {
   'use strict';
 
-  const STORAGE_KEY = 'blazar-chat-history';
+  const STORE_KEY = 'blazar-chat-store';
+  const OLD_STORAGE_KEY = 'blazar-chat-history';
   const WIDTH_KEY = 'blazar-chat-width';
   const MAX_MESSAGES = 50;
+  const MAX_CHATS = 100;
   const API_URL = '/api/chat';
   const DEFAULT_WIDTH = 420;
   const MIN_WIDTH = 320;
   const MAX_WIDTH = 800;
 
   /* ── State ── */
-  let messages = [];
+  let store = { chats: [], openTabs: [], activeTab: null };
   let isOpen = true;
   let isStreaming = false;
   let abortController = null;
   let discoveryPrompts = null;
+  let historyOpen = false;
 
   /* ── Styles ── */
   const css = `
@@ -304,6 +307,93 @@
 
     /* Bottom spacer for scroll */
     .blazar-chat-spacer { height: 20px; flex-shrink: 0; }
+
+    /* Tab bar */
+    .blazar-chat-tabs {
+      display: flex; align-items: center;
+      overflow-x: auto; overflow-y: hidden;
+      border-bottom: 1px solid #EBEBEB;
+      background: #F7F7F8;
+      flex-shrink: 0;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .blazar-chat-tabs::-webkit-scrollbar { display: none; }
+    .blazar-chat-tabs.blazar-chat-tabs-hidden { display: none; }
+    .blazar-chat-tab {
+      display: flex; align-items: center; gap: 6px;
+      padding: 8px 12px;
+      font-family: inherit; font-size: 13px;
+      color: #999; background: transparent;
+      border: none; border-bottom: 2px solid transparent;
+      cursor: pointer; white-space: nowrap;
+      max-width: 180px; flex-shrink: 0;
+      transition: color 0.15s, background 0.15s;
+    }
+    .blazar-chat-tab:hover { color: #666; background: #F0F0F0; }
+    .blazar-chat-tab.active {
+      color: #1A1A1A; font-weight: 600;
+      background: #FFFFFF;
+      border-bottom-color: #1A1A1A;
+    }
+    .blazar-chat-tab-title {
+      overflow: hidden; text-overflow: ellipsis;
+    }
+    .blazar-chat-tab-close {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 16px; height: 16px; border-radius: 50%;
+      font-size: 11px; line-height: 1;
+      color: #CCC; background: none; border: none;
+      cursor: pointer; flex-shrink: 0;
+      transition: color 0.15s, background 0.15s;
+    }
+    .blazar-chat-tab-close:hover { color: #666; background: #E8E8E8; }
+
+    /* History dropdown */
+    .blazar-chat-history-wrap { position: relative; }
+    .blazar-chat-history-dropdown {
+      position: absolute; top: calc(100% + 6px); right: 0;
+      width: 280px; max-height: 340px; overflow-y: auto;
+      background: #FFFFFF;
+      border: 1px solid #EBEBEB; border-radius: 10px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08);
+      z-index: 10010;
+      display: none;
+    }
+    .blazar-chat-history-dropdown.open { display: block; }
+    .blazar-chat-history-dropdown-header {
+      padding: 12px 14px 8px;
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.05em; color: #999;
+      border-bottom: 1px solid #F3F3F3;
+    }
+    .blazar-chat-history-item {
+      display: flex; align-items: center; gap: 10px;
+      width: 100%; padding: 10px 14px;
+      background: none; border: none; border-bottom: 1px solid #F7F7F8;
+      cursor: pointer; font-family: inherit; text-align: left;
+      transition: background 0.12s;
+    }
+    .blazar-chat-history-item:last-child { border-bottom: none; }
+    .blazar-chat-history-item:hover { background: #F7F7F8; }
+    .blazar-chat-history-item-body { flex: 1; min-width: 0; }
+    .blazar-chat-history-item-title {
+      font-size: 13px; font-weight: 600; color: #1A1A1A;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .blazar-chat-history-item-time { font-size: 11px; color: #999; margin-top: 1px; }
+    .blazar-chat-history-item-del {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 20px; height: 20px; border-radius: 50%;
+      font-size: 12px; color: #CCC; background: none; border: none;
+      cursor: pointer; flex-shrink: 0;
+      transition: color 0.15s, background 0.15s;
+    }
+    .blazar-chat-history-item-del:hover { color: #CC3333; background: #FFF0F0; }
+    .blazar-chat-history-empty {
+      padding: 20px 14px; text-align: center;
+      font-size: 13px; color: #999;
+    }
 
     /* Responsive */
     @media (max-width: 768px) {

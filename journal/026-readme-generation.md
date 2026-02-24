@@ -1,27 +1,26 @@
-# 026 — README Generation with AI Images
+# 026 — README Generation
 
 **Date:** 2026-02-24
 
 ## What happened
 
-Generated a project README for Blazar with 3 AI-generated images via Gemini 2.5 Flash Image:
+Generated a project README for Blazar. Two iterations:
 
-1. **Hero banner** — blazing quasar core radiating data streams and UI elements (1024x1024, 1.6 MB)
-2. **Mind map concept** — glowing orb with colored category branches to frosted glass cards (1024x1024, 1.1 MB)
-3. **Architecture vision** — futuristic control room with holographic analysis panels (1024x1024, 962 KB)
+1. **v1:** AI-generated concept art via Gemini 2.5 Flash Image (hero banner, mindmap concept, architecture vision). Tagline "The LLM is the CMS". Looked flashy but the images didn't hold up — generic AI art that didn't represent the actual product.
 
-README structure: hero + tagline, capabilities table, mind map visual, architecture section, first managed experience summary, quick start, project structure, etymology footer.
+2. **v2 (shipped):** Replaced AI art with real Playwright screenshots of 3 reports (hub mind map, RUM traffic intelligence, brand consistency scorecard). Reframed messaging to "A CMS that runs itself". Added detailed capability descriptions, findings summary table, architecture notes.
 
 ## Key decisions
 
+- Real screenshots over AI-generated art — authenticity > aesthetics
+- "CMS that runs itself" framing — the system generates autonomously, not "LLM replaces CMS"
+- Screenshots taken via `npx playwright screenshot` at 1280x900 viewport
 - Images stored in `docs/` (not `reports/images/` which is for analysis artifacts)
-- Used `gemini-2.5-flash-image` model — `gemini-2.0-flash-exp` was deprecated
-- Kept README concise: no installation docs, no contribution guide, no license — just the vision and what it does
-- Mindmap image regenerated once to fix unwanted "NOTHING" text in center
+- Detailed capability descriptions (7 analysis types) with a findings summary table
 
 ## Artifacts
 
 - `README.md` — project README
-- `docs/hero.png` — hero banner image
-- `docs/mindmap-concept.png` — mind map concept visual
-- `docs/architecture.png` — architecture vision image
+- `docs/screenshot-hub.png` — hub mind map screenshot
+- `docs/screenshot-rum.png` — RUM traffic intelligence screenshot
+- `docs/screenshot-brand.png` — brand consistency scorecard screenshot

@@ -162,5 +162,6 @@ Each entry: `id`, `file`, `title`, `date`, `category`, `related` (IDs of connect
 
 - Files live in `reports/` directory
 - Filename: `{id}.html` (matches manifest ID)
-- Each file is fully self-contained (inline CSS, no external dependencies except Google Fonts)
+- **Shared CSS:** `blazar-reports.css` contains all shared design tokens, reset, and common components (nav, header, cards, tables, badges, etc.). Each report links this file and adds only report-specific overrides inline.
 - Open directly in a browser — no build step, no server required
+- Google Fonts `<link>` tags stay in each HTML `<head>` (not @import — better rendering performance)

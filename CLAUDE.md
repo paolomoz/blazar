@@ -44,7 +44,8 @@ TBD — to be defined as we build. Cloudflare-first for all blazar infrastructur
 
 - **API keys:** `.env` file in project root (gitignored).
 - **AEM EDS skills:** 17 skills installed via `aem-edge-delivery-services` plugin — use for all EDS analysis and development work.
-- **Reports:** Open HTML files directly in browser. Self-contained, no build step. Design follows `/Users/paolo/excat/nova/DESIGN.md`.
+- **Reports:** Open HTML files directly in browser. No build step. Design follows `/Users/paolo/excat/nova/DESIGN.md`.
+- **Shared CSS:** `reports/blazar-reports.css` — shared tokens, reset, and components for all reports. Reports link this file and keep only report-specific overrides inline. Change a token once, it propagates to all 14 reports.
 - **Report navigation:** Every report must include a sticky `.report-nav` bar at the top of `<body>` with a link back to `hub.html` and pill links to all `related` reports from the manifest. When creating or updating reports, always add this nav bar.
 - **Chat widget:** Every report includes `<script src="chat.js"></script>` before `</body>`. Persistent chat assistant powered by Cloudflare Pages Function + Cerebras llama3.1-8b.
 - **Parallel agents:** For multi-report sprints, launch all research agents in a single tool call for maximum parallelism. Wall-clock time = slowest agent, not sum. Coordinate manifests after all agents complete.
