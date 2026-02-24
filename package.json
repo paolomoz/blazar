@@ -1,0 +1,10 @@
+{
+  "name": "blazar",
+  "version": "0.1.0",
+  "private": true,
+  "description": "LLM-driven content and experience management and optimization system",
+  "type": "module",
+  "scripts": {},
+  "keywords": ["llm", "cms", "content-management", "experience-optimization", "cloudflare"],
+  "license": "UNLICENSED"
+}
