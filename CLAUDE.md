@@ -28,7 +28,16 @@ LLM-driven content and experience management and optimization system. Enables or
 
 TBD — to be defined as we build. Cloudflare-first for all blazar infrastructure.
 
+## Managed Experiences
+
+### www.aem.live (AEM EDS)
+- **Query index:** `https://www.aem.live/query-index.json` — 197 pages, columns: path, title, image, description, lastModified, publicationDate, deprecation, labs.
+- **Sitemap:** `https://www.aem.live/sitemap.xml` — 192 URLs.
+- **Content gap analysis:** `reports/aem-live-content-gaps.html` — first analysis run 2026-02-24. Key findings: 72 stale pages (37%), 65 missing OG images, 17 old branding references, 10 pages missing from sitemap.
+- **Analysis script:** `scripts/aem-live-content-gaps.mjs` — fetches query index, sitemap, and nav links, cross-references them, outputs JSON analysis to `data/aem-live/`.
+
 ## Operational Notes
 
 - **API keys:** `.env` file in project root (gitignored).
 - **AEM EDS skills:** 17 skills installed via `aem-edge-delivery-services` plugin — use for all EDS analysis and development work.
+- **Reports:** Open HTML files directly in browser. Self-contained, no build step. Design follows `/Users/paolo/excat/nova/DESIGN.md`.

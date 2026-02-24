@@ -19,7 +19,17 @@ Every relevant artifact in this project gets a visual HTML interface designed fo
 Each entry: `id`, `file`, `title`, `date`, `category`, `related` (IDs of connected artifacts).
 
 ```json
-[]
+[
+  {
+    "id": "aem-live-content-gaps",
+    "file": "aem-live-content-gaps.html",
+    "title": "Content Gaps Analysis: www.aem.live",
+    "date": "2026-02-24",
+    "category": "audit",
+    "summary": "197 indexed pages, 192 sitemap URLs. 10 pages missing from sitemap, 5 sitemap-only pages, 4 broken nav links, 65 missing OG images, 72 stale pages (37%), 17 old branding references.",
+    "related": []
+  }
+]
 ```
 
 ## Categories

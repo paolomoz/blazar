@@ -1,0 +1,3011 @@
+{
+  "summary": {
+    "totalIndexEntries": 197,
+    "totalSitemapUrls": 192,
+    "totalNavLinks": 42,
+    "categoryCounts": {
+      "business": 5,
+      "other": 8,
+      "block-collection": 21,
+      "developer": 50,
+      "docs": 85,
+      "tools": 5,
+      "experiments": 1,
+      "blog": 16,
+      "previous": 6
+    }
+  },
+  "gaps": {
+    "inIndexNotSitemap": [
+      "/developer/block-collection/columns",
+      "/developer/block-collection/fragment",
+      "/developer/block-collection/hero",
+      "/developer/block-collection/table",
+      "/docs/sidekick-extension",
+      "/mwp-demo",
+      "/developer/block-collection/quote",
+      "/developer/block-collection/form",
+      "/developer/block-collection/video",
+      "/developer/da-tutorial"
+    ],
+    "inSitemapNotIndex": [
+      "/developer/block-collection/header",
+      "/developer/block-collection/images",
+      "/docs/setup-customer-googledrive",
+      "/developer/configuring-aem-assets-sidekick-plugin",
+      "/blog/archive"
+    ],
+    "brokenNavLinks": [
+      "/styles/styles.css",
+      "/docpages-index.json",
+      "/home",
+      "/developer/anatomy-of-a-helix-project"
+    ]
+  },
+  "metadata": {
+    "missingCustomImage": [
+      {
+        "path": "/business/demo",
+        "title": "Sign up for the VIP Program, Get a Demo"
+      },
+      {
+        "path": "/developer",
+        "title": "AEM for Developers"
+      },
+      {
+        "path": "/developer/block-collection/buttons",
+        "title": "Buttons"
+      },
+      {
+        "path": "/developer/block-collection/code",
+        "title": "Code"
+      },
+      {
+        "path": "/developer/block-collection/fragment",
+        "title": "Fragment (Block)"
+      },
+      {
+        "path": "/developer/block-collection/headings",
+        "title": "Headings"
+      },
+      {
+        "path": "/developer/block-collection/icons",
+        "title": "Icons"
+      },
+      {
+        "path": "/developer/block-collection/links",
+        "title": "Links"
+      },
+      {
+        "path": "/developer/block-collection/lists",
+        "title": "Lists"
+      },
+      {
+        "path": "/developer/block-collection/metadata",
+        "title": "Metadata Block"
+      },
+      {
+        "path": "/developer/block-collection/section-metadata",
+        "title": "Section Metadata"
+      },
+      {
+        "path": "/developer/block-collection/sections",
+        "title": "Sections"
+      },
+      {
+        "path": "/developer/block-collection/table",
+        "title": "Tables"
+      },
+      {
+        "path": "/developer/block-collection/text",
+        "title": "Text"
+      },
+      {
+        "path": "/developer/block-party/thank-you",
+        "title": "Thank you for your submission."
+      },
+      {
+        "path": "/developer/example-form/thank-you",
+        "title": "Thank you for your submission."
+      },
+      {
+        "path": "/developer/font-fallback",
+        "title": "Font Fallback and CLS"
+      },
+      {
+        "path": "/developer/importer",
+        "title": "Importing Content"
+      },
+      {
+        "path": "/developer/keeping-it-100",
+        "title": "Web Performance, Keeping your Lighthouse Score 100."
+      },
+      {
+        "path": "/developer/markup-reference",
+        "title": "HTML Markup reference"
+      },
+      {
+        "path": "/docs/",
+        "title": "Documentation"
+      },
+      {
+        "path": "/docs/davidsmodel",
+        "title": "David’s Model, Second take."
+      },
+      {
+        "path": "/docs/experimentation",
+        "title": "Experimentation"
+      },
+      {
+        "path": "/docs/indexing-reference",
+        "title": "Indexing reference"
+      },
+      {
+        "path": "/docs/setup-adobe-sharepoint",
+        "title": "How to use Adobe Sharepoint"
+      },
+      {
+        "path": "/docs/setup-byo-cdn-push-invalidation",
+        "title": "Configuring push invalidation for BYO production CDN"
+      },
+      {
+        "path": "/docs/setup-byo-cdn-push-invalidation-for-akamai",
+        "title": "Setup push invalidation for Akamai"
+      },
+      {
+        "path": "/docs/setup-customer-sharepoint",
+        "title": "How to use Sharepoint (application)"
+      },
+      {
+        "path": "/docs/setup-sharepoint",
+        "title": "How to use Sharepoint"
+      },
+      {
+        "path": "/docs/translation-and-localization",
+        "title": "Translation and Localization"
+      },
+      {
+        "path": "/footer",
+        "title": "Copyright © 2025 Adobe. All rights reserved / Privacy / Terms of Use / Do not sell my personal information"
+      },
+      {
+        "path": "/new-footer",
+        "title": "Adobe Experience Manager"
+      },
+      {
+        "path": "/tools/sidekick/library",
+        "title": "Sidekick library"
+      },
+      {
+        "path": "/business/comms-channel-thank-you",
+        "title": "Thank you for submitting the form."
+      },
+      {
+        "path": "/docs/move-project-to-customer-infrastructure",
+        "title": "Migrating a VIP project to your own infrastructure"
+      },
+      {
+        "path": "/experiments/short-home/home",
+        "title": "Adobe Experience Manager"
+      },
+      {
+        "path": "/business/helix-is-green",
+        "title": "Helix is green"
+      },
+      {
+        "path": "/business/content-velocity",
+        "title": "Increase Content Velocity with Helix"
+      },
+      {
+        "path": "/gnav",
+        "title": "Getting Started"
+      },
+      {
+        "path": "/tools/sidekick/install-extension",
+        "title": "Sidekick Extension (Beta)"
+      },
+      {
+        "path": "/mwp-demo",
+        "title": "Hello World."
+      },
+      {
+        "path": "/tools/svg-doctor/",
+        "title": "Optimize your SVGs"
+      },
+      {
+        "path": "/docs/setup-googledrive",
+        "title": "How to use Google Drive"
+      },
+      {
+        "path": "/developer/block-collection",
+        "title": "Block Collection"
+      },
+      {
+        "path": "/developer/block-collection/form",
+        "title": "Form"
+      },
+      {
+        "path": "/developer/block-collection/video",
+        "title": "Video (Block)"
+      },
+      {
+        "path": "/tools/mp4-doctor/",
+        "title": "Optimize your MP4s for display on the Web."
+      },
+      {
+        "path": "/business/reachout",
+        "title": "Got Questions? Let's Connect!"
+      },
+      {
+        "path": "/docs/setup-customer-sharepoint-user",
+        "title": "How to use Sharepoint (delegated)"
+      },
+      {
+        "path": "/",
+        "title": "Adobe Experience Manager"
+      },
+      {
+        "path": "/developer/block-party/",
+        "title": "Block Party"
+      },
+      {
+        "path": "/previous/byo-cdn-cloudfront-setup",
+        "title": "Amazon Web Services (AWS) CloudFront Setup for hlx.live"
+      },
+      {
+        "path": "/previous/byo-cdn-cloudflare-worker-wrangler-setup",
+        "title": "Cloudflare Setup (with wrangler) for hlx.live"
+      },
+      {
+        "path": "/previous/byo-cdn-cloudflare-worker-setup",
+        "title": "Cloudflare Setup (worker) for hlx.live"
+      },
+      {
+        "path": "/developer/sidekick-development",
+        "title": "Extending the Sidekick"
+      },
+      {
+        "path": "/developer/admin-errors",
+        "title": "Backend Errors"
+      },
+      {
+        "path": "/developer/sidekick-v7-migration",
+        "title": "Migrating Your Sidekick v6 Customizations"
+      },
+      {
+        "path": "/docs/sidekick-errors",
+        "title": "AEM Sidekick Errors"
+      },
+      {
+        "path": "/docs/snapshots-reviews",
+        "title": "Snapshots and Reviews"
+      },
+      {
+        "path": "/docs/aem-embed",
+        "title": "Embedding Content in non-AEM experiences"
+      },
+      {
+        "path": "/docs/schema-structured-data",
+        "title": "Using Schema (Structured Data) as JSON-LD"
+      },
+      {
+        "path": "/docs/storefront",
+        "title": "Commerce Storefront for Edge Delivery Services"
+      },
+      {
+        "path": "/developer/ue-trial",
+        "title": "Accelerate your tutorial with a pre-built environment"
+      },
+      {
+        "path": "/docs/media",
+        "title": "Media Assets"
+      },
+      {
+        "path": "/developer/aem-playground",
+        "title": "Explore new AI workflows in AEM"
+      }
+    ],
+    "emptyDescription": [
+      {
+        "path": "/docs/setup-sharepoint",
+        "title": "How to use Sharepoint"
+      },
+      {
+        "path": "/tools/sidekick/library",
+        "title": "Sidekick library"
+      },
+      {
+        "path": "/business/comms-channel-thank-you",
+        "title": "Thank you for submitting the form."
+      },
+      {
+        "path": "/gnav",
+        "title": "Getting Started"
+      },
+      {
+        "path": "/mwp-demo",
+        "title": "Hello World."
+      },
+      {
+        "path": "/developer/cli-reference",
+        "title": "aem Command Line Reference"
+      }
+    ],
+    "deprecatedContent": [
+      {
+        "path": "/developer/folder-mapping",
+        "title": "Folder Mapping",
+        "deprecation": "Please contact us if you have a use case for folder mapping. Reach out to us if you have a related use case, we will help to find the best solution. Existing projects using folder mapping may need to migrate to a different solution in the future."
+      },
+      {
+        "path": "/docs/scheduling",
+        "title": "Scheduling",
+        "deprecation": "Reach out to us if you have a use case for scheduling, we will help to find the best solution. Existing projects using scheduling may need to migrate to a different solution in the future."
+      }
+    ],
+    "labsContent": [
+      {
+        "path": "/docs/experimentation",
+        "title": "Experimentation",
+        "labs": "AEM Sites"
+      },
+      {
+        "path": "/docs/aem-assets-sidekick-plugin",
+        "title": "Adobe Experience Manager Assets Sidekick Plugin",
+        "labs": "AEM Assets"
+      },
+      {
+        "path": "/developer/target-integration",
+        "title": "Configuring Adobe Target Integration",
+        "labs": "AEM Sites"
+      },
+      {
+        "path": "/developer/web-components",
+        "title": "Web Components",
+        "labs": "Non mainstream tech: Not many projects are using this yet, but it's perfectly fine if you have good reasons and are careful"
+      },
+      {
+        "path": "/developer/da-tutorial",
+        "title": "Getting Started – Document Authoring (DA) Developer Tutorial",
+        "labs": "Document Authoring"
+      },
+      {
+        "path": "/developer/martech-integration",
+        "title": "Configuring Adobe Experience Cloud Integration",
+        "labs": "AEM Sites"
+      },
+      {
+        "path": "/docs/snapshots-reviews",
+        "title": "Snapshots and Reviews",
+        "labs": "AEM Sites"
+      },
+      {
+        "path": "/docs/aem-embed",
+        "title": "Embedding Content in non-AEM experiences",
+        "labs": "AEM Sites"
+      },
+      {
+        "path": "/developer/byo-git",
+        "title": "Bring your own git",
+        "labs": "AEM Cloud Foundation"
+      },
+      {
+        "path": "/developer/gtm-martech-integration",
+        "title": "Configuring Google Analytics & Tag Manager Integration",
+        "labs": "AEM Sites"
+      },
+      {
+        "path": "/developer/json2html",
+        "title": "JSON2HTML for Edge Delivery Services",
+        "labs": "AEM Sites"
+      },
+      {
+        "path": "/developer/content-fragment-overlay",
+        "title": "Publishing AEM Content Fragments to Edge Delivery Services",
+        "labs": "Sites"
+      },
+      {
+        "path": "/developer/ai-coding-agents",
+        "title": "Developing with AI Tools",
+        "labs": "Early-Access Technology: AI coding agents are a new and rapidly evolving technology, so you don't need to ask us before using, but we are still interested in hearing about your experiences"
+      },
+      {
+        "path": "/docs/recurring",
+        "title": "Schedule recurring tasks",
+        "labs": "AEM Sites"
+      }
+    ]
+  },
+  "quality": {
+    "oldBranding": [
+      {
+        "path": "/business/demo",
+        "title": "Sign up for the VIP Program, Get a Demo",
+        "description": "AEM Franklin is currently made available to select AEM Sites customers in the Franklin VIP program. If you are interested in learning more about Franklin, ..."
+      },
+      {
+        "path": "/developer/github-actions",
+        "title": "Using GitHub Actions to handle Publication Events",
+        "description": "Franklin has a lightweight integration with GitHub actions that allows you to run a GitHub actions workflow whenever a page or sheet in Franklin has ..."
+      },
+      {
+        "path": "/docs/faq",
+        "title": "Frequently Asked Questions",
+        "description": "Franklin and Helix were internal project names for the Adobe Experience Manager engineering team’s initiative to develop an innovative publishing and delivery service situated at ..."
+      },
+      {
+        "path": "/docs/indexing-reference",
+        "title": "Indexing reference",
+        "description": "In your helix-query.yaml#, you can define one or more index definitions. A sample index definition looks as follows: https://gist.github.com/dominique-pfister/92cb67b6f95e1edee6a7d6508b124039"
+      },
+      {
+        "path": "/business/helix-is-green",
+        "title": "Helix is green",
+        "description": "Faster websites are not just better for your visitors and your authors, they are also better for the planet. Helix is aggressively managing CO₂ emissions ..."
+      },
+      {
+        "path": "/business/content-velocity",
+        "title": "Increase Content Velocity with Helix",
+        "description": "Helix eliminates the copy & pasting between your writing tools (Word or Google Docs) and your CMS."
+      },
+      {
+        "path": "/docs/setup-googledrive",
+        "title": "How to use Google Drive",
+        "description": "Edge delivery service will access the google drive using a registered user during preview and publishing. You can choose to either use the default helix@adobe.com ..."
+      },
+      {
+        "path": "/tools/organizer/",
+        "title": "Franklin Organizer",
+        "description": "Keep your Franklin project organized, see live content performance data and make bulk changes with Franklin Organizer."
+      },
+      {
+        "path": "/blog/hlx-is-now-aem-live",
+        "title": "A high-five for aem.live",
+        "description": "If you've been using Adobe Experience Manager for a short while, you may have wondered what the hlx.live and hlx.page in the preview and live ..."
+      },
+      {
+        "path": "/developer/upgrade",
+        "title": "Upgrading to aem.live from hlx.live",
+        "description": "As outlined on our deprecations and end-of-service page, the hlx.live domain has been blocked on December 18 2025."
+      },
+      {
+        "path": "/previous/byo-cdn-setup",
+        "title": "BYO CDN Setup for hlx.live",
+        "description": "NOTE: The instructions linked on this page apply to the previous version of Edge Delivery Services and are provided for customers who have not upgraded ..."
+      },
+      {
+        "path": "/previous/byo-cdn-fastly-setup",
+        "title": "Fastly Setup for hlx.live",
+        "description": "NOTE: The instructions linked on this page apply to the previous version of Edge Delivery Services and are provided for customers who have not upgraded ..."
+      },
+      {
+        "path": "/previous/byo-cdn-cloudfront-setup",
+        "title": "Amazon Web Services (AWS) CloudFront Setup for hlx.live",
+        "description": "NOTE: The instructions linked on this page apply to the previous version of Edge Delivery Services and are provided for customers who have not upgraded ..."
+      },
+      {
+        "path": "/previous/byo-cdn-cloudflare-worker-wrangler-setup",
+        "title": "Cloudflare Setup (with wrangler) for hlx.live",
+        "description": "NOTE: The instructions linked on this page apply to the previous version of Edge Delivery Services and are provided for customers who have not upgraded ..."
+      },
+      {
+        "path": "/previous/byo-cdn-cloudflare-worker-setup",
+        "title": "Cloudflare Setup (worker) for hlx.live",
+        "description": "NOTE: The instructions linked on this page apply to the previous version of Edge Delivery Services and are provided for customers who have not upgraded ..."
+      },
+      {
+        "path": "/previous/byo-cdn-akamai-setup",
+        "title": "Akamai Setup for hlx.live",
+        "description": "NOTE: The instructions linked on this page apply to the previous version of Edge Delivery Services and are provided for customers who have not upgraded ..."
+      },
+      {
+        "path": "/blog/organizing-source-code-ensemble",
+        "title": "Unlocking Efficiency with Helix 5: A Scalable Approach to Multi-Site Development",
+        "description": "Imagine needing to launch four websites rapidly - while maintaining quality, consistency, and performance. One of our customers faced this exact challenge. They implemented AEM ..."
+      }
+    ],
+    "staleContent": [
+      {
+        "path": "/mwp-demo",
+        "title": "Hello World.",
+        "lastModified": "2021-11-03"
+      },
+      {
+        "path": "/developer/block-collection/hero",
+        "title": "Hero (Block)",
+        "lastModified": "2023-08-27"
+      },
+      {
+        "path": "/developer/block-collection/columns",
+        "title": "Columns (Block)",
+        "lastModified": "2023-08-27"
+      },
+      {
+        "path": "/developer/block-collection/quote",
+        "title": "Quote",
+        "lastModified": "2024-03-08"
+      },
+      {
+        "path": "/developer/block-collection/video",
+        "title": "Video (Block)",
+        "lastModified": "2024-05-02"
+      },
+      {
+        "path": "/docs/sidekick-extension",
+        "title": "Installing the AEM Sidekick",
+        "lastModified": "2024-05-29"
+      },
+      {
+        "path": "/developer/block-collection/fragment",
+        "title": "Fragment (Block)",
+        "lastModified": "2024-06-07"
+      },
+      {
+        "path": "/developer/block-collection/table",
+        "title": "Tables",
+        "lastModified": "2024-06-07"
+      },
+      {
+        "path": "/developer/block-collection/form",
+        "title": "Form",
+        "lastModified": "2024-06-13"
+      },
+      {
+        "path": "/business/demo",
+        "title": "Sign up for the VIP Program, Get a Demo",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/developer",
+        "title": "AEM for Developers",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/developer/block-collection/buttons",
+        "title": "Buttons",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/developer/block-collection/code",
+        "title": "Code",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/developer/block-collection/footer",
+        "title": "Footer (Block)",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/developer/block-collection/headings",
+        "title": "Headings",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/developer/block-collection/icons",
+        "title": "Icons",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/developer/block-collection/links",
+        "title": "Links",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/developer/block-collection/lists",
+        "title": "Lists",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/developer/block-collection/section-metadata",
+        "title": "Section Metadata",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/developer/block-collection/sections",
+        "title": "Sections",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/developer/block-collection/text",
+        "title": "Text",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/developer/block-party/thank-you",
+        "title": "Thank you for your submission.",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/developer/example-form/thank-you",
+        "title": "Thank you for your submission.",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/developer/font-fallback",
+        "title": "Font Fallback and CLS",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/developer/github-actions",
+        "title": "Using GitHub Actions to handle Publication Events",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/developer/indexing",
+        "title": "Indexing",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/developer/markup-reference",
+        "title": "HTML Markup reference",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/developer/markup-sections-blocks",
+        "title": "Markup, Sections, Blocks, and Auto Blocking",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/docs/exploring-blocks",
+        "title": "Exploring blocks",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/docs/setup-adobe-sharepoint",
+        "title": "How to use Adobe Sharepoint",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/docs/setup-sharepoint",
+        "title": "How to use Sharepoint",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/docs/translation-and-localization",
+        "title": "Translation and Localization",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/tools/sidekick/library",
+        "title": "Sidekick library",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/business/comms-channel-thank-you",
+        "title": "Thank you for submitting the form.",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/docs/move-project-to-customer-infrastructure",
+        "title": "Migrating a VIP project to your own infrastructure",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/experiments/short-home/home",
+        "title": "Adobe Experience Manager",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/business/helix-is-green",
+        "title": "Helix is green",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/business/content-velocity",
+        "title": "Increase Content Velocity with Helix",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/gnav",
+        "title": "Getting Started",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/tools/sidekick/install-extension",
+        "title": "Sidekick Extension (Beta)",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/tools/svg-doctor/",
+        "title": "Optimize your SVGs",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/docs/setup-googledrive",
+        "title": "How to use Google Drive",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/developer/block-collection",
+        "title": "Block Collection",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/developer/block-collection/breadcrumbs",
+        "title": "Breadcrumbs",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/developer/block-collection/modal",
+        "title": "Modal",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/tools/mp4-doctor/",
+        "title": "Optimize your MP4s for display on the Web.",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/tools/organizer/",
+        "title": "Franklin Organizer",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/business/reachout",
+        "title": "Got Questions? Let's Connect!",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/developer/target-integration",
+        "title": "Configuring Adobe Target Integration",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/developer/web-components",
+        "title": "Web Components",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/developer/tutorial-from-youtube",
+        "title": "Welcome! Let’s Dive Deeper: Your Next Steps After Watching Our YouTube Video",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/blog/hlx-is-now-aem-live",
+        "title": "A high-five for aem.live",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/previous/byo-cdn-setup",
+        "title": "BYO CDN Setup for hlx.live",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/previous/byo-cdn-fastly-setup",
+        "title": "Fastly Setup for hlx.live",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/previous/byo-cdn-cloudfront-setup",
+        "title": "Amazon Web Services (AWS) CloudFront Setup for hlx.live",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/previous/byo-cdn-cloudflare-worker-wrangler-setup",
+        "title": "Cloudflare Setup (with wrangler) for hlx.live",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/previous/byo-cdn-cloudflare-worker-setup",
+        "title": "Cloudflare Setup (worker) for hlx.live",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/previous/byo-cdn-akamai-setup",
+        "title": "Akamai Setup for hlx.live",
+        "lastModified": "2024-09-09"
+      },
+      {
+        "path": "/docs/staging",
+        "title": "Staging & Environments",
+        "lastModified": "2024-09-24"
+      },
+      {
+        "path": "/docs/experimentation",
+        "title": "Experimentation",
+        "lastModified": "2024-10-03"
+      },
+      {
+        "path": "/docs/byo-cdn-cloudfront-setup",
+        "title": "Amazon Web Services (AWS) CloudFront Setup",
+        "lastModified": "2024-10-18"
+      },
+      {
+        "path": "/docs/network-profile",
+        "title": "Network Profile",
+        "lastModified": "2024-11-01"
+      },
+      {
+        "path": "/blog/aem-live-at-dev-live",
+        "title": "aem.live at Adobe Developers Live 2024",
+        "lastModified": "2024-11-04"
+      },
+      {
+        "path": "/docs/davidsmodel",
+        "title": "David’s Model, Second take.",
+        "lastModified": "2024-11-20"
+      },
+      {
+        "path": "/blog/edge-next",
+        "title": "The Performance Paradox: When Simple Architecture Beats Complex Frameworks",
+        "lastModified": "2024-12-19"
+      },
+      {
+        "path": "/docs/unsupported",
+        "title": "Unsupported Integrations",
+        "lastModified": "2024-12-19"
+      },
+      {
+        "path": "/docs/aem-assets-sidekick-plugin",
+        "title": "Adobe Experience Manager Assets Sidekick Plugin",
+        "lastModified": "2025-01-11"
+      },
+      {
+        "path": "/developer/martech-integration",
+        "title": "Configuring Adobe Experience Cloud Integration",
+        "lastModified": "2025-02-10"
+      },
+      {
+        "path": "/docs/byo-dns",
+        "title": "Custom domains without a custom CDN",
+        "lastModified": "2025-02-12"
+      },
+      {
+        "path": "/blog/sidekick-v7",
+        "title": "AEM Sidekick v7 – The Story Behind the Latest Release",
+        "lastModified": "2025-02-13"
+      },
+      {
+        "path": "/blog/calendar-implementation",
+        "title": "A Date with Edge Delivery: Putting Calendars on the Web, Twice",
+        "lastModified": "2025-02-19"
+      },
+      {
+        "path": "/blog/roadmaps",
+        "title": "Roadmaps, Marty? Where we’re going, we don't need Roadmaps!",
+        "lastModified": "2025-02-19"
+      }
+    ],
+    "recentContent": [
+      {
+        "path": "/docs/peak-traffic",
+        "title": "Service Scaling and High-Visibility Events",
+        "lastModified": "2026-02-23"
+      },
+      {
+        "path": "/docs/operations",
+        "title": "Operations",
+        "lastModified": "2026-02-23"
+      },
+      {
+        "path": "/docs/china",
+        "title": "China FAQ",
+        "lastModified": "2026-02-23"
+      },
+      {
+        "path": "/docs/limits",
+        "title": "Limits",
+        "lastModified": "2026-02-17"
+      },
+      {
+        "path": "/docs/config-service-setup",
+        "title": "Setting up the configuration service",
+        "lastModified": "2026-02-13"
+      },
+      {
+        "path": "/developer/anatomy-of-a-project",
+        "title": "The Anatomy of a Project",
+        "lastModified": "2026-02-13"
+      },
+      {
+        "path": "/docs/dev-collab-and-good-practices",
+        "title": "Development Collaboration and Good Practices",
+        "lastModified": "2026-02-12"
+      },
+      {
+        "path": "/docs/security",
+        "title": "Security Overview",
+        "lastModified": "2026-02-12"
+      },
+      {
+        "path": "/docs/sidekick-security",
+        "title": "AEM Sidekick Security",
+        "lastModified": "2026-02-11"
+      },
+      {
+        "path": "/docs/authentication-setup-authoring",
+        "title": "Configuring Authentication for Authors",
+        "lastModified": "2026-02-10"
+      },
+      {
+        "path": "/developer/block-collection/search",
+        "title": "Search",
+        "lastModified": "2026-02-09"
+      },
+      {
+        "path": "/docs/lifecycle",
+        "title": "Feature Lifecycle",
+        "lastModified": "2026-02-06"
+      },
+      {
+        "path": "/docs/deprecation",
+        "title": "Deprecations and Removals",
+        "lastModified": "2026-02-06"
+      },
+      {
+        "path": "/docs/csp-strict-dynamic-cached-nonce",
+        "title": "Content Security Policy: strict-dynamic + (cached) nonce",
+        "lastModified": "2026-02-05"
+      },
+      {
+        "path": "/developer/tutorial",
+        "title": "Getting Started – Developer Tutorial",
+        "lastModified": "2026-02-05"
+      },
+      {
+        "path": "/developer/sidekick-development",
+        "title": "Extending the Sidekick",
+        "lastModified": "2026-01-26"
+      },
+      {
+        "path": "/docs/authentication-setup",
+        "title": "Authentication Overview",
+        "lastModified": "2026-01-26"
+      },
+      {
+        "path": "/docs/auditlog",
+        "title": "Audit log",
+        "lastModified": "2026-01-26"
+      }
+    ],
+    "duplicateTitles": [
+      [
+        "thank you for your submission.",
+        [
+          "/developer/block-party/thank-you",
+          "/developer/example-form/thank-you"
+        ]
+      ],
+      [
+        "adobe experience manager",
+        [
+          "/new-footer",
+          "/experiments/short-home/home",
+          "/"
+        ]
+      ]
+    ],
+    "legacyContent": [
+      {
+        "path": "/previous/byo-cdn-setup",
+        "title": "BYO CDN Setup for hlx.live"
+      },
+      {
+        "path": "/previous/byo-cdn-fastly-setup",
+        "title": "Fastly Setup for hlx.live"
+      },
+      {
+        "path": "/previous/byo-cdn-cloudfront-setup",
+        "title": "Amazon Web Services (AWS) CloudFront Setup for hlx.live"
+      },
+      {
+        "path": "/previous/byo-cdn-cloudflare-worker-wrangler-setup",
+        "title": "Cloudflare Setup (with wrangler) for hlx.live"
+      },
+      {
+        "path": "/previous/byo-cdn-cloudflare-worker-setup",
+        "title": "Cloudflare Setup (worker) for hlx.live"
+      },
+      {
+        "path": "/previous/byo-cdn-akamai-setup",
+        "title": "Akamai Setup for hlx.live"
+      }
+    ],
+    "fragmentPages": [
+      {
+        "path": "/developer/block-party/thank-you",
+        "title": "Thank you for your submission."
+      },
+      {
+        "path": "/developer/example-form/thank-you",
+        "title": "Thank you for your submission."
+      },
+      {
+        "path": "/footer",
+        "title": "Copyright © 2025 Adobe. All rights reserved / Privacy / Terms of Use / Do not sell my personal information"
+      },
+      {
+        "path": "/new-footer",
+        "title": "Adobe Experience Manager"
+      },
+      {
+        "path": "/business/comms-channel-thank-you",
+        "title": "Thank you for submitting the form."
+      },
+      {
+        "path": "/experiments/short-home/home",
+        "title": "Adobe Experience Manager"
+      },
+      {
+        "path": "/gnav",
+        "title": "Getting Started"
+      },
+      {
+        "path": "/mwp-demo",
+        "title": "Hello World."
+      }
+    ]
+  },
+  "allEntries": [
+    {
+      "path": "/business/demo",
+      "title": "Sign up for the VIP Program, Get a Demo",
+      "category": "business",
+      "description": "AEM Franklin is currently made available to select AEM Sites customers in the Franklin VIP program. ",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer",
+      "title": "AEM for Developers",
+      "category": "other",
+      "description": "Frictionless experience management: Build blazing fast websites using tools content creators and dev",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/block-collection/buttons",
+      "title": "Buttons",
+      "category": "block-collection",
+      "description": "Websites very often contain buttons, as call to actions or more generically. By default in the Boile",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/block-collection/code",
+      "title": "Code",
+      "category": "block-collection",
+      "description": "Most technical documentation websites (including this one) have the need to display code. Most marke",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/block-collection/columns",
+      "title": "Columns (Block)",
+      "category": "block-collection",
+      "description": "The Columns block is one of the most frequently used blocks. It offers that author the ability to in",
+      "lastModified": "2023-08-27",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/block-collection/footer",
+      "title": "Footer (Block)",
+      "category": "block-collection",
+      "description": "The footer block is loaded by default in the boilerplate project into the <footer> element. Out-of-t",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/block-collection/fragment",
+      "title": "Fragment (Block)",
+      "category": "block-collection",
+      "description": "Some content may need to be managed in a central location and shared across multiple pages of a webs",
+      "lastModified": "2024-06-07",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/block-collection/headings",
+      "title": "Headings",
+      "category": "block-collection",
+      "description": "Semantic headings are the backbone of any document structure. In documents you should always follow ",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/block-collection/hero",
+      "title": "Hero (Block)",
+      "category": "block-collection",
+      "description": "The hero block can is a representation of what’s displayed above the fold. On most websites there is",
+      "lastModified": "2023-08-27",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/block-collection/icons",
+      "title": "Icons",
+      "category": "block-collection",
+      "description": "Most if not all websites have icons, therefore there is a simple way to reference icons for authors.",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/block-collection/links",
+      "title": "Links",
+      "category": "block-collection",
+      "description": "Hyperlinks are essential to connect websites and your content. To create a link, just use the insert",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/block-collection/lists",
+      "title": "Lists",
+      "category": "block-collection",
+      "description": "Lists serve many purposes in the Web in general, some uses or obvious lists inside default content, ",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/block-collection/metadata",
+      "title": "Metadata Block",
+      "category": "block-collection",
+      "description": "The Metadata table is handled by the pipeline service to add <meta> tags in the <head> of the HTML m",
+      "lastModified": "2025-07-15",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/block-collection/section-metadata",
+      "title": "Section Metadata",
+      "category": "block-collection",
+      "description": "The Section Metadata table is handled by boilerplate code internally to add data-*s attributes to th",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/block-collection/sections",
+      "title": "Sections",
+      "category": "block-collection",
+      "description": "Sections are the top level grouping mechanism in documents, think of them as containers for a set of",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/block-collection/table",
+      "title": "Tables",
+      "category": "block-collection",
+      "description": "A table is a way to organize tabular data into rows and columns. It can help users quickly find rela",
+      "lastModified": "2024-06-07",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/block-collection/text",
+      "title": "Text",
+      "category": "block-collection",
+      "description": "A Text Paragraph (or Copy) is the most common element on websites. AEM understands and translates a ",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/block-party/thank-you",
+      "title": "Thank you for your submission.",
+      "category": "developer",
+      "description": "We will review your submission and add it to the Block Party list if it qualifies.",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/example-form/thank-you",
+      "title": "Thank you for your submission.",
+      "category": "developer",
+      "description": "We will not contact you of course, as this is just a demo form.",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/favicon",
+      "title": "Favicon",
+      "category": "developer",
+      "description": "Adding a favicon to your site gives it a professional look in your visitor’s browsers:",
+      "lastModified": "2025-10-10",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/font-fallback",
+      "title": "Font Fallback and CLS",
+      "category": "developer",
+      "description": "Learn how to create a font fallback",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/forms",
+      "title": "Forms",
+      "category": "developer",
+      "description": "Edge Delivery Services for AEM Forms allows you to update, publish, and launch new forms rapidly. Th",
+      "lastModified": "2025-12-10",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/github-actions",
+      "title": "Using GitHub Actions to handle Publication Events",
+      "category": "developer",
+      "description": "Franklin has a lightweight integration with GitHub actions that allows you to run a GitHub actions w",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/importer",
+      "title": "Importing Content",
+      "category": "developer",
+      "description": "Learn how to use the AEM importer",
+      "lastModified": "2025-07-08",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/indexing",
+      "title": "Indexing",
+      "category": "developer",
+      "description": "Adobe Experience Manager offers a way to keep an index of all the published pages in a particular se",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/keeping-it-100",
+      "title": "Web Performance, Keeping your Lighthouse Score 100.",
+      "category": "developer",
+      "description": "The quality of the experience of websites is crucial to achieving the business goals of your website",
+      "lastModified": "2025-11-06",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/markup-reference",
+      "title": "HTML Markup reference",
+      "category": "developer",
+      "description": "While for most development tasks the DOM is the relevant interface for a developer, there are certai",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/markup-sections-blocks",
+      "title": "Markup, Sections, Blocks, and Auto Blocking",
+      "category": "developer",
+      "description": "To design websites and create functionality, developers use the markup and DOM that is rendered dyna",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/placeholders",
+      "title": "Using Placeholders",
+      "category": "developer",
+      "description": "In most websites, there are strings or variables that will be used throughout the site. Especially i",
+      "lastModified": "2025-04-22",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/sitemap",
+      "title": "Sitemaps",
+      "category": "developer",
+      "description": "Create automatically generated sitemap files to be referenced from your robots.txt. This helps with ",
+      "lastModified": "2025-08-18",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/spreadsheets",
+      "title": "Spreadsheets and JSON",
+      "category": "developer",
+      "description": "In addition to translating Google Docs and Word documents into markdown and HTML markup, AEM also tr",
+      "lastModified": "2025-03-31",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/tutorial",
+      "title": "Getting Started – Developer Tutorial",
+      "category": "developer",
+      "description": "This tutorial will get you up-and-running with a new Adobe Experience Manager (AEM) project. In ten ",
+      "lastModified": "2026-02-05",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/",
+      "title": "Documentation",
+      "category": "docs",
+      "description": "Documentation hub for authors, developers and operations.",
+      "lastModified": "2025-04-11",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/architecture",
+      "title": "Architecture",
+      "category": "docs",
+      "description": "Take a deep dive into the architecture behind Edge Delivery Services and document based authoring in",
+      "lastModified": "2025-07-09",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/authentication-setup",
+      "title": "Authentication Overview",
+      "category": "docs",
+      "description": "Learn how to enable authentication on an AEM site.",
+      "lastModified": "2026-01-26",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/authentication-setup-authoring",
+      "title": "Configuring Authentication for Authors",
+      "category": "docs",
+      "description": "Learn how to enable authentication for AEM authors.",
+      "lastModified": "2026-02-10",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/authentication-setup-site",
+      "title": "Configuring Site Authentication",
+      "category": "docs",
+      "description": "Learn how to enable visitor authentication on an AEM site.",
+      "lastModified": "2025-04-02",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/authoring",
+      "title": "Authoring and Publishing Content",
+      "category": "docs",
+      "description": "How to author, preview and publish content using the AEM Sidekick.",
+      "lastModified": "2025-09-01",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/bulk-metadata",
+      "title": "Bulk Metadata",
+      "category": "docs",
+      "description": "By default, metadata is managed at the page level, but in some cases, it is useful to apply metadata",
+      "lastModified": "2025-10-03",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/byo-cdn-akamai-setup",
+      "title": "Akamai Setup",
+      "category": "docs",
+      "description": "The following screenshots illustrate how to use the Akamai Property Manager to configure a property ",
+      "lastModified": "2025-05-13",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/byo-cdn-cloudflare-worker-setup",
+      "title": "Cloudflare Setup",
+      "category": "docs",
+      "description": "The following screenshots illustrate how to configure Cloudflare to deliver content. Essential setti",
+      "lastModified": "2025-06-05",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/byo-cdn-cloudflare-worker-wrangler-setup",
+      "title": "Cloudflare Setup (with wrangler)",
+      "category": "docs",
+      "description": "The following screenshots illustrate how to configure Cloudflare using the wrangler command line int",
+      "lastModified": "2025-04-04",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/byo-cdn-cloudfront-setup",
+      "title": "Amazon Web Services (AWS) CloudFront Setup",
+      "category": "docs",
+      "description": "The following screenshots illustrate how to configure AWS CloudFront to deliver content from an AEM ",
+      "lastModified": "2024-10-18",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/byo-cdn-fastly-setup",
+      "title": "Fastly Setup",
+      "category": "docs",
+      "description": "The following screenshots illustrate how to configure Fastly to deliver content. Essential settings ",
+      "lastModified": "2025-11-14",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/byo-cdn-setup",
+      "title": "BYO CDN Setup",
+      "category": "docs",
+      "description": "Customers may use their own CDN to deliver AEM content under their own domain (aka BYO Production CD",
+      "lastModified": "2025-03-17",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/byo-dns",
+      "title": "Custom domains without a custom CDN",
+      "category": "docs",
+      "description": "The most common way of going live with a AEM site is to use a custom Content Delivery Network (CDN).",
+      "lastModified": "2025-02-12",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/configuration",
+      "title": "Document-based Project Configuration",
+      "category": "docs",
+      "description": "Learn how to configure your project",
+      "lastModified": "2025-09-19",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/custom-headers",
+      "title": "Custom HTTP Response Headers",
+      "category": "docs",
+      "description": "In some cases, it is useful to apply custom HTTP response headers to resources, for example to allow",
+      "lastModified": "2025-10-24",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/davidsmodel",
+      "title": "David’s Model, Second take.",
+      "category": "docs",
+      "description": "A long time ago, in a galaxy far, far away, I got to a point where I realized that people had a lot ",
+      "lastModified": "2024-11-20",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/dev-collab-and-good-practices",
+      "title": "Development Collaboration and Good Practices",
+      "category": "docs",
+      "description": "Working with a large number of development teams across many projects and organizations, we found th",
+      "lastModified": "2026-02-12",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/experimentation",
+      "title": "Experimentation",
+      "category": "docs",
+      "description": "Experimentation is the practice of making your site more effective by changing content or functional",
+      "lastModified": "2024-10-03",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": "AEM Sites"
+    },
+    {
+      "path": "/docs/exploring-blocks",
+      "title": "Exploring blocks",
+      "category": "docs",
+      "description": "Blocks are a foundational concept behind adding form and function to sections of a page. If you foll",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/faq",
+      "title": "Frequently Asked Questions",
+      "category": "docs",
+      "description": "Franklin and Helix were internal project names for the Adobe Experience Manager engineering team’s i",
+      "lastModified": "2025-10-27",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/go-live-checklist",
+      "title": "Go-Live Checklist",
+      "category": "docs",
+      "description": "The go-live checklist is a summary of best practices to consider when launching a website. These ste",
+      "lastModified": "2025-09-23",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/indexing-reference",
+      "title": "Indexing reference",
+      "category": "docs",
+      "description": "In your helix-query.yaml#, you can define one or more index definitions. A sample index definition l",
+      "lastModified": "2025-10-09",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/placeholders",
+      "title": "Placeholders",
+      "category": "docs",
+      "description": "In most websites, there are strings or variables that will be used throughout the site. Especially i",
+      "lastModified": "2025-04-22",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/redirects",
+      "title": "Redirects",
+      "category": "docs",
+      "description": "Every website has the need for redirects. For example if you relocate or delete content, you want yo",
+      "lastModified": "2025-06-23",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/setup-adobe-sharepoint",
+      "title": "How to use Adobe Sharepoint",
+      "category": "docs",
+      "description": "NOTE: This only applies for projects on Adobe’s Sharepoint (https://adobe.sharepoint.com) . For proj",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/setup-byo-cdn-push-invalidation",
+      "title": "Configuring push invalidation for BYO production CDN",
+      "category": "docs",
+      "description": "Push invalidation automatically purges content on the customer's production CDN (e.g. www.yourdomain",
+      "lastModified": "2025-12-17",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/setup-byo-cdn-push-invalidation-for-akamai",
+      "title": "Setup push invalidation for Akamai",
+      "category": "docs",
+      "description": "Push invalidation automatically purges content on the customer's production CDN (e.g. www.yourdomain",
+      "lastModified": "2025-11-22",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/setup-byo-cdn-push-invalidation-for-cloudflare",
+      "title": "Setup push invalidation for Cloudflare",
+      "category": "docs",
+      "description": "Push invalidation automatically purges content on the customer's production CDN (e.g. www.yourdomain",
+      "lastModified": "2025-11-22",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/setup-byo-cdn-push-invalidation-for-cloudfront",
+      "title": "Set up push invalidation for AWS Cloudfront",
+      "category": "docs",
+      "description": "Push invalidation automatically purges content on the customer's production CDN (e.g. www.yourdomain",
+      "lastModified": "2025-11-22",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/setup-byo-cdn-push-invalidation-for-fastly",
+      "title": "Setup push invalidation for Fastly",
+      "category": "docs",
+      "description": "Push invalidation automatically purges content on the customer's production CDN (e.g. www.yourdomain",
+      "lastModified": "2025-11-22",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/setup-customer-sharepoint",
+      "title": "How to use Sharepoint (application)",
+      "category": "docs",
+      "description": "If you use SharePoint as your content source, AEM uses a registered Microsoft Azure application to a",
+      "lastModified": "2025-07-28",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/setup-sharepoint",
+      "title": "How to use Sharepoint",
+      "category": "docs",
+      "description": "",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/sidekick",
+      "title": "Using AEM Sidekick",
+      "category": "docs",
+      "description": "AEM Sidekick provides content authors with a toolbar offering context-aware options so that you can ",
+      "lastModified": "2026-01-19",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/sidekick-extension",
+      "title": "Installing the AEM Sidekick",
+      "category": "docs",
+      "description": "The AEM sidekick provides content authors with a toolbar offering context-aware options so that they",
+      "lastModified": "2024-05-29",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/sidekick-library",
+      "title": "What is the Sidekick Library?",
+      "category": "docs",
+      "description": "The Sidekick Library is an extension for the AEM Sidekick that enables developers to create UI-drive",
+      "lastModified": "2026-01-16",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/slack",
+      "title": "Slack",
+      "category": "docs",
+      "description": "We are available on dedicated Slack channels for AEM customers and the Adobe team is available to an",
+      "lastModified": "2025-12-12",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/translation-and-localization",
+      "title": "Translation and Localization",
+      "category": "docs",
+      "description": "Managing internationalization (i18n) and localization (l10n) in Adobe Experience Manager",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/footer",
+      "title": "Copyright © 2025 Adobe. All rights reserved / Privacy / Terms of Use / Do not sell my personal information",
+      "category": "other",
+      "description": "Copyright © 2025 Adobe. All rights reserved / Privacy / Terms of Use / Do not sell my personal infor",
+      "lastModified": "2025-09-03",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/new-footer",
+      "title": "Adobe Experience Manager",
+      "category": "other",
+      "description": "Privacy / Terms of Use / Do not sell my personal information",
+      "lastModified": "2025-09-03",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/tools/sidekick/library",
+      "title": "Sidekick library",
+      "category": "tools",
+      "description": "",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/business/comms-channel-thank-you",
+      "title": "Thank you for submitting the form.",
+      "category": "business",
+      "description": "",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/auditlog",
+      "title": "Audit log",
+      "category": "docs",
+      "description": "Admin and indexing operations are recorded in an audit log that can be queried via an Admin endpoint",
+      "lastModified": "2026-01-26",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/move-project-to-customer-infrastructure",
+      "title": "Migrating a VIP project to your own infrastructure",
+      "category": "docs",
+      "description": "VIP projects typically start out on Adobe’s SharePoint and GitHub. This is a great way to get starte",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/release-history",
+      "title": "Recent Releases",
+      "category": "docs",
+      "description": "Please find a current list of recent releases of various components of AEM below. This information i",
+      "lastModified": "2026-01-13",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/china",
+      "title": "China FAQ",
+      "category": "docs",
+      "description": "Serving content with Edge Delivery Services in Adobe Experience Manager in China",
+      "lastModified": "2026-02-23",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/global",
+      "title": "Global Availability",
+      "category": "docs",
+      "description": "Adobe Experience Manager is globally distributed and fully redundant",
+      "lastModified": "2025-09-22",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/staging",
+      "title": "Staging & Environments",
+      "category": "docs",
+      "description": "With testing environments for each branch, do you really need a staging environment?",
+      "lastModified": "2024-09-24",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/experiments/short-home/home",
+      "title": "Adobe Experience Manager",
+      "category": "experiments",
+      "description": "Frictionless experience management: Build blazing fast websites using tools content creators and dev",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/folder-mapping",
+      "title": "Folder Mapping",
+      "category": "developer",
+      "description": "It’s not uncommon for websites to serve multiple URLs from a single document, displaying dynamic con",
+      "lastModified": "2025-07-07",
+      "hasCustomImage": true,
+      "deprecated": true,
+      "labs": ""
+    },
+    {
+      "path": "/business/helix-is-green",
+      "title": "Helix is green",
+      "category": "business",
+      "description": "Faster websites are not just better for your visitors and your authors, they are also better for the",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/business/content-velocity",
+      "title": "Increase Content Velocity with Helix",
+      "category": "business",
+      "description": "Helix eliminates the copy & pasting between your writing tools (Word or Google Docs) and your CMS.",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/gnav",
+      "title": "Getting Started",
+      "category": "other",
+      "description": "",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/tools/sidekick/install-extension",
+      "title": "Sidekick Extension (Beta)",
+      "category": "tools",
+      "description": "The Sidekick Extension is a browser extension allowing multiple project configurations, and remember",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/mwp-demo",
+      "title": "Hello World.",
+      "category": "other",
+      "description": "",
+      "lastModified": "2021-11-03",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/network-profile",
+      "title": "Network Profile",
+      "category": "docs",
+      "description": "Take a deep dive into the network profile Adobe Experience Manager Services.",
+      "lastModified": "2024-11-01",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/tools/svg-doctor/",
+      "title": "Optimize your SVGs",
+      "category": "tools",
+      "description": "Add a Title and Description to your SVG and make it ready to be styled in CSS.",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/aem-assets-sidekick-plugin",
+      "title": "Adobe Experience Manager Assets Sidekick Plugin",
+      "category": "docs",
+      "description": "With the Experience Manager Assets Sidekick plugin, you can use assets from your Experience Manager ",
+      "lastModified": "2025-01-11",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": "AEM Assets"
+    },
+    {
+      "path": "/developer/change-site-root",
+      "title": "Change Site Root",
+      "category": "developer",
+      "description": "The AEM Boilerplate project assumes that the document root is situated at the project's root. Howeve",
+      "lastModified": "2025-11-12",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/setup-googledrive",
+      "title": "How to use Google Drive",
+      "category": "docs",
+      "description": "Edge delivery service will access the google drive using a registered user during preview and publis",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/block-collection",
+      "title": "Block Collection",
+      "category": "developer",
+      "description": "This is a collection of blocks considered a part of the AEM product and are recommended as blueprint",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/limits",
+      "title": "Limits",
+      "category": "docs",
+      "description": "Size and Rate Limits",
+      "lastModified": "2026-02-17",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/block-collection/breadcrumbs",
+      "title": "Breadcrumbs",
+      "category": "block-collection",
+      "description": "Breadcrumbs are a list of page titles and relevant links showing the location of the current page in",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/block-collection/quote",
+      "title": "Quote",
+      "category": "block-collection",
+      "description": "A quote displays quotations or highlights specific passages (or “pull quotes”) within a document. Th",
+      "lastModified": "2024-03-08",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/block-collection/search",
+      "title": "Search",
+      "category": "block-collection",
+      "description": "Search allows users to find site content by entering a search term. If a content source is not provi",
+      "lastModified": "2026-02-09",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/block-collection/modal",
+      "title": "Modal",
+      "category": "block-collection",
+      "description": "A modal is a popup that appears over other site content. It requires a click interaction from the us",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/block-collection/form",
+      "title": "Form",
+      "category": "block-collection",
+      "description": "A form is a set of input controls grouped together that enables users to submit information. The for",
+      "lastModified": "2024-06-13",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/block-collection/video",
+      "title": "Video (Block)",
+      "category": "block-collection",
+      "description": "Many sites need to embed videos for playback, either directly, or using a third-party video hosting ",
+      "lastModified": "2024-05-02",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/tools/mp4-doctor/",
+      "title": "Optimize your MP4s for display on the Web.",
+      "category": "tools",
+      "description": "AEM allows videos uploaded as background / ambient videos directly from your content source, however",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/tools/organizer/",
+      "title": "Franklin Organizer",
+      "category": "tools",
+      "description": "Keep your Franklin project organized, see live content performance data and make bulk changes with F",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/business/reachout",
+      "title": "Got Questions? Let's Connect!",
+      "category": "business",
+      "description": "Dive Into Our Resources: Explore our comprehensive documentation, engaging tutorials, and user-frien",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/target-integration",
+      "title": "Configuring Adobe Target Integration",
+      "category": "developer",
+      "description": "This article will walk you through the steps of setting up an integration with Adobe Target so you c",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": "AEM Sites"
+    },
+    {
+      "path": "/docs/cdn-guide",
+      "title": "Picking the right CDN",
+      "category": "docs",
+      "description": "A Content Delivery Network makes sure that your visitors get your site served as fast as possible wh",
+      "lastModified": "2025-10-03",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/setup-customer-sharepoint-user",
+      "title": "How to use Sharepoint (delegated)",
+      "category": "docs",
+      "description": "NOTE: for projects using Adobe’s Sharepoint (https://adobe.sharepoint.com) please continue here.",
+      "lastModified": "2025-07-28",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/web-components",
+      "title": "Web Components",
+      "category": "developer",
+      "description": "Web Components are a collection of web standards that allow the creation and use of reusable, modula",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": "Non mainstream tech: Not many projects are using this yet, but it's perfectly fine if you have good reasons and are careful"
+    },
+    {
+      "path": "/",
+      "title": "Adobe Experience Manager",
+      "category": "other",
+      "description": "Frictionless experience management: Build blazing fast websites using tools content creators and dev",
+      "lastModified": "2025-11-07",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/tutorial-from-youtube",
+      "title": "Welcome! Let’s Dive Deeper: Your Next Steps After Watching Our YouTube Video",
+      "category": "developer",
+      "description": "This tutorial will get you up-and-running with a new Adobe Experience Manager (AEM) project. In ten ",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/block-party/",
+      "title": "Block Party",
+      "category": "developer",
+      "description": "The Block Party is a place for the AEM developer community to showcase what they have built on AEM s",
+      "lastModified": "2025-06-08",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/teams",
+      "title": "Teams",
+      "category": "docs",
+      "description": "We create dedicated teams in Microsoft Teams for each AEM customer and invite business users, develo",
+      "lastModified": "2025-12-12",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/sidekick-security",
+      "title": "AEM Sidekick Security",
+      "category": "docs",
+      "description": "This page describes security aspects of the Sidekick such as required browser permissions, privacy a",
+      "lastModified": "2026-02-11",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/config-service-setup",
+      "title": "Setting up the configuration service",
+      "category": "docs",
+      "description": "The Configuration Service is used to aggregate and deliver configuration for various consumers in th",
+      "lastModified": "2026-02-13",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/blog/hlx-is-now-aem-live",
+      "title": "A high-five for aem.live",
+      "category": "blog",
+      "description": "If you've been using Adobe Experience Manager for a short while, you may have wondered what the hlx.",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/upgrade",
+      "title": "Upgrading to aem.live from hlx.live",
+      "category": "developer",
+      "description": "As outlined on our deprecations and end-of-service page, the hlx.live domain has been blocked on Dec",
+      "lastModified": "2026-01-12",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/repoless",
+      "title": "Repoless - One codebase, many sites",
+      "category": "docs",
+      "description": "If you have many similar sites that mostly look and behave the same, but have different content, you",
+      "lastModified": "2026-01-23",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/deprecation",
+      "title": "Deprecations and Removals",
+      "category": "docs",
+      "description": "Features in AEM that do not have enough use anymore, or have been replaced with better, more reliabl",
+      "lastModified": "2026-02-06",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/previous/byo-cdn-setup",
+      "title": "BYO CDN Setup for hlx.live",
+      "category": "previous",
+      "description": "NOTE: The instructions linked on this page apply to the previous version of Edge Delivery Services a",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/previous/byo-cdn-fastly-setup",
+      "title": "Fastly Setup for hlx.live",
+      "category": "previous",
+      "description": "NOTE: The instructions linked on this page apply to the previous version of Edge Delivery Services a",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/previous/byo-cdn-cloudfront-setup",
+      "title": "Amazon Web Services (AWS) CloudFront Setup for hlx.live",
+      "category": "previous",
+      "description": "NOTE: The instructions linked on this page apply to the previous version of Edge Delivery Services a",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/previous/byo-cdn-cloudflare-worker-wrangler-setup",
+      "title": "Cloudflare Setup (with wrangler) for hlx.live",
+      "category": "previous",
+      "description": "NOTE: The instructions linked on this page apply to the previous version of Edge Delivery Services a",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/previous/byo-cdn-cloudflare-worker-setup",
+      "title": "Cloudflare Setup (worker) for hlx.live",
+      "category": "previous",
+      "description": "NOTE: The instructions linked on this page apply to the previous version of Edge Delivery Services a",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/previous/byo-cdn-akamai-setup",
+      "title": "Akamai Setup for hlx.live",
+      "category": "previous",
+      "description": "NOTE: The instructions linked on this page apply to the previous version of Edge Delivery Services a",
+      "lastModified": "2024-09-09",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/da-tutorial",
+      "title": "Getting Started – Document Authoring (DA) Developer Tutorial",
+      "category": "developer",
+      "description": "This tutorial will get you up-and-running with a new Adobe Experience Manager (AEM) project. In ten ",
+      "lastModified": "2025-02-28",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": "Document Authoring"
+    },
+    {
+      "path": "/docs/security",
+      "title": "Security Overview",
+      "category": "docs",
+      "description": "Adobe Experience Manager Security overview for Software Architects",
+      "lastModified": "2026-02-12",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/scheduling",
+      "title": "Scheduling",
+      "category": "docs",
+      "description": "AEM offers a way to execute certain tasks, such as previewing, publishing or purging pages at certai",
+      "lastModified": "2025-08-07",
+      "hasCustomImage": true,
+      "deprecated": true,
+      "labs": ""
+    },
+    {
+      "path": "/developer/sidekick-development",
+      "title": "Extending the Sidekick",
+      "category": "developer",
+      "description": "The goal of this document is to explain how developers can interact with the sidekick, and how it ca",
+      "lastModified": "2026-01-26",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/blog/aem-live-at-dev-live",
+      "title": "aem.live at Adobe Developers Live 2024",
+      "category": "blog",
+      "description": "For years, Adobe Developers Live has been a live, but virtual event. But real-world events have a sp",
+      "lastModified": "2024-11-04",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/anatomy-of-a-project",
+      "title": "The Anatomy of a Project",
+      "category": "developer",
+      "description": "This document describes what a typical project looks like from a code standpoint. Before reading thi",
+      "lastModified": "2026-02-13",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/martech-integration",
+      "title": "Configuring Adobe Experience Cloud Integration",
+      "category": "developer",
+      "description": "This article will walk you through the steps of setting up an integration with the Adobe Marketing T",
+      "lastModified": "2025-02-10",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": "AEM Sites"
+    },
+    {
+      "path": "/blog/edge-next",
+      "title": "The Performance Paradox: When Simple Architecture Beats Complex Frameworks",
+      "category": "blog",
+      "description": "Web performance and developer experience often pull in opposite directions. As frameworks like Next.",
+      "lastModified": "2024-12-19",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/cli-reference",
+      "title": "aem Command Line Reference",
+      "category": "developer",
+      "description": "",
+      "lastModified": "2025-11-13",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/blog/sidekick-v7",
+      "title": "AEM Sidekick v7 – The Story Behind the Latest Release",
+      "category": "blog",
+      "description": "As we are releasing Version 7 of AEM Sidekick, this seems like a good time to tell the story so far.",
+      "lastModified": "2025-02-13",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/unsupported",
+      "title": "Unsupported Integrations",
+      "category": "docs",
+      "description": "Don't try these unsupported integrations at home",
+      "lastModified": "2024-12-19",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/byo-cdn-adobe-managed",
+      "title": "Adobe Managed CDN",
+      "category": "docs",
+      "description": "The following steps illustrate how to use the Adobe Managed CDN (part of Edge Delivery Services enti",
+      "lastModified": "2025-07-30",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/blog",
+      "title": "AEM.live Blog",
+      "category": "blog",
+      "description": "Recent blog posts from the AEM team, updated every few weeks",
+      "lastModified": "2025-12-16",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/admin-errors",
+      "title": "Backend Errors",
+      "category": "developer",
+      "description": "Backend error codes and templates in Adobe Experience Manager",
+      "lastModified": "2025-09-05",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/authoring-guide",
+      "title": "Where to author your site",
+      "category": "docs",
+      "description": "Edge Delivery Services has built-in support for a variety of different content sources. We've listed",
+      "lastModified": "2025-08-27",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/sidekick-v7-migration",
+      "title": "Migrating Your Sidekick v6 Customizations",
+      "category": "developer",
+      "description": "The goal of this document is to explain how developers can migrate existing custom code to work with",
+      "lastModified": "2025-05-16",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/blog/calendar-implementation",
+      "title": "A Date with Edge Delivery: Putting Calendars on the Web, Twice",
+      "category": "blog",
+      "description": "For sites that connect the digital world with the real world, calendars are essential. Edge Delivery",
+      "lastModified": "2025-02-19",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/community",
+      "title": "AEM Community",
+      "category": "other",
+      "description": "There is no I in AEM",
+      "lastModified": "2026-01-14",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/lifecycle",
+      "title": "Feature Lifecycle",
+      "category": "docs",
+      "description": "Simplicity and productivity guide everything we do. To stay lean and fast, we’ve redefined our appro",
+      "lastModified": "2026-02-06",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/blog/roadmaps",
+      "title": "Roadmaps, Marty? Where we’re going, we don't need Roadmaps!",
+      "category": "blog",
+      "description": "When asked, “Can you share your product roadmap?” our answer isn’t as simple as you might expect. An",
+      "lastModified": "2025-02-19",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/sidekick-errors",
+      "title": "AEM Sidekick Errors",
+      "category": "docs",
+      "description": "Error messages in AEM Sidekick",
+      "lastModified": "2025-09-05",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/ue-tutorial",
+      "title": "Setup AEM Sites as a Content Source",
+      "category": "developer",
+      "description": "This tutorial will get you up-and-running with a new Adobe Experience Manager (AEM) project, authore",
+      "lastModified": "2026-01-06",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/snapshots-reviews",
+      "title": "Snapshots and Reviews",
+      "category": "docs",
+      "description": "To support the concept of publishing a set of content (dozens or hundreds of pages) usually for a la",
+      "lastModified": "2025-03-25",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": "AEM Sites"
+    },
+    {
+      "path": "/developer/byom",
+      "title": "Bring Your Own Markup",
+      "category": "developer",
+      "description": "Edge Delivery Services is independent of the authoring tooling and supports multiple content sources",
+      "lastModified": "2025-11-26",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/operational-telemetry",
+      "title": "Operational Telemetry",
+      "category": "docs",
+      "description": "Adobe Experience Manager uses Operational Telemetry to gather operations data that is strictly neces",
+      "lastModified": "2025-09-02",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/aem-authoring",
+      "title": "Authoring with AEM Sites for Edge Delivery Services",
+      "category": "docs",
+      "description": "Authoring and persisting content in AEM as a Cloud Service using the Universal Editor, you benefit f",
+      "lastModified": "2025-09-16",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/publishing-from-authoring",
+      "title": "How content is published from AEM Sites authoring to Edge Delivery Services",
+      "category": "docs",
+      "description": "When using the Universal Editor to author AEM content, publishing is as simple as clicking the Publi",
+      "lastModified": "2025-04-11",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/universal-editor-blocks",
+      "title": "Creating Blocks Instrumented for use with the Universal Editor",
+      "category": "developer",
+      "description": "Learn how to create blocks instrumented for the Universal Editor when using AEM authoring as your co",
+      "lastModified": "2025-11-06",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/component-model-definitions",
+      "title": "Content modeling for AEM authoring projects",
+      "category": "developer",
+      "description": "Learn how content modeling works for projects using AEM authoring as a content source and how to mod",
+      "lastModified": "2025-11-02",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/authoring-path-mapping",
+      "title": "Path mapping for AEM authoring as your content source",
+      "category": "developer",
+      "description": "To be able to use AEM authoring as your content source and publish your content to Edge Delivery Ser",
+      "lastModified": "2026-01-14",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/authoring-tabular-data",
+      "title": "Managing tabular data with AEM authoring as your content source",
+      "category": "docs",
+      "description": "For any AEM with Edge Delivery Services site, there is a need to maintain lists of tabular data such",
+      "lastModified": "2025-11-14",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/authoring-taxonomy",
+      "title": "Managing taxonomy data with AEM authoring as your content source",
+      "category": "docs",
+      "description": "Tagging is an important feature that helps you organize and manage your pages. The Tagging Console i",
+      "lastModified": "2025-04-11",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/universal-editor-assets",
+      "title": "Publishing pages with AEM Assets",
+      "category": "docs",
+      "description": "When editing content for the Universal Editor, you of course can select assets from AEM Assets. When",
+      "lastModified": "2025-09-02",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/repoless-authoring",
+      "title": "Reusing code across sites with AEM authoring as your content source",
+      "category": "developer",
+      "description": "By default, AEM is tightly bound to your code repository, which meets the majority of use cases. How",
+      "lastModified": "2026-01-23",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/repoless-multisite-manager",
+      "title": "Multi site management with AEM authoring as your content source",
+      "category": "developer",
+      "description": "Multi Site Manager (MSM) and its Live Copy features enable you to use the same site content in multi",
+      "lastModified": "2025-04-30",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/repoless-environments",
+      "title": "Repoless stage and prod environments with AEM authoring as your content source",
+      "category": "developer",
+      "description": "You may wish to set up a site for your production environment separate from your staging environment",
+      "lastModified": "2025-08-18",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/authentication-setup-site-for-aem-authoring",
+      "title": "Site authentication for your visitors when using AEM Authoring",
+      "category": "developer",
+      "description": "aem.live supports token-based authentication. When using AEM authoring as your content source, site ",
+      "lastModified": "2025-11-14",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/aem-embed",
+      "title": "Embedding Content in non-AEM experiences",
+      "category": "docs",
+      "description": "In projects we often see the need to embed content in experiences that are not controlled by AEM. Th",
+      "lastModified": "2025-04-14",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": "AEM Sites"
+    },
+    {
+      "path": "/developer/cloudflare-zero-trust",
+      "title": "Cloudflare Zero Trust Site Protection",
+      "category": "developer",
+      "description": "Integrating Cloudflare Zero Trust provides granular control over who can access your website or appl",
+      "lastModified": "2025-04-07",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/csp-strict-dynamic-cached-nonce",
+      "title": "Content Security Policy: strict-dynamic + (cached) nonce",
+      "category": "docs",
+      "description": "Content Security Policy is a browser feature that helps prevent and mitigate certain types of threat",
+      "lastModified": "2026-02-05",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/byo-git",
+      "title": "Bring your own git",
+      "category": "developer",
+      "description": "The following steps illustrate how Cloud Manager enables organisations to use their own Git reposito",
+      "lastModified": "2025-09-23",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": "AEM Cloud Foundation"
+    },
+    {
+      "path": "/blog/future-proof-multilingual-website-edge-ensemble",
+      "title": "Bonjour! Hola! Hello! – Creating Multilingual Sites with Ease",
+      "category": "blog",
+      "description": "For businesses looking to reach a broad audience or customer base, multilingual support is often an ",
+      "lastModified": "2025-05-13",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/blog/organizing-source-code-ensemble",
+      "title": "Unlocking Efficiency with Helix 5: A Scalable Approach to Multi-Site Development",
+      "category": "blog",
+      "description": "Imagine needing to launch four websites rapidly - while maintaining quality, consistency, and perfor",
+      "lastModified": "2025-05-13",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/integrations",
+      "title": "Integrations Overview",
+      "category": "docs",
+      "description": "Adobe Experience Manager integrates with all technologies required to create and operate a high-perf",
+      "lastModified": "2025-09-09",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/admin-apikeys",
+      "title": "Admin API Keys",
+      "category": "docs",
+      "description": "Learn how to create admin API keys",
+      "lastModified": "2025-05-21",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/fragments",
+      "title": "Fragments",
+      "category": "docs",
+      "description": "Fragments are reusable chunks of site content: think headers, footers, or any element that appears o",
+      "lastModified": "2025-10-23",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/configuration-templates",
+      "title": "Configuration templates",
+      "category": "docs",
+      "description": "When using AEM as your content authoring source, you can use the Sites console to easily create and ",
+      "lastModified": "2025-06-25",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/blog/toms-developer-dilemma",
+      "title": "The Architecture Problem That's Breaking AIs for Content Management (and the Secret Sauce to Fix It)",
+      "category": "blog",
+      "description": "The Martin-Gropius-Bau sticks out in my commute to Adobe's Berlin office: a russet neo-Renaissance m",
+      "lastModified": "2025-09-09",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/blog/folder-mapping-deprecated",
+      "title": "The One Template That Broke the Internet (And My Heart)",
+      "category": "blog",
+      "description": "I fell in love with folder mapping when it solved an impossible problem: serving 5,000+ dynamic stoc",
+      "lastModified": "2025-07-22",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/blog/byom-content-overlays",
+      "title": "↑↑↓↓←→←→ B A START: The Konami Code for Dynamic Publishing at Scale",
+      "category": "blog",
+      "description": "Last week spelled deprecation for folder mapping. This week, two developers showed us what rises fro",
+      "lastModified": "2025-07-30",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/gtm-martech-integration",
+      "title": "Configuring Google Analytics & Tag Manager Integration",
+      "category": "developer",
+      "description": "This article will walk you through the steps of setting up an integration with Google Analytics (GA)",
+      "lastModified": "2025-07-30",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": "AEM Sites"
+    },
+    {
+      "path": "/docs/error-pages",
+      "title": "Error Pages",
+      "category": "docs",
+      "description": "Adobe Experience Manager error page handling and customization options for developers",
+      "lastModified": "2025-07-30",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/schema-structured-data",
+      "title": "Using Schema (Structured Data) as JSON-LD",
+      "category": "docs",
+      "description": "Before adding any structured data (schema), define what SEO or SERP outcome you're targeting:",
+      "lastModified": "2025-07-31",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developers-live",
+      "title": "Adobe Developers Live 2025",
+      "category": "other",
+      "description": "Join us for Developers Live 2025 in San Jose",
+      "lastModified": "2025-11-13",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/blog/testing-in-aem",
+      "title": "Why I don’t recommend UI testing in AEM (even though I write tests for my own projects)",
+      "category": "blog",
+      "description": "When customers or partners ask me, “Should we write UI tests for our AEM projects?”, I usually say, ",
+      "lastModified": "2025-07-31",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/storefront",
+      "title": "Commerce Storefront for Edge Delivery Services",
+      "category": "docs",
+      "description": "Learn how to build the fastest shopping experience on the web.",
+      "lastModified": "2025-08-07",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/json2html",
+      "title": "JSON2HTML for Edge Delivery Services",
+      "category": "developer",
+      "description": "Learn how to convert JSON from your backend endpoints to Edge Delivery Services friendly Semantic HT",
+      "lastModified": "2025-08-22",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": "AEM Sites"
+    },
+    {
+      "path": "/developer/content-fragment-overlay",
+      "title": "Publishing AEM Content Fragments to Edge Delivery Services",
+      "category": "developer",
+      "description": "AEM content fragments are used to create, manage, and deliver content across multiple channels. Unti",
+      "lastModified": "2025-08-27",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": "Sites"
+    },
+    {
+      "path": "/developer/setup-google-drive",
+      "title": "Setup Google Drive as a Content Source",
+      "category": "developer",
+      "description": "This is a follow-up step for sites that would like to use google drive (docs and spreadsheets) as a ",
+      "lastModified": "2025-10-22",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/metadata",
+      "title": "Page Metadata",
+      "category": "docs",
+      "description": "How to author, preview and publish page metadata in AEM.",
+      "lastModified": "2025-09-01",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/operational-telemetry",
+      "title": "Developing Operational Telemetry in AEM",
+      "category": "developer",
+      "description": "Adobe Experience Manager uses Operational Telemetry to diagnose usage and performance of web sites r",
+      "lastModified": "2025-11-18",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/blog/content-document-semantics",
+      "title": "Documents that dazzle, content that clicks, and semantics that snap: the pièce de résistance to your content strategy",
+      "category": "blog",
+      "description": "When you put a LEGO model together, there’s a certain feeling you get when you click two pieces toge",
+      "lastModified": "2025-09-18",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/ai-coding-agents",
+      "title": "Developing with AI Tools",
+      "category": "developer",
+      "description": "AI coding tools such as Claude Code, Cursor, Codex, Gemini, GitHub Copilot, or Zed and the models th",
+      "lastModified": "2025-11-03",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": "Early-Access Technology: AI coding agents are a new and rapidly evolving technology, so you don't need to ask us before using, but we are still interested in hearing about your experiences"
+    },
+    {
+      "path": "/developer/ue-trial",
+      "title": "Accelerate your tutorial with a pre-built environment",
+      "category": "developer",
+      "description": "Experience AEM’s Universal Editor in a fully configured environment designed to help you start build",
+      "lastModified": "2025-10-15",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/blog/built-ready-for-the-season",
+      "title": "How Edge Delivery Services handles peak season (hint: like Canadians handle winter)",
+      "category": "blog",
+      "description": "How does a Canadian prepare for winter weather? Trick question: we don't. We're born ready.",
+      "lastModified": "2025-09-29",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/recurring",
+      "title": "Schedule recurring tasks",
+      "category": "docs",
+      "description": "If you want to schedule recurring tasks, one option is to use GitHub Actions. In the following examp",
+      "lastModified": "2025-09-25",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": "AEM Sites"
+    },
+    {
+      "path": "/docs/media",
+      "title": "Media Assets",
+      "category": "docs",
+      "description": "Take a closer look at how media assets like images, videos and uploaded files are managed in AEM.",
+      "lastModified": "2025-11-12",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/operations",
+      "title": "Operations",
+      "category": "docs",
+      "description": "How we operate Edge Delivery Services in AEM.",
+      "lastModified": "2026-02-23",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/blog/adapt-to-2025",
+      "title": "Best of adaptTo() 2025",
+      "category": "blog",
+      "description": "As every late September, it’s adaptTo() time! Europe’s leading AEM developer conference hosted by di",
+      "lastModified": "2025-10-29",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/aem-playground",
+      "title": "Explore new AI workflows in AEM",
+      "category": "developer",
+      "description": "Skip the complexity and try our new AI capabilities in a safe playground. Test content creation, sit",
+      "lastModified": "2025-12-17",
+      "hasCustomImage": false,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/setup-byo-cdn-push-invalidation-for-managed",
+      "title": "Setup push invalidation for Adobe Managed CDN",
+      "category": "docs",
+      "description": "Push invalidation automatically purges content on the Adobe Managed production CDN (e.g. www.yourdom",
+      "lastModified": "2025-12-17",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/seo-geo",
+      "title": "SEO & GEO Best Practices",
+      "category": "docs",
+      "description": "AEM best practices regarding SEO and GEO and page performance.",
+      "lastModified": "2026-01-23",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/developer/byo-cdn-adobe-managed-cdn-config",
+      "title": "Adobe Managed CDN Advanced Configuration",
+      "category": "developer",
+      "description": "Adobe Managed CDN can be configured for advanced use cases like setting or unsetting request and res",
+      "lastModified": "2025-12-16",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    },
+    {
+      "path": "/docs/peak-traffic",
+      "title": "Service Scaling and High-Visibility Events",
+      "category": "docs",
+      "description": "AEM is prepared for peak traffic.",
+      "lastModified": "2026-02-23",
+      "hasCustomImage": true,
+      "deprecated": false,
+      "labs": ""
+    }
+  ]
+}

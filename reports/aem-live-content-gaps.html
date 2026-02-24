@@ -1,0 +1,1612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Content Gaps Analysis — www.aem.live</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700;900&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── CSS Custom Properties ── */
+:root {
+  --blue: #3B63FB;
+  --blue-light: #EBF0FF;
+  --blue-dark: #2A4AD4;
+  --bg: #F8F8F8;
+  --bg-white: #FFFFFF;
+  --fg: #292929;
+  --fg-heading: #131313;
+  --fg-muted: #717171;
+  --border: #E1E1E1;
+  --red: #D7373F;
+  --red-bg: #FFF0F0;
+  --amber: #CB6F10;
+  --amber-bg: #FFF5EB;
+  --green: #12805C;
+  --green-bg: #EDFCF2;
+  --purple: #7A6AFD;
+  --purple-bg: #F3F0FF;
+  --shadow-card: 0 2px 8px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04), 0 0 1px rgba(0,0,0,0.08);
+  --shadow-elevated: 0 8px 24px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08);
+  --radius-sm: 4px;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 9999px;
+  --font: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'Source Code Pro', Monaco, 'Cascadia Code', monospace;
+}
+
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+body {
+  font-family: var(--font);
+  color: var(--fg);
+  background: var(--bg);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+a { color: var(--blue); text-decoration: none; }
+a:hover { text-decoration: underline; }
+img { max-width: 100%; display: block; }
+
+/* ── Layout ── */
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px 80px; }
+@media (max-width: 640px) { .container { padding: 0 16px 60px; } }
+
+/* ── Header ── */
+.report-header {
+  background: var(--bg-white);
+  border-bottom: 1px solid var(--border);
+  padding: 32px 24px;
+  margin-bottom: 32px;
+}
+.report-header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.report-header h1 {
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--fg-heading);
+  line-height: 1.2;
+}
+.report-header .subtitle {
+  font-size: 16px;
+  color: var(--fg-muted);
+  margin-top: 4px;
+}
+.report-branding {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--blue);
+}
+.report-branding .logo-mark {
+  width: 28px; height: 28px;
+  background: var(--blue);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 14px; font-weight: 900;
+}
+.report-date {
+  font-size: 13px;
+  color: var(--fg-muted);
+  background: var(--bg);
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+}
+
+/* ── Jump Nav ── */
+.jump-nav {
+  background: var(--bg-white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  margin-bottom: 32px;
+  box-shadow: var(--shadow-card);
+}
+.jump-nav-title {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--fg-muted);
+  margin-bottom: 12px;
+}
+.jump-nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+}
+.jump-nav-links a {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--blue);
+  background: var(--blue-light);
+  transition: background 0.15s, color 0.15s;
+}
+.jump-nav-links a:hover {
+  background: var(--blue);
+  color: #fff;
+  text-decoration: none;
+}
+
+/* ── Section ── */
+.section {
+  margin-bottom: 40px;
+}
+.section-title {
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--fg-heading);
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--blue);
+  display: inline-block;
+}
+.section-desc {
+  font-size: 15px;
+  color: var(--fg-muted);
+  margin-bottom: 20px;
+  max-width: 720px;
+}
+
+/* ── Summary Cards ── */
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+@media (max-width: 900px) { .summary-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 500px) { .summary-grid { grid-template-columns: 1fr; } }
+.stat-card {
+  background: var(--bg-white);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+  text-align: center;
+  border-top: 3px solid var(--border);
+}
+.stat-card.accent { border-top-color: var(--blue); }
+.stat-card.positive { border-top-color: var(--green); }
+.stat-card.warning { border-top-color: var(--amber); }
+.stat-card.critical { border-top-color: var(--red); }
+.stat-value {
+  font-size: 36px;
+  font-weight: 900;
+  line-height: 1.1;
+}
+.stat-value.blue { color: var(--blue); }
+.stat-value.green { color: var(--green); }
+.stat-value.amber { color: var(--amber); }
+.stat-value.red { color: var(--red); }
+.stat-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fg-muted);
+  margin-top: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* ── Cards ── */
+.card {
+  background: var(--bg-white);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 16px;
+}
+.card h3 {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--fg-heading);
+  margin-bottom: 8px;
+}
+.card p {
+  font-size: 14px;
+  color: var(--fg-muted);
+  line-height: 1.6;
+}
+
+/* ── Severity Badges ── */
+.severity {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.severity-critical { background: var(--red-bg); color: var(--red); }
+.severity-warning { background: var(--amber-bg); color: var(--amber); }
+.severity-positive { background: var(--green-bg); color: var(--green); }
+.severity-info { background: var(--blue-light); color: var(--blue); }
+
+/* ── Category Badges ── */
+.cat-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.cat-docs { background: #E8F0FE; color: #1A56DB; }
+.cat-developer { background: #F3F0FF; color: #6D28D9; }
+.cat-block-collection { background: #FFF5EB; color: #B45309; }
+.cat-blog { background: #EDFCF2; color: #047857; }
+.cat-business { background: #FFF0F0; color: #B91C1C; }
+.cat-tools { background: #F0F9FF; color: #0369A1; }
+.cat-previous { background: #F3F4F6; color: #6B7280; }
+.cat-experiments { background: #FDF4FF; color: #A21CAF; }
+.cat-other { background: #F3F4F6; color: #6B7280; }
+
+/* ── Bar Chart ── */
+.bar-chart { margin-bottom: 24px; }
+.bar-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  gap: 12px;
+}
+.bar-label {
+  width: 140px;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: right;
+  flex-shrink: 0;
+  color: var(--fg);
+}
+.bar-track {
+  flex: 1;
+  height: 28px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  position: relative;
+}
+.bar-fill {
+  height: 100%;
+  border-radius: var(--radius-sm);
+  transition: width 0.5s ease-out;
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  min-width: 36px;
+}
+.bar-fill.c-docs { background: #3B63FB; }
+.bar-fill.c-developer { background: #7A6AFD; }
+.bar-fill.c-block-collection { background: #CB6F10; }
+.bar-fill.c-blog { background: #12805C; }
+.bar-fill.c-other { background: #9CA3AF; }
+.bar-fill.c-previous { background: #6B7280; }
+.bar-fill.c-business { background: #D7373F; }
+.bar-fill.c-tools { background: #0369A1; }
+.bar-fill.c-experiments { background: #A21CAF; }
+@media (max-width: 500px) {
+  .bar-label { width: 100px; font-size: 12px; }
+}
+
+/* ── Sub-section ── */
+.subsection {
+  background: var(--bg-white);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 20px;
+}
+.subsection-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.subsection h3 {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--fg-heading);
+}
+.subsection .count-badge {
+  background: var(--blue-light);
+  color: var(--blue);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: var(--radius-pill);
+}
+.subsection .count-badge.red { background: var(--red-bg); color: var(--red); }
+.subsection .count-badge.amber { background: var(--amber-bg); color: var(--amber); }
+.subsection .count-badge.green { background: var(--green-bg); color: var(--green); }
+
+/* ── Path List ── */
+.path-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.path-list li {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--fg-muted);
+  padding: 6px 12px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  word-break: break-all;
+}
+.path-list li .path-title {
+  font-family: var(--font);
+  font-weight: 600;
+  color: var(--fg);
+  margin-left: 8px;
+}
+
+/* ── Grouped List ── */
+.grouped-list { margin-top: 12px; }
+.group-heading {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--fg-muted);
+  margin-top: 16px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.group-heading .g-count {
+  background: var(--bg);
+  padding: 1px 8px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+}
+.compact-list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 4px 16px;
+}
+.compact-list li {
+  font-size: 13px;
+  padding: 4px 0;
+  color: var(--fg);
+  display: flex;
+  gap: 6px;
+}
+.compact-list .cl-path {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  word-break: break-all;
+}
+
+/* ── Freshness ── */
+.freshness-bar-wrap {
+  display: flex;
+  height: 20px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.freshness-seg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  min-width: 30px;
+}
+.freshness-seg.stale { background: var(--red); }
+.freshness-seg.moderate { background: var(--amber); }
+.freshness-seg.recent { background: var(--green); }
+.freshness-legend {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.freshness-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--fg-muted);
+}
+.freshness-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── Data Table ── */
+.table-wrap {
+  overflow-x: auto;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-white);
+  box-shadow: var(--shadow-card);
+}
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.data-table thead th {
+  background: var(--bg);
+  padding: 10px 14px;
+  text-align: left;
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--fg-muted);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+.data-table thead th:hover { color: var(--blue); }
+.data-table thead th .sort-arrow {
+  display: inline-block;
+  margin-left: 4px;
+  font-size: 10px;
+  opacity: 0.4;
+}
+.data-table thead th.sorted .sort-arrow { opacity: 1; color: var(--blue); }
+.data-table tbody tr { border-bottom: 1px solid var(--border); }
+.data-table tbody tr:last-child { border-bottom: none; }
+.data-table tbody tr:hover { background: #FAFBFF; }
+.data-table tbody td {
+  padding: 10px 14px;
+  vertical-align: top;
+  color: var(--fg);
+}
+.data-table .col-path {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  max-width: 260px;
+  word-break: break-all;
+}
+.data-table .col-title {
+  font-weight: 600;
+  max-width: 300px;
+}
+.data-table .col-date {
+  white-space: nowrap;
+  font-size: 13px;
+  font-family: var(--font-mono);
+  color: var(--fg-muted);
+}
+.flag-yes {
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+}
+.flag-no {
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+}
+.flag-warn {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--amber-bg);
+  color: var(--amber);
+}
+
+/* ── Search ── */
+.search-bar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.search-input {
+  flex: 1;
+  min-width: 200px;
+  padding: 10px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-family: var(--font);
+  background: var(--bg-white);
+  color: var(--fg);
+  transition: border-color 0.15s;
+}
+.search-input:focus {
+  border-color: var(--blue);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59,99,251,0.15);
+}
+.search-input::placeholder { color: var(--fg-muted); }
+.filter-select {
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-family: var(--font);
+  background: var(--bg-white);
+  color: var(--fg);
+  cursor: pointer;
+}
+.filter-select:focus {
+  border-color: var(--blue);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59,99,251,0.15);
+}
+.result-count {
+  font-size: 13px;
+  color: var(--fg-muted);
+  font-weight: 600;
+}
+.inventory-scroll {
+  max-height: 700px;
+  overflow-y: auto;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-white);
+  box-shadow: var(--shadow-card);
+}
+.back-to-top {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--blue);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  box-shadow: var(--shadow-elevated);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  transition: opacity 0.2s;
+}
+.back-to-top:hover { background: var(--blue-dark); }
+.back-to-top.visible { display: flex; }
+
+/* ── Footer ── */
+.report-footer {
+  text-align: center;
+  padding: 32px 24px;
+  color: var(--fg-muted);
+  font-size: 13px;
+  border-top: 1px solid var(--border);
+  margin-top: 40px;
+}
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header class="report-header">
+  <div class="report-header-inner">
+    <div>
+      <h1>Content Gaps Analysis: www.aem.live</h1>
+      <div class="subtitle">Automated content audit identifying structural gaps, metadata issues, freshness problems, and brand inconsistencies</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+      <span class="report-date">February 24, 2026</span>
+      <div class="report-branding">
+        <span class="logo-mark">B</span>
+        blazar
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+<!-- ===== JUMP NAV ===== -->
+<nav class="jump-nav" aria-label="Table of contents">
+  <div class="jump-nav-title">Jump to Section</div>
+  <ul class="jump-nav-links">
+    <li><a href="#summary">Executive Summary</a></li>
+    <li><a href="#distribution">Content Distribution</a></li>
+    <li><a href="#structural">Structural Gaps</a></li>
+    <li><a href="#metadata">Metadata Quality</a></li>
+    <li><a href="#freshness">Content Freshness</a></li>
+    <li><a href="#brand">Brand Consistency</a></li>
+    <li><a href="#inventory">Full Inventory</a></li>
+  </ul>
+</nav>
+
+<!-- ===== EXECUTIVE SUMMARY ===== -->
+<section class="section" id="summary">
+  <h2 class="section-title">Executive Summary</h2>
+  <p class="section-desc">High-level overview of the www.aem.live content ecosystem. This analysis covers all 197 pages in the query index, cross-referenced against the sitemap and navigation structure.</p>
+
+  <div class="summary-grid">
+    <div class="stat-card accent">
+      <div class="stat-value blue">197</div>
+      <div class="stat-label">Total Pages</div>
+    </div>
+    <div class="stat-card accent">
+      <div class="stat-value blue">192</div>
+      <div class="stat-label">Sitemap URLs</div>
+    </div>
+    <div class="stat-card warning">
+      <div class="stat-value amber">72</div>
+      <div class="stat-label">Stale Pages (&gt;12mo)</div>
+    </div>
+    <div class="stat-card critical">
+      <div class="stat-value red">65</div>
+      <div class="stat-label">Missing OG Image</div>
+    </div>
+  </div>
+  <div class="summary-grid">
+    <div class="stat-card">
+      <div class="stat-value blue">10</div>
+      <div class="stat-label">Indexed, Not in Sitemap</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value amber">5</div>
+      <div class="stat-label">In Sitemap, Not Indexed</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value red">4</div>
+      <div class="stat-label">Broken Nav Links</div>
+    </div>
+    <div class="stat-card positive">
+      <div class="stat-value green">18</div>
+      <div class="stat-label">Recently Updated</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CONTENT DISTRIBUTION ===== -->
+<section class="section" id="distribution">
+  <h2 class="section-title">Content Distribution</h2>
+  <p class="section-desc">Breakdown of all 197 pages by content category. Documentation and developer content make up 68% of the site.</p>
+
+  <div class="card">
+    <div class="bar-chart">
+      <div class="bar-row">
+        <div class="bar-label">docs</div>
+        <div class="bar-track"><div class="bar-fill c-docs" style="width:100%">85</div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">developer</div>
+        <div class="bar-track"><div class="bar-fill c-developer" style="width:58.8%">50</div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">block-collection</div>
+        <div class="bar-track"><div class="bar-fill c-block-collection" style="width:24.7%">21</div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">blog</div>
+        <div class="bar-track"><div class="bar-fill c-blog" style="width:18.8%">16</div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">other</div>
+        <div class="bar-track"><div class="bar-fill c-other" style="width:9.4%">8</div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">previous</div>
+        <div class="bar-track"><div class="bar-fill c-previous" style="width:7.1%">6</div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">business</div>
+        <div class="bar-track"><div class="bar-fill c-business" style="width:5.9%">5</div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">tools</div>
+        <div class="bar-track"><div class="bar-fill c-tools" style="width:5.9%">5</div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">experiments</div>
+        <div class="bar-track"><div class="bar-fill c-experiments" style="width:1.2%">1</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STRUCTURAL GAPS ===== -->
+<section class="section" id="structural">
+  <h2 class="section-title">Structural Gaps</h2>
+  <p class="section-desc">Mismatches between the query index, sitemap, and navigation links. These gaps affect SEO discoverability and user navigation.</p>
+
+  <!-- In index not sitemap -->
+  <div class="subsection">
+    <div class="subsection-header">
+      <span class="severity severity-warning">Warning</span>
+      <h3>Pages in Index but NOT in Sitemap</h3>
+      <span class="count-badge amber">10</span>
+    </div>
+    <p style="font-size:14px;color:var(--fg-muted);margin-bottom:12px;">These pages exist as content in the query index but are missing from the sitemap. Search engines may not discover them efficiently.</p>
+    <ul class="path-list">
+      <li>/developer/block-collection/columns <span class="path-title">Columns (Block)</span></li>
+      <li>/developer/block-collection/fragment <span class="path-title">Fragment (Block)</span></li>
+      <li>/developer/block-collection/hero <span class="path-title">Hero (Block)</span></li>
+      <li>/developer/block-collection/table <span class="path-title">Tables</span></li>
+      <li>/developer/block-collection/quote <span class="path-title">Quote</span></li>
+      <li>/developer/block-collection/form <span class="path-title">Form</span></li>
+      <li>/developer/block-collection/video <span class="path-title">Video (Block)</span></li>
+      <li>/developer/da-tutorial <span class="path-title">Getting Started - DA Developer Tutorial</span></li>
+      <li>/docs/sidekick-extension <span class="path-title">Installing the AEM Sidekick</span></li>
+      <li>/mwp-demo <span class="path-title">Hello World.</span></li>
+    </ul>
+  </div>
+
+  <!-- In sitemap not index -->
+  <div class="subsection">
+    <div class="subsection-header">
+      <span class="severity severity-critical">Critical</span>
+      <h3>Pages in Sitemap but NOT in Index</h3>
+      <span class="count-badge red">5</span>
+    </div>
+    <p style="font-size:14px;color:var(--fg-muted);margin-bottom:12px;">These URLs are declared in the sitemap but have no corresponding entry in the query index. They may return errors or outdated content.</p>
+    <ul class="path-list">
+      <li>/developer/block-collection/header <span class="path-title">Header</span></li>
+      <li>/developer/block-collection/images <span class="path-title">Images</span></li>
+      <li>/docs/setup-customer-googledrive <span class="path-title">Setup Customer Google Drive</span></li>
+      <li>/developer/configuring-aem-assets-sidekick-plugin <span class="path-title">Configuring AEM Assets Sidekick Plugin</span></li>
+      <li>/blog/archive <span class="path-title">Blog Archive</span></li>
+    </ul>
+  </div>
+
+  <!-- Broken nav links -->
+  <div class="subsection">
+    <div class="subsection-header">
+      <span class="severity severity-critical">Critical</span>
+      <h3>Broken Navigation Links</h3>
+      <span class="count-badge red">4</span>
+    </div>
+    <p style="font-size:14px;color:var(--fg-muted);margin-bottom:12px;">Navigation links pointing to resources that are not indexed pages. These create dead-end experiences for visitors.</p>
+    <ul class="path-list">
+      <li>/styles/styles.css <span class="path-title">CSS file, not a page</span></li>
+      <li>/docpages-index.json <span class="path-title">JSON data file, not a page</span></li>
+      <li>/home <span class="path-title">Non-existent path (homepage is /)</span></li>
+      <li>/developer/anatomy-of-a-helix-project <span class="path-title">Old Helix project name, now renamed</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== METADATA QUALITY ===== -->
+<section class="section" id="metadata">
+  <h2 class="section-title">Metadata Quality</h2>
+  <p class="section-desc">Assessment of page metadata completeness including social sharing images, descriptions, deprecation markers, and experimental flags.</p>
+
+  <!-- Missing Custom Image -->
+  <div class="subsection">
+    <div class="subsection-header">
+      <span class="severity severity-warning">Warning</span>
+      <h3>Pages Using Default Social Image</h3>
+      <span class="count-badge amber">65</span>
+    </div>
+    <p style="font-size:14px;color:var(--fg-muted);margin-bottom:12px;">These pages have no custom Open Graph image set. When shared on social media, they will display a generic default image instead of page-specific visual content.</p>
+
+    <div class="grouped-list">
+      <!-- block-collection group -->
+      <div class="group-heading"><span class="cat-badge cat-block-collection">block-collection</span> <span class="g-count">14</span></div>
+      <ul class="compact-list">
+        <li><span class="cl-path">/developer/block-collection/buttons</span></li>
+        <li><span class="cl-path">/developer/block-collection/code</span></li>
+        <li><span class="cl-path">/developer/block-collection/fragment</span></li>
+        <li><span class="cl-path">/developer/block-collection/headings</span></li>
+        <li><span class="cl-path">/developer/block-collection/icons</span></li>
+        <li><span class="cl-path">/developer/block-collection/links</span></li>
+        <li><span class="cl-path">/developer/block-collection/lists</span></li>
+        <li><span class="cl-path">/developer/block-collection/metadata</span></li>
+        <li><span class="cl-path">/developer/block-collection/section-metadata</span></li>
+        <li><span class="cl-path">/developer/block-collection/sections</span></li>
+        <li><span class="cl-path">/developer/block-collection/table</span></li>
+        <li><span class="cl-path">/developer/block-collection/text</span></li>
+        <li><span class="cl-path">/developer/block-collection/form</span></li>
+        <li><span class="cl-path">/developer/block-collection/video</span></li>
+      </ul>
+
+      <!-- developer group -->
+      <div class="group-heading"><span class="cat-badge cat-developer">developer</span> <span class="g-count">12</span></div>
+      <ul class="compact-list">
+        <li><span class="cl-path">/developer</span></li>
+        <li><span class="cl-path">/developer/block-party/thank-you</span></li>
+        <li><span class="cl-path">/developer/example-form/thank-you</span></li>
+        <li><span class="cl-path">/developer/font-fallback</span></li>
+        <li><span class="cl-path">/developer/importer</span></li>
+        <li><span class="cl-path">/developer/keeping-it-100</span></li>
+        <li><span class="cl-path">/developer/markup-reference</span></li>
+        <li><span class="cl-path">/developer/block-collection</span></li>
+        <li><span class="cl-path">/developer/block-party/</span></li>
+        <li><span class="cl-path">/developer/sidekick-development</span></li>
+        <li><span class="cl-path">/developer/admin-errors</span></li>
+        <li><span class="cl-path">/developer/sidekick-v7-migration</span></li>
+      </ul>
+
+      <!-- docs group -->
+      <div class="group-heading"><span class="cat-badge cat-docs">docs</span> <span class="g-count">17</span></div>
+      <ul class="compact-list">
+        <li><span class="cl-path">/docs/</span></li>
+        <li><span class="cl-path">/docs/davidsmodel</span></li>
+        <li><span class="cl-path">/docs/experimentation</span></li>
+        <li><span class="cl-path">/docs/indexing-reference</span></li>
+        <li><span class="cl-path">/docs/setup-adobe-sharepoint</span></li>
+        <li><span class="cl-path">/docs/setup-byo-cdn-push-invalidation</span></li>
+        <li><span class="cl-path">/docs/setup-byo-cdn-push-invalidation-for-akamai</span></li>
+        <li><span class="cl-path">/docs/setup-customer-sharepoint</span></li>
+        <li><span class="cl-path">/docs/setup-sharepoint</span></li>
+        <li><span class="cl-path">/docs/translation-and-localization</span></li>
+        <li><span class="cl-path">/docs/move-project-to-customer-infrastructure</span></li>
+        <li><span class="cl-path">/docs/setup-googledrive</span></li>
+        <li><span class="cl-path">/docs/setup-customer-sharepoint-user</span></li>
+        <li><span class="cl-path">/docs/sidekick-errors</span></li>
+        <li><span class="cl-path">/docs/snapshots-reviews</span></li>
+        <li><span class="cl-path">/docs/aem-embed</span></li>
+        <li><span class="cl-path">/docs/schema-structured-data</span></li>
+      </ul>
+
+      <!-- docs - media & storefront -->
+      <div class="group-heading"><span class="cat-badge cat-docs">docs (cont.)</span> <span class="g-count">2</span></div>
+      <ul class="compact-list">
+        <li><span class="cl-path">/docs/media</span></li>
+        <li><span class="cl-path">/docs/storefront</span></li>
+      </ul>
+
+      <!-- business group -->
+      <div class="group-heading"><span class="cat-badge cat-business">business</span> <span class="g-count">4</span></div>
+      <ul class="compact-list">
+        <li><span class="cl-path">/business/demo</span></li>
+        <li><span class="cl-path">/business/comms-channel-thank-you</span></li>
+        <li><span class="cl-path">/business/helix-is-green</span></li>
+        <li><span class="cl-path">/business/content-velocity</span></li>
+        <li><span class="cl-path">/business/reachout</span></li>
+      </ul>
+
+      <!-- tools group -->
+      <div class="group-heading"><span class="cat-badge cat-tools">tools</span> <span class="g-count">4</span></div>
+      <ul class="compact-list">
+        <li><span class="cl-path">/tools/sidekick/library</span></li>
+        <li><span class="cl-path">/tools/sidekick/install-extension</span></li>
+        <li><span class="cl-path">/tools/svg-doctor/</span></li>
+        <li><span class="cl-path">/tools/mp4-doctor/</span></li>
+      </ul>
+
+      <!-- other group -->
+      <div class="group-heading"><span class="cat-badge cat-other">other</span> <span class="g-count">5</span></div>
+      <ul class="compact-list">
+        <li><span class="cl-path">/footer</span></li>
+        <li><span class="cl-path">/new-footer</span></li>
+        <li><span class="cl-path">/gnav</span></li>
+        <li><span class="cl-path">/mwp-demo</span></li>
+        <li><span class="cl-path">/</span></li>
+      </ul>
+
+      <!-- previous group -->
+      <div class="group-heading"><span class="cat-badge cat-previous">previous</span> <span class="g-count">3</span></div>
+      <ul class="compact-list">
+        <li><span class="cl-path">/previous/byo-cdn-cloudfront-setup</span></li>
+        <li><span class="cl-path">/previous/byo-cdn-cloudflare-worker-wrangler-setup</span></li>
+        <li><span class="cl-path">/previous/byo-cdn-cloudflare-worker-setup</span></li>
+      </ul>
+
+      <!-- experiments group -->
+      <div class="group-heading"><span class="cat-badge cat-experiments">experiments</span> <span class="g-count">1</span></div>
+      <ul class="compact-list">
+        <li><span class="cl-path">/experiments/short-home/home</span></li>
+      </ul>
+
+      <!-- developer extra -->
+      <div class="group-heading"><span class="cat-badge cat-developer">developer (extra)</span> <span class="g-count">1</span></div>
+      <ul class="compact-list">
+        <li><span class="cl-path">/developer/aem-playground</span></li>
+        <li><span class="cl-path">/developer/ue-trial</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Empty Descriptions -->
+  <div class="subsection">
+    <div class="subsection-header">
+      <span class="severity severity-warning">Warning</span>
+      <h3>Pages with Empty Descriptions</h3>
+      <span class="count-badge amber">6</span>
+    </div>
+    <p style="font-size:14px;color:var(--fg-muted);margin-bottom:12px;">Missing meta descriptions hurt SEO and social sharing. Search engines will auto-generate snippets, which are often suboptimal.</p>
+    <ul class="path-list">
+      <li>/docs/setup-sharepoint <span class="path-title">How to use Sharepoint</span></li>
+      <li>/tools/sidekick/library <span class="path-title">Sidekick library</span></li>
+      <li>/business/comms-channel-thank-you <span class="path-title">Thank you for submitting the form.</span></li>
+      <li>/gnav <span class="path-title">Getting Started</span></li>
+      <li>/mwp-demo <span class="path-title">Hello World.</span></li>
+      <li>/developer/cli-reference <span class="path-title">aem Command Line Reference</span></li>
+    </ul>
+  </div>
+
+  <!-- Deprecated Content -->
+  <div class="subsection">
+    <div class="subsection-header">
+      <span class="severity severity-critical">Critical</span>
+      <h3>Deprecated Pages</h3>
+      <span class="count-badge red">2</span>
+    </div>
+    <p style="font-size:14px;color:var(--fg-muted);margin-bottom:12px;">Pages explicitly marked as deprecated. These should be redirected or removed from navigation to avoid confusing users.</p>
+    <div class="card" style="margin-top:12px;background:var(--red-bg);border:1px solid #FECACA;">
+      <h3 style="font-size:15px;">/developer/folder-mapping &mdash; Folder Mapping</h3>
+      <p style="font-size:13px;color:var(--red);">Please contact us if you have a use case for folder mapping. Reach out to us if you have a related use case, we will help to find the best solution. Existing projects using folder mapping may need to migrate to a different solution in the future.</p>
+    </div>
+    <div class="card" style="margin-top:12px;background:var(--red-bg);border:1px solid #FECACA;">
+      <h3 style="font-size:15px;">/docs/scheduling &mdash; Scheduling</h3>
+      <p style="font-size:13px;color:var(--red);">Reach out to us if you have a use case for scheduling, we will help to find the best solution. Existing projects using scheduling may need to migrate to a different solution in the future.</p>
+    </div>
+  </div>
+
+  <!-- Labs Content -->
+  <div class="subsection">
+    <div class="subsection-header">
+      <span class="severity severity-info">Labs</span>
+      <h3>Experimental / Labs Pages</h3>
+      <span class="count-badge">14</span>
+    </div>
+    <p style="font-size:14px;color:var(--fg-muted);margin-bottom:12px;">Pages flagged as experimental or labs features. These are not yet generally available and may change or be removed.</p>
+    <ul class="path-list">
+      <li>/docs/experimentation <span class="path-title">Experimentation</span> &mdash; <em style="font-size:12px;color:var(--fg-muted);">AEM Sites</em></li>
+      <li>/docs/aem-assets-sidekick-plugin <span class="path-title">AEM Assets Sidekick Plugin</span> &mdash; <em style="font-size:12px;color:var(--fg-muted);">AEM Assets</em></li>
+      <li>/developer/target-integration <span class="path-title">Adobe Target Integration</span> &mdash; <em style="font-size:12px;color:var(--fg-muted);">AEM Sites</em></li>
+      <li>/developer/web-components <span class="path-title">Web Components</span> &mdash; <em style="font-size:12px;color:var(--fg-muted);">Non mainstream tech</em></li>
+      <li>/developer/da-tutorial <span class="path-title">DA Developer Tutorial</span> &mdash; <em style="font-size:12px;color:var(--fg-muted);">Document Authoring</em></li>
+      <li>/developer/martech-integration <span class="path-title">Adobe Experience Cloud Integration</span> &mdash; <em style="font-size:12px;color:var(--fg-muted);">AEM Sites</em></li>
+      <li>/docs/snapshots-reviews <span class="path-title">Snapshots and Reviews</span> &mdash; <em style="font-size:12px;color:var(--fg-muted);">AEM Sites</em></li>
+      <li>/docs/aem-embed <span class="path-title">Embedding Content in non-AEM experiences</span> &mdash; <em style="font-size:12px;color:var(--fg-muted);">AEM Sites</em></li>
+      <li>/developer/byo-git <span class="path-title">Bring your own git</span> &mdash; <em style="font-size:12px;color:var(--fg-muted);">AEM Cloud Foundation</em></li>
+      <li>/developer/gtm-martech-integration <span class="path-title">Google Analytics &amp; Tag Manager</span> &mdash; <em style="font-size:12px;color:var(--fg-muted);">AEM Sites</em></li>
+      <li>/developer/json2html <span class="path-title">JSON2HTML for Edge Delivery</span> &mdash; <em style="font-size:12px;color:var(--fg-muted);">AEM Sites</em></li>
+      <li>/developer/content-fragment-overlay <span class="path-title">Publishing AEM Content Fragments</span> &mdash; <em style="font-size:12px;color:var(--fg-muted);">Sites</em></li>
+      <li>/developer/ai-coding-agents <span class="path-title">Developing with AI Tools</span> &mdash; <em style="font-size:12px;color:var(--fg-muted);">Early-Access Technology</em></li>
+      <li>/docs/recurring <span class="path-title">Schedule recurring tasks</span> &mdash; <em style="font-size:12px;color:var(--fg-muted);">AEM Sites</em></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== CONTENT FRESHNESS ===== -->
+<section class="section" id="freshness">
+  <h2 class="section-title">Content Freshness</h2>
+  <p class="section-desc">Analysis of when content was last modified. Stale content (over 12 months old) represents 37% of the site and risks becoming inaccurate or misleading.</p>
+
+  <div class="card">
+    <div class="freshness-bar-wrap">
+      <div class="freshness-seg stale" style="width:36.5%" title="72 stale pages">72</div>
+      <div class="freshness-seg moderate" style="width:54.3%" title="107 moderately fresh pages">107</div>
+      <div class="freshness-seg recent" style="width:9.1%" title="18 recently updated pages">18</div>
+    </div>
+    <div class="freshness-legend">
+      <div class="freshness-legend-item"><span class="freshness-dot" style="background:var(--red)"></span> Stale (&gt;12 months) &mdash; 72 pages (37%)</div>
+      <div class="freshness-legend-item"><span class="freshness-dot" style="background:var(--amber)"></span> Moderate (1-12 months) &mdash; 107 pages (54%)</div>
+      <div class="freshness-legend-item"><span class="freshness-dot" style="background:var(--green)"></span> Recent (last 30 days) &mdash; 18 pages (9%)</div>
+    </div>
+  </div>
+
+  <!-- Stale Pages -->
+  <div class="subsection">
+    <div class="subsection-header">
+      <span class="severity severity-critical">Major Finding</span>
+      <h3>Stale Pages (&gt;12 months since update)</h3>
+      <span class="count-badge red">72</span>
+    </div>
+    <p style="font-size:14px;color:var(--fg-muted);margin-bottom:12px;">37% of the site content has not been updated in over a year. The oldest page dates back to November 2021. Many of these are block-collection reference pages last touched September 2024.</p>
+    <details style="margin-top:8px;">
+      <summary style="cursor:pointer;font-weight:600;font-size:14px;color:var(--blue);padding:8px 0;">Show all 72 stale pages</summary>
+      <ul class="path-list" style="margin-top:12px;">
+        <li>/mwp-demo <span class="path-title">Hello World.</span> &mdash; 2021-11-03</li>
+        <li>/developer/block-collection/hero <span class="path-title">Hero (Block)</span> &mdash; 2023-08-27</li>
+        <li>/developer/block-collection/columns <span class="path-title">Columns (Block)</span> &mdash; 2023-08-27</li>
+        <li>/developer/block-collection/quote <span class="path-title">Quote</span> &mdash; 2024-03-08</li>
+        <li>/developer/block-collection/video <span class="path-title">Video (Block)</span> &mdash; 2024-05-02</li>
+        <li>/docs/sidekick-extension <span class="path-title">Installing the AEM Sidekick</span> &mdash; 2024-05-29</li>
+        <li>/developer/block-collection/fragment <span class="path-title">Fragment (Block)</span> &mdash; 2024-06-07</li>
+        <li>/developer/block-collection/table <span class="path-title">Tables</span> &mdash; 2024-06-07</li>
+        <li>/developer/block-collection/form <span class="path-title">Form</span> &mdash; 2024-06-13</li>
+        <li>/business/demo <span class="path-title">Sign up for the VIP Program, Get a Demo</span> &mdash; 2024-09-09</li>
+        <li>/developer <span class="path-title">AEM for Developers</span> &mdash; 2024-09-09</li>
+        <li>/developer/block-collection/buttons <span class="path-title">Buttons</span> &mdash; 2024-09-09</li>
+        <li>/developer/block-collection/code <span class="path-title">Code</span> &mdash; 2024-09-09</li>
+        <li>/developer/block-collection/footer <span class="path-title">Footer (Block)</span> &mdash; 2024-09-09</li>
+        <li>/developer/block-collection/headings <span class="path-title">Headings</span> &mdash; 2024-09-09</li>
+        <li>/developer/block-collection/icons <span class="path-title">Icons</span> &mdash; 2024-09-09</li>
+        <li>/developer/block-collection/links <span class="path-title">Links</span> &mdash; 2024-09-09</li>
+        <li>/developer/block-collection/lists <span class="path-title">Lists</span> &mdash; 2024-09-09</li>
+        <li>/developer/block-collection/section-metadata <span class="path-title">Section Metadata</span> &mdash; 2024-09-09</li>
+        <li>/developer/block-collection/sections <span class="path-title">Sections</span> &mdash; 2024-09-09</li>
+        <li>/developer/block-collection/text <span class="path-title">Text</span> &mdash; 2024-09-09</li>
+        <li>/developer/block-party/thank-you <span class="path-title">Thank you for your submission.</span> &mdash; 2024-09-09</li>
+        <li>/developer/example-form/thank-you <span class="path-title">Thank you for your submission.</span> &mdash; 2024-09-09</li>
+        <li>/developer/font-fallback <span class="path-title">Font Fallback and CLS</span> &mdash; 2024-09-09</li>
+        <li>/developer/github-actions <span class="path-title">Using GitHub Actions</span> &mdash; 2024-09-09</li>
+        <li>/developer/indexing <span class="path-title">Indexing</span> &mdash; 2024-09-09</li>
+        <li>/developer/markup-reference <span class="path-title">HTML Markup reference</span> &mdash; 2024-09-09</li>
+        <li>/developer/markup-sections-blocks <span class="path-title">Markup, Sections, Blocks</span> &mdash; 2024-09-09</li>
+        <li>/docs/exploring-blocks <span class="path-title">Exploring blocks</span> &mdash; 2024-09-09</li>
+        <li>/docs/setup-adobe-sharepoint <span class="path-title">How to use Adobe Sharepoint</span> &mdash; 2024-09-09</li>
+        <li>/docs/setup-sharepoint <span class="path-title">How to use Sharepoint</span> &mdash; 2024-09-09</li>
+        <li>/docs/translation-and-localization <span class="path-title">Translation and Localization</span> &mdash; 2024-09-09</li>
+        <li>/tools/sidekick/library <span class="path-title">Sidekick library</span> &mdash; 2024-09-09</li>
+        <li>/business/comms-channel-thank-you <span class="path-title">Thank you for submitting the form.</span> &mdash; 2024-09-09</li>
+        <li>/docs/move-project-to-customer-infrastructure <span class="path-title">Migrating a VIP project</span> &mdash; 2024-09-09</li>
+        <li>/experiments/short-home/home <span class="path-title">Adobe Experience Manager</span> &mdash; 2024-09-09</li>
+        <li>/business/helix-is-green <span class="path-title">Helix is green</span> &mdash; 2024-09-09</li>
+        <li>/business/content-velocity <span class="path-title">Increase Content Velocity with Helix</span> &mdash; 2024-09-09</li>
+        <li>/gnav <span class="path-title">Getting Started</span> &mdash; 2024-09-09</li>
+        <li>/tools/sidekick/install-extension <span class="path-title">Sidekick Extension (Beta)</span> &mdash; 2024-09-09</li>
+        <li>/tools/svg-doctor/ <span class="path-title">Optimize your SVGs</span> &mdash; 2024-09-09</li>
+        <li>/docs/setup-googledrive <span class="path-title">How to use Google Drive</span> &mdash; 2024-09-09</li>
+        <li>/developer/block-collection <span class="path-title">Block Collection</span> &mdash; 2024-09-09</li>
+        <li>/developer/block-collection/breadcrumbs <span class="path-title">Breadcrumbs</span> &mdash; 2024-09-09</li>
+        <li>/developer/block-collection/modal <span class="path-title">Modal</span> &mdash; 2024-09-09</li>
+        <li>/tools/mp4-doctor/ <span class="path-title">Optimize your MP4s</span> &mdash; 2024-09-09</li>
+        <li>/tools/organizer/ <span class="path-title">Franklin Organizer</span> &mdash; 2024-09-09</li>
+        <li>/business/reachout <span class="path-title">Got Questions? Let's Connect!</span> &mdash; 2024-09-09</li>
+        <li>/developer/target-integration <span class="path-title">Adobe Target Integration</span> &mdash; 2024-09-09</li>
+        <li>/developer/web-components <span class="path-title">Web Components</span> &mdash; 2024-09-09</li>
+        <li>/developer/tutorial-from-youtube <span class="path-title">Your Next Steps After YouTube</span> &mdash; 2024-09-09</li>
+        <li>/blog/hlx-is-now-aem-live <span class="path-title">A high-five for aem.live</span> &mdash; 2024-09-09</li>
+        <li>/previous/byo-cdn-setup <span class="path-title">BYO CDN Setup for hlx.live</span> &mdash; 2024-09-09</li>
+        <li>/previous/byo-cdn-fastly-setup <span class="path-title">Fastly Setup for hlx.live</span> &mdash; 2024-09-09</li>
+        <li>/previous/byo-cdn-cloudfront-setup <span class="path-title">CloudFront Setup for hlx.live</span> &mdash; 2024-09-09</li>
+        <li>/previous/byo-cdn-cloudflare-worker-wrangler-setup <span class="path-title">Cloudflare (wrangler) for hlx.live</span> &mdash; 2024-09-09</li>
+        <li>/previous/byo-cdn-cloudflare-worker-setup <span class="path-title">Cloudflare (worker) for hlx.live</span> &mdash; 2024-09-09</li>
+        <li>/previous/byo-cdn-akamai-setup <span class="path-title">Akamai Setup for hlx.live</span> &mdash; 2024-09-09</li>
+        <li>/docs/staging <span class="path-title">Staging &amp; Environments</span> &mdash; 2024-09-24</li>
+        <li>/docs/experimentation <span class="path-title">Experimentation</span> &mdash; 2024-10-03</li>
+        <li>/docs/byo-cdn-cloudfront-setup <span class="path-title">AWS CloudFront Setup</span> &mdash; 2024-10-18</li>
+        <li>/docs/network-profile <span class="path-title">Network Profile</span> &mdash; 2024-11-01</li>
+        <li>/blog/aem-live-at-dev-live <span class="path-title">aem.live at Adobe Developers Live 2024</span> &mdash; 2024-11-04</li>
+        <li>/docs/davidsmodel <span class="path-title">David's Model, Second take.</span> &mdash; 2024-11-20</li>
+        <li>/blog/edge-next <span class="path-title">The Performance Paradox</span> &mdash; 2024-12-19</li>
+        <li>/docs/unsupported <span class="path-title">Unsupported Integrations</span> &mdash; 2024-12-19</li>
+        <li>/docs/aem-assets-sidekick-plugin <span class="path-title">AEM Assets Sidekick Plugin</span> &mdash; 2025-01-11</li>
+        <li>/developer/martech-integration <span class="path-title">Adobe Experience Cloud Integration</span> &mdash; 2025-02-10</li>
+        <li>/docs/byo-dns <span class="path-title">Custom domains without a custom CDN</span> &mdash; 2025-02-12</li>
+        <li>/blog/sidekick-v7 <span class="path-title">AEM Sidekick v7</span> &mdash; 2025-02-13</li>
+        <li>/blog/calendar-implementation <span class="path-title">Putting Calendars on the Web</span> &mdash; 2025-02-19</li>
+        <li>/blog/roadmaps <span class="path-title">Where we're going, we don't need Roadmaps!</span> &mdash; 2025-02-19</li>
+      </ul>
+    </details>
+  </div>
+
+  <!-- Recently Updated -->
+  <div class="subsection">
+    <div class="subsection-header">
+      <span class="severity severity-positive">Positive</span>
+      <h3>Recently Updated Pages (last 30 days)</h3>
+      <span class="count-badge green">18</span>
+    </div>
+    <p style="font-size:14px;color:var(--fg-muted);margin-bottom:12px;">These pages have been updated within the last 30 days, indicating active maintenance and fresh content.</p>
+    <ul class="path-list">
+      <li>/docs/peak-traffic <span class="path-title">Service Scaling and High-Visibility Events</span> &mdash; 2026-02-23</li>
+      <li>/docs/operations <span class="path-title">Operations</span> &mdash; 2026-02-23</li>
+      <li>/docs/china <span class="path-title">China FAQ</span> &mdash; 2026-02-23</li>
+      <li>/docs/limits <span class="path-title">Limits</span> &mdash; 2026-02-17</li>
+      <li>/docs/config-service-setup <span class="path-title">Setting up the configuration service</span> &mdash; 2026-02-13</li>
+      <li>/developer/anatomy-of-a-project <span class="path-title">The Anatomy of a Project</span> &mdash; 2026-02-13</li>
+      <li>/docs/dev-collab-and-good-practices <span class="path-title">Development Collaboration and Good Practices</span> &mdash; 2026-02-12</li>
+      <li>/docs/security <span class="path-title">Security Overview</span> &mdash; 2026-02-12</li>
+      <li>/docs/sidekick-security <span class="path-title">AEM Sidekick Security</span> &mdash; 2026-02-11</li>
+      <li>/docs/authentication-setup-authoring <span class="path-title">Configuring Authentication for Authors</span> &mdash; 2026-02-10</li>
+      <li>/developer/block-collection/search <span class="path-title">Search</span> &mdash; 2026-02-09</li>
+      <li>/docs/lifecycle <span class="path-title">Feature Lifecycle</span> &mdash; 2026-02-06</li>
+      <li>/docs/deprecation <span class="path-title">Deprecations and Removals</span> &mdash; 2026-02-06</li>
+      <li>/docs/csp-strict-dynamic-cached-nonce <span class="path-title">Content Security Policy</span> &mdash; 2026-02-05</li>
+      <li>/developer/tutorial <span class="path-title">Getting Started - Developer Tutorial</span> &mdash; 2026-02-05</li>
+      <li>/developer/sidekick-development <span class="path-title">Extending the Sidekick</span> &mdash; 2026-01-26</li>
+      <li>/docs/authentication-setup <span class="path-title">Authentication Overview</span> &mdash; 2026-01-26</li>
+      <li>/docs/auditlog <span class="path-title">Audit log</span> &mdash; 2026-01-26</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== BRAND CONSISTENCY ===== -->
+<section class="section" id="brand">
+  <h2 class="section-title">Brand Consistency</h2>
+  <p class="section-desc">Pages referencing outdated branding (Franklin, Helix, hlx.live/hlx.page), legacy content, duplicate titles, and utility/fragment pages that may be polluting the index.</p>
+
+  <!-- Old Branding -->
+  <div class="subsection">
+    <div class="subsection-header">
+      <span class="severity severity-warning">Warning</span>
+      <h3>Old Branding References</h3>
+      <span class="count-badge amber">17</span>
+    </div>
+    <p style="font-size:14px;color:var(--fg-muted);margin-bottom:12px;">These pages reference &ldquo;Franklin&rdquo;, &ldquo;Helix&rdquo;, &ldquo;hlx.live&rdquo;, or &ldquo;hlx.page&rdquo; in their title or description. These old brand names should be updated to current AEM branding.</p>
+    <ul class="path-list">
+      <li>/business/demo <span class="path-title">Sign up for the VIP Program, Get a Demo</span></li>
+      <li>/developer/github-actions <span class="path-title">Using GitHub Actions to handle Publication Events</span></li>
+      <li>/docs/faq <span class="path-title">Frequently Asked Questions</span></li>
+      <li>/docs/indexing-reference <span class="path-title">Indexing reference</span></li>
+      <li>/business/helix-is-green <span class="path-title">Helix is green</span></li>
+      <li>/business/content-velocity <span class="path-title">Increase Content Velocity with Helix</span></li>
+      <li>/docs/setup-googledrive <span class="path-title">How to use Google Drive</span></li>
+      <li>/tools/organizer/ <span class="path-title">Franklin Organizer</span></li>
+      <li>/blog/hlx-is-now-aem-live <span class="path-title">A high-five for aem.live</span></li>
+      <li>/developer/upgrade <span class="path-title">Upgrading to aem.live from hlx.live</span></li>
+      <li>/previous/byo-cdn-setup <span class="path-title">BYO CDN Setup for hlx.live</span></li>
+      <li>/previous/byo-cdn-fastly-setup <span class="path-title">Fastly Setup for hlx.live</span></li>
+      <li>/previous/byo-cdn-cloudfront-setup <span class="path-title">CloudFront Setup for hlx.live</span></li>
+      <li>/previous/byo-cdn-cloudflare-worker-wrangler-setup <span class="path-title">Cloudflare (wrangler) for hlx.live</span></li>
+      <li>/previous/byo-cdn-cloudflare-worker-setup <span class="path-title">Cloudflare (worker) for hlx.live</span></li>
+      <li>/previous/byo-cdn-akamai-setup <span class="path-title">Akamai Setup for hlx.live</span></li>
+      <li>/blog/organizing-source-code-ensemble <span class="path-title">Unlocking Efficiency with Helix 5</span></li>
+    </ul>
+  </div>
+
+  <!-- Legacy Content -->
+  <div class="subsection">
+    <div class="subsection-header">
+      <span class="severity severity-warning">Warning</span>
+      <h3>Legacy /previous/ Pages</h3>
+      <span class="count-badge amber">6</span>
+    </div>
+    <p style="font-size:14px;color:var(--fg-muted);margin-bottom:12px;">These pages live under the /previous/ path and document the old version of Edge Delivery Services. Consider whether they should remain indexed or be removed in favor of current documentation.</p>
+    <ul class="path-list">
+      <li>/previous/byo-cdn-setup <span class="path-title">BYO CDN Setup for hlx.live</span></li>
+      <li>/previous/byo-cdn-fastly-setup <span class="path-title">Fastly Setup for hlx.live</span></li>
+      <li>/previous/byo-cdn-cloudfront-setup <span class="path-title">CloudFront Setup for hlx.live</span></li>
+      <li>/previous/byo-cdn-cloudflare-worker-wrangler-setup <span class="path-title">Cloudflare (wrangler) for hlx.live</span></li>
+      <li>/previous/byo-cdn-cloudflare-worker-setup <span class="path-title">Cloudflare (worker) for hlx.live</span></li>
+      <li>/previous/byo-cdn-akamai-setup <span class="path-title">Akamai Setup for hlx.live</span></li>
+    </ul>
+  </div>
+
+  <!-- Duplicate Titles -->
+  <div class="subsection">
+    <div class="subsection-header">
+      <span class="severity severity-info">Info</span>
+      <h3>Duplicate Titles</h3>
+      <span class="count-badge">2 groups</span>
+    </div>
+    <p style="font-size:14px;color:var(--fg-muted);margin-bottom:12px;">Multiple pages sharing the same title. This creates confusion in search results and analytics.</p>
+
+    <div class="card" style="margin-top:8px;">
+      <h3 style="font-size:15px;">&ldquo;Thank you for your submission.&rdquo;</h3>
+      <ul class="path-list" style="margin-top:8px;">
+        <li>/developer/block-party/thank-you</li>
+        <li>/developer/example-form/thank-you</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 style="font-size:15px;">&ldquo;Adobe Experience Manager&rdquo;</h3>
+      <ul class="path-list" style="margin-top:8px;">
+        <li>/new-footer</li>
+        <li>/experiments/short-home/home</li>
+        <li>/</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Fragment Pages -->
+  <div class="subsection">
+    <div class="subsection-header">
+      <span class="severity severity-info">Info</span>
+      <h3>Utility / Fragment Pages in Index</h3>
+      <span class="count-badge">8</span>
+    </div>
+    <p style="font-size:14px;color:var(--fg-muted);margin-bottom:12px;">These appear to be fragments, thank-you pages, navigation elements, or demo pages that probably should not be in the public query index.</p>
+    <ul class="path-list">
+      <li>/developer/block-party/thank-you <span class="path-title">Thank you for your submission.</span></li>
+      <li>/developer/example-form/thank-you <span class="path-title">Thank you for your submission.</span></li>
+      <li>/footer <span class="path-title">Copyright &copy; 2025 Adobe. All rights reserved</span></li>
+      <li>/new-footer <span class="path-title">Adobe Experience Manager</span></li>
+      <li>/business/comms-channel-thank-you <span class="path-title">Thank you for submitting the form.</span></li>
+      <li>/experiments/short-home/home <span class="path-title">Adobe Experience Manager</span></li>
+      <li>/gnav <span class="path-title">Getting Started</span></li>
+      <li>/mwp-demo <span class="path-title">Hello World.</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== FULL CONTENT INVENTORY ===== -->
+<section class="section" id="inventory">
+  <h2 class="section-title">Full Content Inventory</h2>
+  <p class="section-desc">Complete list of all 197 pages in the query index. Click column headers to sort. Use the search box to filter by path, title, or category.</p>
+
+  <div class="search-bar">
+    <input type="text" class="search-input" id="inventorySearch" placeholder="Search by path, title, or category..." aria-label="Search inventory">
+    <select class="filter-select" id="categoryFilter" aria-label="Filter by category">
+      <option value="">All Categories</option>
+      <option value="docs">docs</option>
+      <option value="developer">developer</option>
+      <option value="block-collection">block-collection</option>
+      <option value="blog">blog</option>
+      <option value="other">other</option>
+      <option value="previous">previous</option>
+      <option value="business">business</option>
+      <option value="tools">tools</option>
+      <option value="experiments">experiments</option>
+    </select>
+    <span class="result-count" id="resultCount">Showing 197 of 197</span>
+  </div>
+
+  <div class="inventory-scroll">
+    <table class="data-table" id="inventoryTable" aria-label="Full content inventory">
+      <thead>
+        <tr>
+          <th data-col="path" class="sorted" data-dir="asc">Path <span class="sort-arrow">&#9650;</span></th>
+          <th data-col="title">Title <span class="sort-arrow">&#9650;</span></th>
+          <th data-col="category">Category <span class="sort-arrow">&#9650;</span></th>
+          <th data-col="lastModified">Last Modified <span class="sort-arrow">&#9650;</span></th>
+          <th data-col="hasCustomImage">Image <span class="sort-arrow">&#9650;</span></th>
+          <th data-col="flags">Flags <span class="sort-arrow">&#9650;</span></th>
+        </tr>
+      </thead>
+      <tbody id="inventoryBody">
+      </tbody>
+    </table>
+  </div>
+</section>
+
+</div><!-- .container -->
+
+<!-- Back to top -->
+<button class="back-to-top" id="backToTop" aria-label="Back to top" title="Back to top">&#8593;</button>
+
+<!-- Report Footer -->
+<footer class="report-footer">
+  Generated by <strong>blazar</strong> content analysis engine &mdash; February 24, 2026<br>
+  Data source: www.aem.live query-index, sitemap.xml, and navigation structure
+</footer>
+
+<script>
+// ── All Entries Data ──
+const ALL_ENTRIES = [
+{"path":"/","title":"Adobe Experience Manager","category":"other","lastModified":"2025-11-07","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/blog","title":"AEM.live Blog","category":"blog","lastModified":"2025-12-16","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/blog/adapt-to-2025","title":"Best of adaptTo() 2025","category":"blog","lastModified":"2025-10-29","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/blog/aem-live-at-dev-live","title":"aem.live at Adobe Developers Live 2024","category":"blog","lastModified":"2024-11-04","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/blog/built-ready-for-the-season","title":"How Edge Delivery Services handles peak season","category":"blog","lastModified":"2025-09-29","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/blog/byom-content-overlays","title":"The Konami Code for Dynamic Publishing at Scale","category":"blog","lastModified":"2025-07-30","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/blog/calendar-implementation","title":"A Date with Edge Delivery: Putting Calendars on the Web, Twice","category":"blog","lastModified":"2025-02-19","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/blog/content-document-semantics","title":"Documents that dazzle, content that clicks","category":"blog","lastModified":"2025-09-18","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/blog/edge-next","title":"The Performance Paradox","category":"blog","lastModified":"2024-12-19","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/blog/folder-mapping-deprecated","title":"The One Template That Broke the Internet","category":"blog","lastModified":"2025-07-22","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/blog/future-proof-multilingual-website-edge-ensemble","title":"Bonjour! Hola! Hello! Creating Multilingual Sites","category":"blog","lastModified":"2025-05-13","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/blog/hlx-is-now-aem-live","title":"A high-five for aem.live","category":"blog","lastModified":"2024-09-09","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/blog/organizing-source-code-ensemble","title":"Unlocking Efficiency with Helix 5","category":"blog","lastModified":"2025-05-13","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/blog/roadmaps","title":"Roadmaps, Marty? Where we're going, we don't need Roadmaps!","category":"blog","lastModified":"2025-02-19","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/blog/sidekick-v7","title":"AEM Sidekick v7 - The Story Behind the Latest Release","category":"blog","lastModified":"2025-02-13","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/blog/testing-in-aem","title":"Why I don't recommend UI testing in AEM","category":"blog","lastModified":"2025-07-31","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/blog/toms-developer-dilemma","title":"The Architecture Problem That's Breaking AIs","category":"blog","lastModified":"2025-09-09","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/business/comms-channel-thank-you","title":"Thank you for submitting the form.","category":"business","lastModified":"2024-09-09","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/business/content-velocity","title":"Increase Content Velocity with Helix","category":"business","lastModified":"2024-09-09","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/business/demo","title":"Sign up for the VIP Program, Get a Demo","category":"business","lastModified":"2024-09-09","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/business/helix-is-green","title":"Helix is green","category":"business","lastModified":"2024-09-09","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/business/reachout","title":"Got Questions? Let's Connect!","category":"business","lastModified":"2024-09-09","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/community","title":"AEM Community","category":"other","lastModified":"2026-01-14","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/developer","title":"AEM for Developers","category":"other","lastModified":"2024-09-09","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/developer/admin-errors","title":"Backend Errors","category":"developer","lastModified":"2025-09-05","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/developer/aem-playground","title":"Explore new AI workflows in AEM","category":"developer","lastModified":"2025-12-17","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/developer/ai-coding-agents","title":"Developing with AI Tools","category":"developer","lastModified":"2025-11-03","hasCustomImage":true,"deprecated":false,"labs":"Early-Access"},
+{"path":"/developer/anatomy-of-a-project","title":"The Anatomy of a Project","category":"developer","lastModified":"2026-02-13","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/developer/authentication-setup-site-for-aem-authoring","title":"Site authentication for AEM Authoring","category":"developer","lastModified":"2025-11-14","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/developer/authoring-path-mapping","title":"Path mapping for AEM authoring","category":"developer","lastModified":"2026-01-14","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/developer/block-collection","title":"Block Collection","category":"developer","lastModified":"2024-09-09","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/developer/block-collection/breadcrumbs","title":"Breadcrumbs","category":"block-collection","lastModified":"2024-09-09","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/developer/block-collection/buttons","title":"Buttons","category":"block-collection","lastModified":"2024-09-09","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/developer/block-collection/code","title":"Code","category":"block-collection","lastModified":"2024-09-09","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/developer/block-collection/columns","title":"Columns (Block)","category":"block-collection","lastModified":"2023-08-27","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/developer/block-collection/footer","title":"Footer (Block)","category":"block-collection","lastModified":"2024-09-09","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/developer/block-collection/form","title":"Form","category":"block-collection","lastModified":"2024-06-13","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/developer/block-collection/fragment","title":"Fragment (Block)","category":"block-collection","lastModified":"2024-06-07","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/developer/block-collection/headings","title":"Headings","category":"block-collection","lastModified":"2024-09-09","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/developer/block-collection/hero","title":"Hero (Block)","category":"block-collection","lastModified":"2023-08-27","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/developer/block-collection/icons","title":"Icons","category":"block-collection","lastModified":"2024-09-09","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/developer/block-collection/links","title":"Links","category":"block-collection","lastModified":"2024-09-09","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/developer/block-collection/lists","title":"Lists","category":"block-collection","lastModified":"2024-09-09","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/developer/block-collection/metadata","title":"Metadata Block","category":"block-collection","lastModified":"2025-07-15","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/developer/block-collection/modal","title":"Modal","category":"block-collection","lastModified":"2024-09-09","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/developer/block-collection/quote","title":"Quote","category":"block-collection","lastModified":"2024-03-08","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/developer/block-collection/search","title":"Search","category":"block-collection","lastModified":"2026-02-09","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/developer/block-collection/section-metadata","title":"Section Metadata","category":"block-collection","lastModified":"2024-09-09","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/developer/block-collection/sections","title":"Sections","category":"block-collection","lastModified":"2024-09-09","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/developer/block-collection/table","title":"Tables","category":"block-collection","lastModified":"2024-06-07","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/developer/block-collection/text","title":"Text","category":"block-collection","lastModified":"2024-09-09","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/developer/block-collection/video","title":"Video (Block)","category":"block-collection","lastModified":"2024-05-02","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/developer/block-party/","title":"Block Party","category":"developer","lastModified":"2025-06-08","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/developer/block-party/thank-you","title":"Thank you for your submission.","category":"developer","lastModified":"2024-09-09","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/developer/byo-cdn-adobe-managed-cdn-config","title":"Adobe Managed CDN Advanced Configuration","category":"developer","lastModified":"2025-12-16","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/developer/byo-git","title":"Bring your own git","category":"developer","lastModified":"2025-09-23","hasCustomImage":true,"deprecated":false,"labs":"AEM Cloud Foundation"},
+{"path":"/developer/byom","title":"Bring Your Own Markup","category":"developer","lastModified":"2025-11-26","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/developer/change-site-root","title":"Change Site Root","category":"developer","lastModified":"2025-11-12","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/developer/cli-reference","title":"aem Command Line Reference","category":"developer","lastModified":"2025-11-13","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/developer/cloudflare-zero-trust","title":"Cloudflare Zero Trust Site Protection","category":"developer","lastModified":"2025-04-07","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/developer/component-model-definitions","title":"Content modeling for AEM authoring","category":"developer","lastModified":"2025-11-02","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/developer/content-fragment-overlay","title":"Publishing AEM Content Fragments","category":"developer","lastModified":"2025-08-27","hasCustomImage":true,"deprecated":false,"labs":"Sites"},
+{"path":"/developer/da-tutorial","title":"Getting Started - DA Developer Tutorial","category":"developer","lastModified":"2025-02-28","hasCustomImage":true,"deprecated":false,"labs":"Document Authoring"},
+{"path":"/developer/example-form/thank-you","title":"Thank you for your submission.","category":"developer","lastModified":"2024-09-09","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/developer/favicon","title":"Favicon","category":"developer","lastModified":"2025-10-10","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/developer/folder-mapping","title":"Folder Mapping","category":"developer","lastModified":"2025-07-07","hasCustomImage":true,"deprecated":true,"labs":""},
+{"path":"/developer/font-fallback","title":"Font Fallback and CLS","category":"developer","lastModified":"2024-09-09","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/developer/forms","title":"Forms","category":"developer","lastModified":"2025-12-10","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/developer/github-actions","title":"Using GitHub Actions","category":"developer","lastModified":"2024-09-09","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/developer/gtm-martech-integration","title":"Google Analytics & Tag Manager Integration","category":"developer","lastModified":"2025-07-30","hasCustomImage":true,"deprecated":false,"labs":"AEM Sites"},
+{"path":"/developer/importer","title":"Importing Content","category":"developer","lastModified":"2025-07-08","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/developer/indexing","title":"Indexing","category":"developer","lastModified":"2024-09-09","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/developer/json2html","title":"JSON2HTML for Edge Delivery Services","category":"developer","lastModified":"2025-08-22","hasCustomImage":true,"deprecated":false,"labs":"AEM Sites"},
+{"path":"/developer/keeping-it-100","title":"Web Performance, Keeping your Lighthouse Score 100.","category":"developer","lastModified":"2025-11-06","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/developer/markup-reference","title":"HTML Markup reference","category":"developer","lastModified":"2024-09-09","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/developer/markup-sections-blocks","title":"Markup, Sections, Blocks, and Auto Blocking","category":"developer","lastModified":"2024-09-09","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/developer/martech-integration","title":"Adobe Experience Cloud Integration","category":"developer","lastModified":"2025-02-10","hasCustomImage":true,"deprecated":false,"labs":"AEM Sites"},
+{"path":"/developer/operational-telemetry","title":"Developing Operational Telemetry in AEM","category":"developer","lastModified":"2025-11-18","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/developer/placeholders","title":"Using Placeholders","category":"developer","lastModified":"2025-04-22","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/developer/repoless-authoring","title":"Reusing code across sites with AEM authoring","category":"developer","lastModified":"2026-01-23","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/developer/repoless-environments","title":"Repoless stage and prod environments","category":"developer","lastModified":"2025-08-18","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/developer/repoless-multisite-manager","title":"Multi site management with AEM authoring","category":"developer","lastModified":"2025-04-30","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/developer/setup-google-drive","title":"Setup Google Drive as a Content Source","category":"developer","lastModified":"2025-10-22","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/developer/sidekick-development","title":"Extending the Sidekick","category":"developer","lastModified":"2026-01-26","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/developer/sidekick-v7-migration","title":"Migrating Your Sidekick v6 Customizations","category":"developer","lastModified":"2025-05-16","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/developer/sitemap","title":"Sitemaps","category":"developer","lastModified":"2025-08-18","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/developer/spreadsheets","title":"Spreadsheets and JSON","category":"developer","lastModified":"2025-03-31","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/developer/target-integration","title":"Configuring Adobe Target Integration","category":"developer","lastModified":"2024-09-09","hasCustomImage":true,"deprecated":false,"labs":"AEM Sites"},
+{"path":"/developer/tutorial","title":"Getting Started - Developer Tutorial","category":"developer","lastModified":"2026-02-05","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/developer/tutorial-from-youtube","title":"Your Next Steps After Watching Our YouTube Video","category":"developer","lastModified":"2024-09-09","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/developer/ue-trial","title":"Accelerate your tutorial with a pre-built environment","category":"developer","lastModified":"2025-10-15","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/developer/ue-tutorial","title":"Setup AEM Sites as a Content Source","category":"developer","lastModified":"2026-01-06","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/developer/universal-editor-blocks","title":"Creating Blocks for the Universal Editor","category":"developer","lastModified":"2025-11-06","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/developer/upgrade","title":"Upgrading to aem.live from hlx.live","category":"developer","lastModified":"2026-01-12","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/developer/web-components","title":"Web Components","category":"developer","lastModified":"2024-09-09","hasCustomImage":true,"deprecated":false,"labs":"Non mainstream tech"},
+{"path":"/developers-live","title":"Adobe Developers Live 2025","category":"other","lastModified":"2025-11-13","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/","title":"Documentation","category":"docs","lastModified":"2025-04-11","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/docs/admin-apikeys","title":"Admin API Keys","category":"docs","lastModified":"2025-05-21","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/aem-assets-sidekick-plugin","title":"AEM Assets Sidekick Plugin","category":"docs","lastModified":"2025-01-11","hasCustomImage":true,"deprecated":false,"labs":"AEM Assets"},
+{"path":"/docs/aem-authoring","title":"Authoring with AEM Sites for Edge Delivery","category":"docs","lastModified":"2025-09-16","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/aem-embed","title":"Embedding Content in non-AEM experiences","category":"docs","lastModified":"2025-04-14","hasCustomImage":false,"deprecated":false,"labs":"AEM Sites"},
+{"path":"/docs/architecture","title":"Architecture","category":"docs","lastModified":"2025-07-09","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/auditlog","title":"Audit log","category":"docs","lastModified":"2026-01-26","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/authentication-setup","title":"Authentication Overview","category":"docs","lastModified":"2026-01-26","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/authentication-setup-authoring","title":"Configuring Authentication for Authors","category":"docs","lastModified":"2026-02-10","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/authentication-setup-site","title":"Configuring Site Authentication","category":"docs","lastModified":"2025-04-02","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/authoring","title":"Authoring and Publishing Content","category":"docs","lastModified":"2025-09-01","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/authoring-guide","title":"Where to author your site","category":"docs","lastModified":"2025-08-27","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/authoring-tabular-data","title":"Managing tabular data with AEM authoring","category":"docs","lastModified":"2025-11-14","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/authoring-taxonomy","title":"Managing taxonomy data with AEM authoring","category":"docs","lastModified":"2025-04-11","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/bulk-metadata","title":"Bulk Metadata","category":"docs","lastModified":"2025-10-03","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/byo-cdn-adobe-managed","title":"Adobe Managed CDN","category":"docs","lastModified":"2025-07-30","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/byo-cdn-akamai-setup","title":"Akamai Setup","category":"docs","lastModified":"2025-05-13","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/byo-cdn-cloudflare-worker-setup","title":"Cloudflare Setup","category":"docs","lastModified":"2025-06-05","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/byo-cdn-cloudflare-worker-wrangler-setup","title":"Cloudflare Setup (with wrangler)","category":"docs","lastModified":"2025-04-04","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/byo-cdn-cloudfront-setup","title":"AWS CloudFront Setup","category":"docs","lastModified":"2024-10-18","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/byo-cdn-fastly-setup","title":"Fastly Setup","category":"docs","lastModified":"2025-11-14","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/byo-cdn-setup","title":"BYO CDN Setup","category":"docs","lastModified":"2025-03-17","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/byo-dns","title":"Custom domains without a custom CDN","category":"docs","lastModified":"2025-02-12","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/cdn-guide","title":"Picking the right CDN","category":"docs","lastModified":"2025-10-03","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/china","title":"China FAQ","category":"docs","lastModified":"2026-02-23","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/config-service-setup","title":"Setting up the configuration service","category":"docs","lastModified":"2026-02-13","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/configuration","title":"Document-based Project Configuration","category":"docs","lastModified":"2025-09-19","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/configuration-templates","title":"Configuration templates","category":"docs","lastModified":"2025-06-25","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/csp-strict-dynamic-cached-nonce","title":"Content Security Policy","category":"docs","lastModified":"2026-02-05","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/custom-headers","title":"Custom HTTP Response Headers","category":"docs","lastModified":"2025-10-24","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/davidsmodel","title":"David's Model, Second take.","category":"docs","lastModified":"2024-11-20","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/docs/deprecation","title":"Deprecations and Removals","category":"docs","lastModified":"2026-02-06","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/dev-collab-and-good-practices","title":"Development Collaboration and Good Practices","category":"docs","lastModified":"2026-02-12","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/error-pages","title":"Error Pages","category":"docs","lastModified":"2025-07-30","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/experimentation","title":"Experimentation","category":"docs","lastModified":"2024-10-03","hasCustomImage":false,"deprecated":false,"labs":"AEM Sites"},
+{"path":"/docs/exploring-blocks","title":"Exploring blocks","category":"docs","lastModified":"2024-09-09","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/faq","title":"Frequently Asked Questions","category":"docs","lastModified":"2025-10-27","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/fragments","title":"Fragments","category":"docs","lastModified":"2025-10-23","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/global","title":"Global Availability","category":"docs","lastModified":"2025-09-22","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/go-live-checklist","title":"Go-Live Checklist","category":"docs","lastModified":"2025-09-23","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/indexing-reference","title":"Indexing reference","category":"docs","lastModified":"2025-10-09","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/docs/integrations","title":"Integrations Overview","category":"docs","lastModified":"2025-09-09","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/lifecycle","title":"Feature Lifecycle","category":"docs","lastModified":"2026-02-06","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/limits","title":"Limits","category":"docs","lastModified":"2026-02-17","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/media","title":"Media Assets","category":"docs","lastModified":"2025-11-12","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/docs/metadata","title":"Page Metadata","category":"docs","lastModified":"2025-09-01","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/move-project-to-customer-infrastructure","title":"Migrating a VIP project","category":"docs","lastModified":"2024-09-09","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/docs/network-profile","title":"Network Profile","category":"docs","lastModified":"2024-11-01","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/operations","title":"Operations","category":"docs","lastModified":"2026-02-23","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/operational-telemetry","title":"Operational Telemetry","category":"docs","lastModified":"2025-09-02","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/peak-traffic","title":"Service Scaling and High-Visibility Events","category":"docs","lastModified":"2026-02-23","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/placeholders","title":"Placeholders","category":"docs","lastModified":"2025-04-22","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/publishing-from-authoring","title":"How content is published from AEM Sites","category":"docs","lastModified":"2025-04-11","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/recurring","title":"Schedule recurring tasks","category":"docs","lastModified":"2025-09-25","hasCustomImage":true,"deprecated":false,"labs":"AEM Sites"},
+{"path":"/docs/redirects","title":"Redirects","category":"docs","lastModified":"2025-06-23","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/release-history","title":"Recent Releases","category":"docs","lastModified":"2026-01-13","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/repoless","title":"Repoless - One codebase, many sites","category":"docs","lastModified":"2026-01-23","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/schema-structured-data","title":"Using Schema (Structured Data) as JSON-LD","category":"docs","lastModified":"2025-07-31","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/docs/scheduling","title":"Scheduling","category":"docs","lastModified":"2025-08-07","hasCustomImage":true,"deprecated":true,"labs":""},
+{"path":"/docs/security","title":"Security Overview","category":"docs","lastModified":"2026-02-12","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/seo-geo","title":"SEO & GEO Best Practices","category":"docs","lastModified":"2026-01-23","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/setup-adobe-sharepoint","title":"How to use Adobe Sharepoint","category":"docs","lastModified":"2024-09-09","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/docs/setup-byo-cdn-push-invalidation","title":"Push invalidation for BYO CDN","category":"docs","lastModified":"2025-12-17","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/docs/setup-byo-cdn-push-invalidation-for-akamai","title":"Push invalidation for Akamai","category":"docs","lastModified":"2025-11-22","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/docs/setup-byo-cdn-push-invalidation-for-cloudflare","title":"Push invalidation for Cloudflare","category":"docs","lastModified":"2025-11-22","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/setup-byo-cdn-push-invalidation-for-cloudfront","title":"Push invalidation for AWS Cloudfront","category":"docs","lastModified":"2025-11-22","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/setup-byo-cdn-push-invalidation-for-fastly","title":"Push invalidation for Fastly","category":"docs","lastModified":"2025-11-22","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/setup-byo-cdn-push-invalidation-for-managed","title":"Push invalidation for Adobe Managed CDN","category":"docs","lastModified":"2025-12-17","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/setup-customer-sharepoint","title":"How to use Sharepoint (application)","category":"docs","lastModified":"2025-07-28","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/docs/setup-customer-sharepoint-user","title":"How to use Sharepoint (delegated)","category":"docs","lastModified":"2025-07-28","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/docs/setup-googledrive","title":"How to use Google Drive","category":"docs","lastModified":"2024-09-09","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/docs/setup-sharepoint","title":"How to use Sharepoint","category":"docs","lastModified":"2024-09-09","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/docs/sidekick","title":"Using AEM Sidekick","category":"docs","lastModified":"2026-01-19","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/sidekick-errors","title":"AEM Sidekick Errors","category":"docs","lastModified":"2025-09-05","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/docs/sidekick-extension","title":"Installing the AEM Sidekick","category":"docs","lastModified":"2024-05-29","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/sidekick-library","title":"What is the Sidekick Library?","category":"docs","lastModified":"2026-01-16","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/sidekick-security","title":"AEM Sidekick Security","category":"docs","lastModified":"2026-02-11","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/slack","title":"Slack","category":"docs","lastModified":"2025-12-12","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/snapshots-reviews","title":"Snapshots and Reviews","category":"docs","lastModified":"2025-03-25","hasCustomImage":false,"deprecated":false,"labs":"AEM Sites"},
+{"path":"/docs/staging","title":"Staging & Environments","category":"docs","lastModified":"2024-09-24","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/storefront","title":"Commerce Storefront for Edge Delivery","category":"docs","lastModified":"2025-08-07","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/docs/teams","title":"Teams","category":"docs","lastModified":"2025-12-12","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/translation-and-localization","title":"Translation and Localization","category":"docs","lastModified":"2024-09-09","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/docs/universal-editor-assets","title":"Publishing pages with AEM Assets","category":"docs","lastModified":"2025-09-02","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/docs/unsupported","title":"Unsupported Integrations","category":"docs","lastModified":"2024-12-19","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/experiments/short-home/home","title":"Adobe Experience Manager","category":"experiments","lastModified":"2024-09-09","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/footer","title":"Copyright 2025 Adobe. All rights reserved","category":"other","lastModified":"2025-09-03","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/gnav","title":"Getting Started","category":"other","lastModified":"2024-09-09","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/mwp-demo","title":"Hello World.","category":"other","lastModified":"2021-11-03","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/new-footer","title":"Adobe Experience Manager","category":"other","lastModified":"2025-09-03","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/previous/byo-cdn-akamai-setup","title":"Akamai Setup for hlx.live","category":"previous","lastModified":"2024-09-09","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/previous/byo-cdn-cloudflare-worker-setup","title":"Cloudflare (worker) for hlx.live","category":"previous","lastModified":"2024-09-09","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/previous/byo-cdn-cloudflare-worker-wrangler-setup","title":"Cloudflare (wrangler) for hlx.live","category":"previous","lastModified":"2024-09-09","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/previous/byo-cdn-cloudfront-setup","title":"CloudFront Setup for hlx.live","category":"previous","lastModified":"2024-09-09","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/previous/byo-cdn-fastly-setup","title":"Fastly Setup for hlx.live","category":"previous","lastModified":"2024-09-09","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/previous/byo-cdn-setup","title":"BYO CDN Setup for hlx.live","category":"previous","lastModified":"2024-09-09","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/tools/mp4-doctor/","title":"Optimize your MP4s for display on the Web.","category":"tools","lastModified":"2024-09-09","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/tools/organizer/","title":"Franklin Organizer","category":"tools","lastModified":"2024-09-09","hasCustomImage":true,"deprecated":false,"labs":""},
+{"path":"/tools/sidekick/install-extension","title":"Sidekick Extension (Beta)","category":"tools","lastModified":"2024-09-09","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/tools/sidekick/library","title":"Sidekick library","category":"tools","lastModified":"2024-09-09","hasCustomImage":false,"deprecated":false,"labs":""},
+{"path":"/tools/svg-doctor/","title":"Optimize your SVGs","category":"tools","lastModified":"2024-09-09","hasCustomImage":false,"deprecated":false,"labs":""}
+];
+
+// ── Category badge helper ──
+function catBadge(cat) {
+  var cls = 'cat-' + cat;
+  return '<span class="cat-badge ' + cls + '">' + cat + '</span>';
+}
+
+// ── Render table ──
+var tbody = document.getElementById('inventoryBody');
+var searchInput = document.getElementById('inventorySearch');
+var categoryFilter = document.getElementById('categoryFilter');
+var resultCount = document.getElementById('resultCount');
+var currentSort = { col: 'path', dir: 'asc' };
+var filteredData = ALL_ENTRIES.slice();
+
+function renderRows(data) {
+  var html = '';
+  for (var i = 0; i < data.length; i++) {
+    var e = data[i];
+    var flags = [];
+    if (e.deprecated) flags.push('<span class="flag-warn">Deprecated</span>');
+    if (e.labs) flags.push('<span class="flag-warn">Labs</span>');
+    html += '<tr>' +
+      '<td class="col-path">' + escHtml(e.path) + '</td>' +
+      '<td class="col-title">' + escHtml(e.title) + '</td>' +
+      '<td>' + catBadge(e.category) + '</td>' +
+      '<td class="col-date">' + e.lastModified + '</td>' +
+      '<td style="text-align:center">' + (e.hasCustomImage ? '<span class="flag-yes" title="Custom image"></span>' : '<span class="flag-no" title="Default image"></span>') + '</td>' +
+      '<td>' + (flags.length ? flags.join(' ') : '<span style="color:var(--fg-muted);">&mdash;</span>') + '</td>' +
+      '</tr>';
+  }
+  tbody.innerHTML = html;
+  resultCount.textContent = 'Showing ' + data.length + ' of ' + ALL_ENTRIES.length;
+}
+
+function escHtml(str) {
+  var d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+function applyFilters() {
+  var q = searchInput.value.toLowerCase().trim();
+  var cat = categoryFilter.value;
+  filteredData = ALL_ENTRIES.filter(function(e) {
+    if (cat && e.category !== cat) return false;
+    if (q) {
+      return e.path.toLowerCase().indexOf(q) !== -1 ||
+             e.title.toLowerCase().indexOf(q) !== -1 ||
+             e.category.toLowerCase().indexOf(q) !== -1;
+    }
+    return true;
+  });
+  sortData(currentSort.col, currentSort.dir);
+  renderRows(filteredData);
+}
+
+function sortData(col, dir) {
+  filteredData.sort(function(a, b) {
+    var va = a[col], vb = b[col];
+    if (col === 'hasCustomImage') {
+      va = va ? 1 : 0;
+      vb = vb ? 1 : 0;
+    }
+    if (col === 'flags') {
+      va = (a.deprecated ? 'a' : 'z') + (a.labs || 'z');
+      vb = (b.deprecated ? 'a' : 'z') + (b.labs || 'z');
+    }
+    if (typeof va === 'string') {
+      va = va.toLowerCase();
+      vb = vb.toLowerCase();
+    }
+    if (va < vb) return dir === 'asc' ? -1 : 1;
+    if (va > vb) return dir === 'asc' ? 1 : -1;
+    return 0;
+  });
+}
+
+searchInput.addEventListener('input', applyFilters);
+categoryFilter.addEventListener('change', applyFilters);
+
+// ── Column sort click ──
+var ths = document.querySelectorAll('#inventoryTable thead th');
+ths.forEach(function(th) {
+  th.addEventListener('click', function() {
+    var col = th.getAttribute('data-col');
+    if (!col) return;
+    var dir = 'asc';
+    if (currentSort.col === col && currentSort.dir === 'asc') dir = 'desc';
+    currentSort = { col: col, dir: dir };
+    ths.forEach(function(t) { t.classList.remove('sorted'); });
+    th.classList.add('sorted');
+    var arrow = th.querySelector('.sort-arrow');
+    if (arrow) arrow.innerHTML = dir === 'asc' ? '&#9650;' : '&#9660;';
+    sortData(col, dir);
+    renderRows(filteredData);
+  });
+});
+
+// Initial render
+renderRows(ALL_ENTRIES);
+
+// ── Back to top ──
+var backBtn = document.getElementById('backToTop');
+window.addEventListener('scroll', function() {
+  if (window.scrollY > 600) {
+    backBtn.classList.add('visible');
+  } else {
+    backBtn.classList.remove('visible');
+  }
+});
+backBtn.addEventListener('click', function() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+</script>
+
+</body>
+</html>
