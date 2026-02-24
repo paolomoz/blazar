@@ -521,15 +521,161 @@
   }
 
   /* ── Persistence ── */
-  function loadMessages() {
+  function genId() { return crypto.randomUUID().slice(0, 8); }
+
+  function loadStore() {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) messages = JSON.parse(raw).slice(-MAX_MESSAGES);
-    } catch { messages = []; }
+      const raw = localStorage.getItem(STORE_KEY);
+      if (raw) {
+        store = JSON.parse(raw);
+        // Ensure shape
+        if (!Array.isArray(store.chats)) store.chats = [];
+        if (!Array.isArray(store.openTabs)) store.openTabs = [];
+        // Prune orphaned openTabs
+        const ids = new Set(store.chats.map(c => c.id));
+        store.openTabs = store.openTabs.filter(id => ids.has(id));
+        if (store.activeTab && !ids.has(store.activeTab)) store.activeTab = null;
+        return;
+      }
+      // Migrate from old single-conversation key
+      const old = localStorage.getItem(OLD_STORAGE_KEY);
+      if (old) {
+        const msgs = JSON.parse(old).slice(-MAX_MESSAGES);
+        if (msgs.length > 0) {
+          const id = genId();
+          const firstUser = msgs.find(m => m.role === 'user');
+          const title = firstUser ? firstUser.content.slice(0, 40) : 'New chat';
+          store = {
+            chats: [{ id, title, messages: msgs, ts: Date.now() }],
+            openTabs: [id],
+            activeTab: id,
+          };
+          saveStore();
+          localStorage.removeItem(OLD_STORAGE_KEY);
+          return;
+        }
+      }
+      store = { chats: [], openTabs: [], activeTab: null };
+    } catch {
+      store = { chats: [], openTabs: [], activeTab: null };
+    }
   }
-  function saveMessages() {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(messages.slice(-MAX_MESSAGES))); }
-    catch { /* quota */ }
+
+  function saveStore() {
+    try {
+      // Cap messages per chat, prune oldest chats
+      store.chats.forEach(c => { c.messages = c.messages.slice(-MAX_MESSAGES); });
+      if (store.chats.length > MAX_CHATS) {
+        const openSet = new Set(store.openTabs);
+        // Sort closed chats by ts ascending, remove oldest
+        const closed = store.chats.filter(c => !openSet.has(c.id)).sort((a, b) => a.ts - b.ts);
+        while (store.chats.length > MAX_CHATS && closed.length > 0) {
+          const victim = closed.shift();
+          store.chats = store.chats.filter(c => c.id !== victim.id);
+        }
+      }
+      localStorage.setItem(STORE_KEY, JSON.stringify(store));
+    } catch { /* quota */ }
+  }
+
+  function getActiveChat() {
+    return store.chats.find(c => c.id === store.activeTab) || null;
+  }
+
+  function createChat() {
+    const id = genId();
+    const chat = { id, title: 'New chat', messages: [], ts: Date.now() };
+    store.chats.push(chat);
+    store.openTabs.push(id);
+    store.activeTab = id;
+    saveStore();
+    return chat;
+  }
+
+  function switchTab(id) {
+    if (store.activeTab === id) return;
+    store.activeTab = id;
+    saveStore();
+    renderTabs();
+    renderMessages();
+  }
+
+  function closeTab(id) {
+    const idx = store.openTabs.indexOf(id);
+    if (idx === -1) return;
+    store.openTabs.splice(idx, 1);
+
+    // If closing the active tab, switch to adjacent
+    if (store.activeTab === id) {
+      if (store.openTabs.length > 0) {
+        store.activeTab = store.openTabs[Math.min(idx, store.openTabs.length - 1)];
+      } else {
+        // Last tab closed — create a fresh one
+        const fresh = { id: genId(), title: 'New chat', messages: [], ts: Date.now() };
+        store.chats.push(fresh);
+        store.openTabs.push(fresh.id);
+        store.activeTab = fresh.id;
+      }
+    }
+
+    // Remove chat from store entirely if it has no messages (no point keeping empty chats in history)
+    const chat = store.chats.find(c => c.id === id);
+    if (chat && chat.messages.length === 0) {
+      store.chats = store.chats.filter(c => c.id !== id);
+    }
+
+    saveStore();
+    renderTabs();
+    renderMessages();
+  }
+
+  function reopenChat(id) {
+    if (store.openTabs.includes(id)) {
+      switchTab(id);
+      return;
+    }
+    store.openTabs.push(id);
+    store.activeTab = id;
+    saveStore();
+    renderTabs();
+    renderMessages();
+  }
+
+  function deleteChat(id) {
+    // Remove from openTabs if present
+    store.openTabs = store.openTabs.filter(tid => tid !== id);
+    store.chats = store.chats.filter(c => c.id !== id);
+    if (store.activeTab === id) {
+      if (store.openTabs.length > 0) {
+        store.activeTab = store.openTabs[store.openTabs.length - 1];
+      } else {
+        store.activeTab = null;
+      }
+    }
+    saveStore();
+    renderTabs();
+    renderHistory();
+    renderMessages();
+  }
+
+  function updateChatTitle(chat) {
+    const firstUser = chat.messages.find(m => m.role === 'user');
+    if (firstUser) {
+      chat.title = firstUser.content.replace(/^\[Currently viewing:.*?\]\s*/s, '').slice(0, 40);
+      if (!chat.title) chat.title = firstUser.content.slice(0, 40);
+    }
+  }
+
+  function relativeTime(ts) {
+    const diff = Date.now() - ts;
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1) return 'just now';
+    if (mins < 60) return `${mins}m ago`;
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return `${hrs}h ago`;
+    const days = Math.floor(hrs / 24);
+    if (days < 7) return `${days}d ago`;
+    return new Date(ts).toLocaleDateString();
   }
 
   function getPageContext() {
@@ -544,13 +690,14 @@
       if (resp.ok) {
         const data = await resp.json();
         discoveryPrompts = data.prompts;
-        if (messages.length === 0) renderMessages();
+        const chat = getActiveChat();
+        if (!chat || chat.messages.length === 0) renderMessages();
       }
     } catch {}
   }
 
   /* ── Refs ── */
-  let messagesEl, textarea, sendBtn, panel, toggleBtn;
+  let messagesEl, textarea, sendBtn, panel, toggleBtn, tabsEl, historyDropdownEl;
 
   const SPARKLE_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.582a.5.5 0 0 1 0 .963L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>`;
   const SEND_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 16 12 8"/><polyline points="8 12 12 8 16 12"/></svg>`;
@@ -569,8 +716,15 @@
     panel.innerHTML = `
       <div class="blazar-chat-header">
         <div class="blazar-chat-header-title">Blazar</div>
-        <button class="blazar-chat-new" aria-label="New conversation">New chat</button>
+        <div style="display:flex;align-items:center;gap:4px;">
+          <div class="blazar-chat-history-wrap">
+            <button class="blazar-chat-new" aria-label="Chat history" data-history>History</button>
+            <div class="blazar-chat-history-dropdown"></div>
+          </div>
+          <button class="blazar-chat-new" aria-label="New tab" data-newtab>+</button>
+        </div>
       </div>
+      <div class="blazar-chat-tabs blazar-chat-tabs-hidden"></div>
       <div class="blazar-chat-messages" aria-live="polite"></div>
       <div class="blazar-chat-spacer"></div>
       <div class="blazar-chat-input-area">
@@ -630,7 +784,10 @@
     messagesEl = panel.querySelector('.blazar-chat-messages');
     textarea = panel.querySelector('.blazar-chat-textarea');
     sendBtn = panel.querySelector('.blazar-chat-send');
-    const newBtn = panel.querySelector('.blazar-chat-new');
+    tabsEl = panel.querySelector('.blazar-chat-tabs');
+    historyDropdownEl = panel.querySelector('.blazar-chat-history-dropdown');
+    const newTabBtn = panel.querySelector('[data-newtab]');
+    const historyBtn = panel.querySelector('[data-history]');
 
     function expand() {
       isOpen = true;
@@ -649,9 +806,33 @@
     toggleBtn.addEventListener('click', () => { isOpen ? collapse() : expand(); });
     expand();
 
-    newBtn.addEventListener('click', () => { messages = []; saveMessages(); renderMessages(); });
+    newTabBtn.addEventListener('click', () => {
+      createChat();
+      renderTabs();
+      renderMessages();
+      textarea.focus();
+    });
 
-    document.addEventListener('keydown', e => { if (e.key === 'Escape' && isOpen) collapse(); });
+    historyBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      historyOpen = !historyOpen;
+      renderHistory();
+    });
+
+    // Close history dropdown on outside click
+    document.addEventListener('click', (e) => {
+      if (historyOpen && !historyDropdownEl.contains(e.target) && e.target !== historyBtn) {
+        historyOpen = false;
+        renderHistory();
+      }
+    });
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        if (historyOpen) { historyOpen = false; renderHistory(); }
+        else if (isOpen) collapse();
+      }
+    });
 
     textarea.addEventListener('keydown', e => {
       if (e.key === 'Enter' && !e.shiftKey) {
@@ -671,14 +852,87 @@
       else if (textarea.value.trim()) sendMessage();
     });
 
-    loadMessages();
+    loadStore();
+    // Ensure at least one open tab
+    if (store.openTabs.length === 0) createChat();
+    if (!store.activeTab || !store.openTabs.includes(store.activeTab)) {
+      store.activeTab = store.openTabs[0];
+      saveStore();
+    }
     loadDiscovery();
+    renderTabs();
     renderMessages();
   }
 
   /* ── Render ── */
+  function renderTabs() {
+    if (!tabsEl) return;
+    const shouldHide = store.openTabs.length <= 1 && getActiveChat() && getActiveChat().messages.length === 0;
+    tabsEl.classList.toggle('blazar-chat-tabs-hidden', shouldHide);
+
+    tabsEl.innerHTML = '';
+    store.openTabs.forEach(id => {
+      const chat = store.chats.find(c => c.id === id);
+      if (!chat) return;
+      const tab = document.createElement('button');
+      tab.className = 'blazar-chat-tab' + (id === store.activeTab ? ' active' : '');
+      tab.innerHTML = `<span class="blazar-chat-tab-title">${esc(chat.title)}</span><span class="blazar-chat-tab-close" data-close="${id}">\u2715</span>`;
+      tab.addEventListener('click', (e) => {
+        if (e.target.dataset.close) {
+          e.stopPropagation();
+          closeTab(e.target.dataset.close);
+          return;
+        }
+        switchTab(id);
+      });
+      tabsEl.appendChild(tab);
+    });
+  }
+
+  function renderHistory() {
+    if (!historyDropdownEl) return;
+    historyDropdownEl.classList.toggle('open', historyOpen);
+    if (!historyOpen) return;
+
+    const openSet = new Set(store.openTabs);
+    const closed = store.chats
+      .filter(c => !openSet.has(c.id) && c.messages.length > 0)
+      .sort((a, b) => b.ts - a.ts);
+
+    if (closed.length === 0) {
+      historyDropdownEl.innerHTML = `<div class="blazar-chat-history-dropdown-header">History</div><div class="blazar-chat-history-empty">No past conversations</div>`;
+      return;
+    }
+
+    historyDropdownEl.innerHTML = `<div class="blazar-chat-history-dropdown-header">History</div>`;
+    closed.forEach(chat => {
+      const row = document.createElement('div');
+      row.className = 'blazar-chat-history-item';
+      row.innerHTML = `
+        <div class="blazar-chat-history-item-body">
+          <div class="blazar-chat-history-item-title">${esc(chat.title)}</div>
+          <div class="blazar-chat-history-item-time">${relativeTime(chat.ts)}</div>
+        </div>
+        <button class="blazar-chat-history-item-del" data-del="${chat.id}" aria-label="Delete">\u2715</button>
+      `;
+      row.addEventListener('click', (e) => {
+        if (e.target.closest('[data-del]')) {
+          e.stopPropagation();
+          deleteChat(e.target.closest('[data-del]').dataset.del);
+          return;
+        }
+        historyOpen = false;
+        reopenChat(chat.id);
+        renderHistory();
+      });
+      historyDropdownEl.appendChild(row);
+    });
+  }
+
   function renderMessages() {
     if (!messagesEl) return;
+    const chat = getActiveChat();
+    const messages = chat ? chat.messages : [];
 
     if (messages.length === 0 && discoveryPrompts) {
       messagesEl.innerHTML = '';
@@ -753,12 +1007,18 @@
     textarea.style.height = 'auto';
     textarea.dispatchEvent(new Event('input'));
 
+    const chat = getActiveChat();
+    if (!chat) return;
+
     let userContent = text;
     const ctx = getPageContext();
-    if (ctx && messages.filter(m => m.role === 'user').length === 0) userContent = `${ctx}\n\n${text}`;
+    if (ctx && chat.messages.filter(m => m.role === 'user').length === 0) userContent = `${ctx}\n\n${text}`;
 
-    messages.push({ role: 'user', content: userContent });
-    saveMessages();
+    chat.messages.push({ role: 'user', content: userContent });
+    chat.ts = Date.now();
+    updateChatTitle(chat);
+    saveStore();
+    renderTabs();
     renderMessages();
 
     isStreaming = true;
@@ -768,7 +1028,7 @@
     textarea.disabled = true;
     abortController = new AbortController();
 
-    const apiMessages = messages.filter(m => m.role === 'user' || m.role === 'assistant').map(m => ({ role: m.role, content: m.content }));
+    const apiMessages = chat.messages.filter(m => m.role === 'user' || m.role === 'assistant').map(m => ({ role: m.role, content: m.content }));
 
     try {
       const resp = await fetch(API_URL, {
@@ -779,7 +1039,7 @@
       });
       if (!resp.ok) throw new Error(`API error (${resp.status})`);
 
-      messages.push({ role: 'assistant', content: '' });
+      chat.messages.push({ role: 'assistant', content: '' });
       renderMessages();
 
       const reader = resp.body.getReader();
@@ -799,20 +1059,21 @@
             const parsed = JSON.parse(data);
             const delta = parsed.choices?.[0]?.delta?.content;
             if (delta) {
-              messages[messages.length - 1].content += delta;
-              updateLastAssistant(messages[messages.length - 1].content);
+              chat.messages[chat.messages.length - 1].content += delta;
+              updateLastAssistant(chat.messages[chat.messages.length - 1].content);
             }
           } catch {}
         }
       }
-      saveMessages();
+      chat.ts = Date.now();
+      saveStore();
       renderMessages();
     } catch (err) {
       if (err.name === 'AbortError') {
-        if (messages.length > 0 && messages[messages.length - 1].role === 'assistant' && !messages[messages.length - 1].content) messages.pop();
-        saveMessages(); renderMessages();
+        if (chat.messages.length > 0 && chat.messages[chat.messages.length - 1].role === 'assistant' && !chat.messages[chat.messages.length - 1].content) chat.messages.pop();
+        saveStore(); renderMessages();
       } else {
-        messages.push({ role: 'error', content: `Could not reach the assistant. ${err.message}` });
+        chat.messages.push({ role: 'error', content: `Could not reach the assistant. ${err.message}` });
         renderMessages();
       }
     } finally {
