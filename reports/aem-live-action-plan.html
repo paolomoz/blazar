@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Action Plan — www.aem.live</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700;900&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue: #3B63FB;
+  --blue-light: #EBF0FF;
+  --blue-dark: #2A4AD4;
+  --bg: #F8F8F8;
+  --bg-white: #FFFFFF;
+  --fg: #292929;
+  --fg-heading: #131313;
+  --fg-muted: #717171;
+  --border: #E1E1E1;
+  --red: #D7373F;
+  --red-bg: #FFF0F0;
+  --amber: #CB6F10;
+  --amber-bg: #FFF5EB;
+  --green: #12805C;
+  --green-bg: #EDFCF2;
+  --purple: #7A6AFD;
+  --purple-bg: #F3F0FF;
+  --shadow-card: 0 2px 8px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04), 0 0 1px rgba(0,0,0,0.08);
+  --shadow-elevated: 0 8px 24px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08);
+  --radius: 8px;
+  --radius-sm: 4px;
+  --radius-lg: 12px;
+  --radius-pill: 9999px;
+  --font: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'Source Code Pro', Monaco, monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+body { font-family: var(--font); color: var(--fg); background: var(--bg); line-height: 1.6; }
+a { color: var(--blue); text-decoration: none; }
+a:hover { text-decoration: underline; }
+:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; border-radius: 2px; }
+
+/* Layout */
+.container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+.header { background: var(--bg-white); border-bottom: 1px solid var(--border); padding: 32px 0; margin-bottom: 32px; }
+.header-inner { display: flex; align-items: center; gap: 16px; }
+.logo { width: 40px; height: 40px; background: linear-gradient(135deg, var(--blue), var(--purple)); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 18px; flex-shrink: 0; }
+.header h1 { font-size: 28px; font-weight: 900; color: var(--fg-heading); line-height: 1.2; }
+.header-meta { font-size: 14px; color: var(--fg-muted); margin-top: 2px; }
+.connected { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--blue); background: var(--blue-light); padding: 4px 12px; border-radius: var(--radius-pill); margin-left: 12px; }
+
+/* Navigation */
+.jump-nav { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 32px; }
+.jump-nav a { display: inline-block; padding: 6px 14px; border-radius: var(--radius-pill); background: var(--bg-white); border: 1px solid var(--border); font-size: 13px; font-weight: 600; color: var(--fg); transition: all 0.15s; }
+.jump-nav a:hover { background: var(--blue-light); border-color: var(--blue); color: var(--blue); text-decoration: none; }
+
+/* Cards */
+.card { background: var(--bg-white); border-radius: var(--radius-lg); box-shadow: var(--shadow-card); padding: 24px; margin-bottom: 16px; }
+
+/* Sections */
+.section { margin-bottom: 40px; }
+.section-title { font-size: 22px; font-weight: 900; color: var(--fg-heading); margin-bottom: 8px; }
+.section-desc { font-size: 14px; color: var(--fg-muted); margin-bottom: 20px; line-height: 1.5; }
+
+/* Priority matrix */
+.matrix { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+@media (max-width: 640px) { .matrix { grid-template-columns: 1fr; } }
+.matrix-cell { border-radius: var(--radius-lg); padding: 20px; border: 2px solid; }
+.matrix-cell h3 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+.matrix-cell .cell-desc { font-size: 13px; margin-bottom: 0; line-height: 1.4; }
+.mc-p1 { background: var(--red-bg); border-color: var(--red); }
+.mc-p1 h3 { color: var(--red); }
+.mc-p1 .cell-desc { color: #9B2C33; }
+.mc-p2 { background: var(--amber-bg); border-color: var(--amber); }
+.mc-p2 h3 { color: var(--amber); }
+.mc-p2 .cell-desc { color: #8A5A0D; }
+.mc-p3 { background: var(--blue-light); border-color: var(--blue); }
+.mc-p3 h3 { color: var(--blue); }
+.mc-p3 .cell-desc { color: #2A4AD4; }
+.mc-p4 { background: var(--purple-bg); border-color: var(--purple); }
+.mc-p4 h3 { color: var(--purple); }
+.mc-p4 .cell-desc { color: #5B4DC7; }
+
+/* Action items */
+.action { background: var(--bg-white); border-radius: var(--radius-lg); box-shadow: var(--shadow-card); padding: 0; margin-bottom: 16px; overflow: hidden; }
+.action-header { display: flex; align-items: flex-start; gap: 14px; padding: 20px 24px; cursor: pointer; user-select: none; }
+.action-header:hover { background: rgba(0,0,0,0.015); }
+.action-num { font-size: 13px; font-weight: 700; font-family: var(--font-mono); color: var(--fg-muted); min-width: 28px; padding-top: 2px; }
+.action-title-block { flex: 1; }
+.action-title { font-size: 16px; font-weight: 700; color: var(--fg-heading); line-height: 1.3; margin-bottom: 6px; }
+.action-subtitle { font-size: 13px; color: var(--fg-muted); line-height: 1.4; }
+.action-badges { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; flex-shrink: 0; padding-top: 2px; }
+.badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: var(--radius-pill); font-size: 11px; font-weight: 700; letter-spacing: 0.3px; text-transform: uppercase; white-space: nowrap; }
+.badge-p1 { background: var(--red); color: white; }
+.badge-p2 { background: var(--amber); color: white; }
+.badge-p3 { background: var(--blue); color: white; }
+.badge-p4 { background: var(--purple); color: white; }
+.badge-impact { background: var(--fg-heading); color: white; }
+.badge-effort-low { background: var(--green-bg); color: var(--green); border: 1px solid var(--green); }
+.badge-effort-med { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber); }
+.badge-effort-high { background: var(--red-bg); color: var(--red); border: 1px solid var(--red); }
+.toggle-icon { font-size: 18px; color: var(--fg-muted); transition: transform 0.2s; flex-shrink: 0; padding-top: 2px; }
+.action.open .toggle-icon { transform: rotate(90deg); }
+
+.action-body { padding: 0 24px 20px 66px; display: none; }
+.action.open .action-body { display: block; }
+.action-body h4 { font-size: 13px; font-weight: 700; color: var(--fg-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; margin-top: 16px; }
+.action-body h4:first-child { margin-top: 0; }
+.action-body p { font-size: 14px; line-height: 1.6; color: var(--fg); margin-bottom: 8px; }
+.action-body ul { padding-left: 18px; margin-bottom: 8px; }
+.action-body li { font-size: 14px; line-height: 1.6; color: var(--fg); margin-bottom: 4px; }
+.action-body code { font-family: var(--font-mono); font-size: 13px; background: var(--bg); padding: 1px 6px; border-radius: var(--radius-sm); color: var(--blue-dark); }
+.impact-bar { display: flex; align-items: center; gap: 10px; margin: 8px 0; }
+.impact-track { flex: 1; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+.impact-fill { height: 100%; border-radius: 4px; }
+.impact-fill.high { background: var(--red); width: 90%; }
+.impact-fill.med-high { background: var(--amber); width: 70%; }
+.impact-fill.med { background: var(--blue); width: 50%; }
+.impact-fill.low { background: var(--fg-muted); width: 30%; }
+.impact-label { font-size: 12px; font-weight: 600; min-width: 80px; text-align: right; }
+.impact-label.high { color: var(--red); }
+.impact-label.med-high { color: var(--amber); }
+.impact-label.med { color: var(--blue); }
+.impact-label.low { color: var(--fg-muted); }
+
+/* Affected pages list */
+.affected { background: var(--bg); border-radius: var(--radius); padding: 12px 16px; margin-top: 8px; max-height: 200px; overflow-y: auto; }
+.affected-item { font-size: 13px; font-family: var(--font-mono); color: var(--fg); padding: 3px 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; gap: 12px; }
+.affected-item:last-child { border-bottom: none; }
+.affected-item .af-path { color: var(--blue-dark); }
+.affected-item .af-title { color: var(--fg-muted); font-family: var(--font); text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 300px; }
+
+/* Summary stats */
+.plan-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 32px; }
+@media (max-width: 640px) { .plan-stats { grid-template-columns: repeat(2, 1fr); } }
+.plan-stat { text-align: center; padding: 16px; background: var(--bg-white); border-radius: var(--radius); box-shadow: var(--shadow-card); }
+.plan-stat .ps-num { font-size: 32px; font-weight: 900; line-height: 1; }
+.plan-stat .ps-label { font-size: 12px; color: var(--fg-muted); font-weight: 600; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.3px; }
+.ps-p1 .ps-num { color: var(--red); }
+.ps-p2 .ps-num { color: var(--amber); }
+.ps-p3 .ps-num { color: var(--blue); }
+.ps-p4 .ps-num { color: var(--purple); }
+
+/* Validation stamp */
+.validation { border-left: 4px solid var(--green); margin-bottom: 32px; }
+
+/* Footer */
+.report-footer { text-align: center; padding: 32px 0; color: var(--fg-muted); font-size: 13px; border-top: 1px solid var(--border); margin-top: 48px; }
+
+/* Back to top */
+.back-to-top { position: fixed; bottom: 24px; right: 24px; width: 40px; height: 40px; border-radius: 50%; background: var(--blue); color: white; border: none; cursor: pointer; box-shadow: var(--shadow-elevated); display: flex; align-items: center; justify-content: center; font-size: 18px; opacity: 0; transition: opacity 0.2s; z-index: 100; }
+.back-to-top.visible { opacity: 1; }
+.back-to-top:hover { background: var(--blue-dark); }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="container">
+    <div class="header-inner">
+      <div class="logo">B</div>
+      <div>
+        <h1>Action Plan: www.aem.live</h1>
+        <div class="header-meta">
+          Generated February 24, 2026 &mdash; 18 actions derived from content gaps analysis
+          <span class="connected">&#x1f517; Connected to Content Gaps Report</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+<nav class="jump-nav" aria-label="Section navigation">
+  <a href="#overview">Overview</a>
+  <a href="#p1">P1 &mdash; Critical</a>
+  <a href="#p2">P2 &mdash; High</a>
+  <a href="#p3">P3 &mdash; Medium</a>
+  <a href="#p4">P4 &mdash; Low</a>
+</nav>
+
+<!-- Validation stamp -->
+<div class="card validation">
+  <p style="font-size:14px;font-weight:600;color:var(--green);margin-bottom:4px;">Derived from Cross-Validated Data</p>
+  <p style="font-size:13px;color:var(--fg-muted);line-height:1.5;">All actions are based on findings from the <a href="aem-live-content-gaps.html">Content Gaps Analysis</a>, which was independently verified via HTTP spot-checks, raw data recounts, and content sampling. Page counts and affected items reference verified data.</p>
+</div>
+
+<!-- ===== OVERVIEW ===== -->
+<section class="section" id="overview">
+  <h2 class="section-title">Plan Overview</h2>
+  <p class="section-desc">18 specific improvements prioritized by impact. No timelines &mdash; the site owner decides sequencing. Each action includes affected pages, expected impact, and effort level.</p>
+
+  <div class="plan-stats">
+    <div class="plan-stat ps-p1"><div class="ps-num">4</div><div class="ps-label">P1 Critical</div></div>
+    <div class="plan-stat ps-p2"><div class="ps-num">5</div><div class="ps-label">P2 High</div></div>
+    <div class="plan-stat ps-p3"><div class="ps-num">5</div><div class="ps-label">P3 Medium</div></div>
+    <div class="plan-stat ps-p4"><div class="ps-num">4</div><div class="ps-label">P4 Low</div></div>
+
+  </div>
+
+  <div class="matrix">
+    <div class="matrix-cell mc-p1">
+      <h3>P1 &mdash; Critical</h3>
+      <p class="cell-desc">Broken experiences, missing discoverability, or actively misleading content. Fix these first.</p>
+    </div>
+    <div class="matrix-cell mc-p2">
+      <h3>P2 &mdash; High</h3>
+      <p class="cell-desc">Significant content quality or SEO impact. Large batches that compound over time.</p>
+    </div>
+    <div class="matrix-cell mc-p3">
+      <h3>P3 &mdash; Medium</h3>
+      <p class="cell-desc">Improves professionalism and completeness. Important but not user-facing breakage.</p>
+    </div>
+    <div class="matrix-cell mc-p4">
+      <h3>P4 &mdash; Low</h3>
+      <p class="cell-desc">Hygiene and housekeeping. Address when touching nearby content.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== P1 CRITICAL ===== -->
+<section class="section" id="p1">
+  <h2 class="section-title" style="color:var(--red);">P1 &mdash; Critical</h2>
+
+  <!-- Action 1 -->
+  <div class="action" id="a1">
+    <div class="action-header" onclick="toggleAction(this)">
+      <span class="action-num">01</span>
+      <div class="action-title-block">
+        <div class="action-title">Remove dead page from query index</div>
+        <div class="action-subtitle">/mwp-demo returns 404 &mdash; orphaned since November 2021</div>
+      </div>
+      <div class="action-badges">
+        <span class="badge badge-p1">P1</span>
+        <span class="badge badge-effort-low">Low effort</span>
+      </div>
+      <span class="toggle-icon">&#x25B6;</span>
+    </div>
+    <div class="action-body">
+      <h4>Impact</h4>
+      <div class="impact-bar">
+        <div class="impact-track"><div class="impact-fill high"></div></div>
+        <span class="impact-label high">SEO &amp; Trust</span>
+      </div>
+      <p>A 404 in the query index means site search and any tools consuming the index will surface a broken page. Google may also be crawling this via internal links. It undermines trust in the index as a data source.</p>
+      <h4>Action</h4>
+      <p>Delete or unpublish <code>/mwp-demo</code> from the content source (SharePoint/Google Drive). Re-index to remove it from <code>query-index.json</code>.</p>
+      <h4>Affected</h4>
+      <div class="affected">
+        <div class="affected-item"><span class="af-path">/mwp-demo</span><span class="af-title">Hello World.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action 2 -->
+  <div class="action" id="a2">
+    <div class="action-header" onclick="toggleAction(this)">
+      <span class="action-num">02</span>
+      <div class="action-title-block">
+        <div class="action-title">Add 5 sitemap-only pages to the query index</div>
+        <div class="action-subtitle">Live pages in sitemap that are invisible to site search and content lists</div>
+      </div>
+      <div class="action-badges">
+        <span class="badge badge-p1">P1</span>
+        <span class="badge badge-effort-low">Low effort</span>
+      </div>
+      <span class="toggle-icon">&#x25B6;</span>
+    </div>
+    <div class="action-body">
+      <h4>Impact</h4>
+      <div class="impact-bar">
+        <div class="impact-track"><div class="impact-fill high"></div></div>
+        <span class="impact-label high">Discoverability</span>
+      </div>
+      <p>These pages are live, in the sitemap, but missing from the query index. Users searching the site or tools consuming the index cannot find them. The block-collection pages (<code>header</code>, <code>images</code>) are especially important for developers.</p>
+      <h4>Action</h4>
+      <p>Ensure these pages are included in the indexing scope defined in <code>helix-query.yaml</code> (or equivalent). Verify they have the correct metadata block. Re-index.</p>
+      <h4>Affected</h4>
+      <div class="affected">
+        <div class="affected-item"><span class="af-path">/developer/block-collection/header</span><span class="af-title">Header (Block)</span></div>
+        <div class="affected-item"><span class="af-path">/developer/block-collection/images</span><span class="af-title">Images</span></div>
+        <div class="affected-item"><span class="af-path">/docs/setup-customer-googledrive</span><span class="af-title">Setup Customer Google Drive</span></div>
+        <div class="affected-item"><span class="af-path">/developer/configuring-aem-assets-sidekick-plugin</span><span class="af-title">Configuring AEM Assets Sidekick Plugin</span></div>
+        <div class="affected-item"><span class="af-path">/blog/archive</span><span class="af-title">Blog Archive</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action 3 -->
+  <div class="action" id="a3">
+    <div class="action-header" onclick="toggleAction(this)">
+      <span class="action-num">03</span>
+      <div class="action-title-block">
+        <div class="action-title">Add 9 live indexed pages to the sitemap</div>
+        <div class="action-subtitle">Content exists and is indexed but invisible to search engines via sitemap</div>
+      </div>
+      <div class="action-badges">
+        <span class="badge badge-p1">P1</span>
+        <span class="badge badge-effort-low">Low effort</span>
+      </div>
+      <span class="toggle-icon">&#x25B6;</span>
+    </div>
+    <div class="action-body">
+      <h4>Impact</h4>
+      <div class="impact-bar">
+        <div class="impact-track"><div class="impact-fill high"></div></div>
+        <span class="impact-label high">SEO</span>
+      </div>
+      <p>9 live pages (confirmed HTTP 200) are in the query index but not in the sitemap. Search engines rely on the sitemap for discovery. Block collection pages are high-value developer content. The DA tutorial is a labs page that may intentionally be excluded &mdash; verify.</p>
+      <h4>Action</h4>
+      <p>Review the sitemap generation configuration. These pages may be excluded by a path filter or missing a required metadata field. Add them to the sitemap (except <code>/mwp-demo</code> which is dead &mdash; see action #1).</p>
+      <h4>Affected</h4>
+      <div class="affected">
+        <div class="affected-item"><span class="af-path">/developer/block-collection/columns</span><span class="af-title">Columns (Block)</span></div>
+        <div class="affected-item"><span class="af-path">/developer/block-collection/fragment</span><span class="af-title">Fragment (Block)</span></div>
+        <div class="affected-item"><span class="af-path">/developer/block-collection/hero</span><span class="af-title">Hero (Block)</span></div>
+        <div class="affected-item"><span class="af-path">/developer/block-collection/table</span><span class="af-title">Tables</span></div>
+        <div class="affected-item"><span class="af-path">/developer/block-collection/quote</span><span class="af-title">Quote</span></div>
+        <div class="affected-item"><span class="af-path">/developer/block-collection/form</span><span class="af-title">Form</span></div>
+        <div class="affected-item"><span class="af-path">/developer/block-collection/video</span><span class="af-title">Video (Block)</span></div>
+        <div class="affected-item"><span class="af-path">/docs/sidekick-extension</span><span class="af-title">Installing the AEM Sidekick</span></div>
+        <div class="affected-item"><span class="af-path">/developer/da-tutorial</span><span class="af-title">DA Developer Tutorial (Labs)</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action 4 -->
+  <div class="action" id="a4">
+    <div class="action-header" onclick="toggleAction(this)">
+      <span class="action-num">04</span>
+      <div class="action-title-block">
+        <div class="action-title">Fix stale navigation link to renamed page</div>
+        <div class="action-subtitle">/developer/anatomy-of-a-helix-project &rarr; /developer/anatomy-of-a-project</div>
+      </div>
+      <div class="action-badges">
+        <span class="badge badge-p1">P1</span>
+        <span class="badge badge-effort-low">Low effort</span>
+      </div>
+      <span class="toggle-icon">&#x25B6;</span>
+    </div>
+    <div class="action-body">
+      <h4>Impact</h4>
+      <div class="impact-bar">
+        <div class="impact-track"><div class="impact-fill med-high"></div></div>
+        <span class="impact-label med-high">User Experience</span>
+      </div>
+      <p>The docs hub navigation links to <code>/developer/anatomy-of-a-helix-project</code> (old Helix branding). While the URL returns 200 (likely via redirect), it uses the deprecated product name. The canonical page is <code>/developer/anatomy-of-a-project</code>. This is a single-line fix in the navigation content source.</p>
+      <h4>Action</h4>
+      <p>Update the link in the docs hub page (Google Doc or SharePoint document) from <code>/developer/anatomy-of-a-helix-project</code> to <code>/developer/anatomy-of-a-project</code>. Preview and publish.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== P2 HIGH ===== -->
+<section class="section" id="p2">
+  <h2 class="section-title" style="color:var(--amber);">P2 &mdash; High</h2>
+
+  <!-- Action 5 -->
+  <div class="action" id="a5">
+    <div class="action-header" onclick="toggleAction(this)">
+      <span class="action-num">05</span>
+      <div class="action-title-block">
+        <div class="action-title">Rebrand 5 business/tool pages still using Franklin and Helix names</div>
+        <div class="action-subtitle">User-facing pages with 15-21 old branding mentions each</div>
+      </div>
+      <div class="action-badges">
+        <span class="badge badge-p2">P2</span>
+        <span class="badge badge-effort-med">Med effort</span>
+      </div>
+      <span class="toggle-icon">&#x25B6;</span>
+    </div>
+    <div class="action-body">
+      <h4>Impact</h4>
+      <div class="impact-bar">
+        <div class="impact-track"><div class="impact-fill high"></div></div>
+        <span class="impact-label high">Brand &amp; Trust</span>
+      </div>
+      <p>Cross-validation found 15-21 mentions of "Franklin" and "Helix" per page on these user-facing business pages. Visitors arriving from search see an inconsistent brand. The <code>/business/demo</code> page still says "Franklin VIP program" &mdash; this is likely the first touchpoint for prospects.</p>
+      <h4>Action</h4>
+      <p>Rewrite these pages to use current "AEM Edge Delivery Services" branding. Pay special attention to <code>/business/demo</code> (prospect-facing) and <code>/tools/organizer/</code> (still called "Franklin Organizer").</p>
+      <h4>Affected</h4>
+      <div class="affected">
+        <div class="affected-item"><span class="af-path">/business/demo</span><span class="af-title">Sign up for the VIP Program, Get a Demo</span></div>
+        <div class="affected-item"><span class="af-path">/business/helix-is-green</span><span class="af-title">Helix is green</span></div>
+        <div class="affected-item"><span class="af-path">/business/content-velocity</span><span class="af-title">Increase Content Velocity with Helix</span></div>
+        <div class="affected-item"><span class="af-path">/tools/organizer/</span><span class="af-title">Franklin Organizer</span></div>
+        <div class="affected-item"><span class="af-path">/developer/github-actions</span><span class="af-title">Using GitHub Actions (mentions Franklin)</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action 6 -->
+  <div class="action" id="a6">
+    <div class="action-header" onclick="toggleAction(this)">
+      <span class="action-num">06</span>
+      <div class="action-title-block">
+        <div class="action-title">Review and update 72 stale pages (last modified 12+ months ago)</div>
+        <div class="action-subtitle">37% of all content &mdash; prioritize block-collection and core docs</div>
+      </div>
+      <div class="action-badges">
+        <span class="badge badge-p2">P2</span>
+        <span class="badge badge-effort-high">High effort</span>
+      </div>
+      <span class="toggle-icon">&#x25B6;</span>
+    </div>
+    <div class="action-body">
+      <h4>Impact</h4>
+      <div class="impact-bar">
+        <div class="impact-track"><div class="impact-fill high"></div></div>
+        <span class="impact-label high">Content Quality</span>
+      </div>
+      <p>72 of 197 pages (37%) haven't been touched in over a year. Some may be stable reference content that doesn't need changes. Others may contain outdated instructions. A triage pass is needed &mdash; not necessarily a rewrite of all 72.</p>
+      <h4>Action</h4>
+      <p>Triage in batches. For each stale page, decide: <strong>(a)</strong> content is still accurate &rarr; touch/republish to update timestamp, <strong>(b)</strong> needs updates &rarr; rewrite, <strong>(c)</strong> obsolete &rarr; deprecate or redirect. Start with the highest-traffic pages.</p>
+      <h4>Suggested triage order</h4>
+      <ul>
+        <li><strong>Block collection</strong> (16 stale): These are core developer reference. Verify code examples still work.</li>
+        <li><strong>Core docs</strong> (setup guides, authoring): Verify screenshots and steps match current UI.</li>
+        <li><strong>Business pages</strong> (demo, helix-is-green, content-velocity): Already covered by action #5.</li>
+        <li><strong>Long-tail docs</strong> (davidsmodel, FAQ, translation): Lower traffic, triage last.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Action 7 -->
+  <div class="action" id="a7">
+    <div class="action-header" onclick="toggleAction(this)">
+      <span class="action-num">07</span>
+      <div class="action-title-block">
+        <div class="action-title">Update old branding in 6 documentation pages</div>
+        <div class="action-subtitle">References to helix-query.yaml, helix@adobe.com, hlx.live in active docs</div>
+      </div>
+      <div class="action-badges">
+        <span class="badge badge-p2">P2</span>
+        <span class="badge badge-effort-med">Med effort</span>
+      </div>
+      <span class="toggle-icon">&#x25B6;</span>
+    </div>
+    <div class="action-body">
+      <h4>Impact</h4>
+      <div class="impact-bar">
+        <div class="impact-track"><div class="impact-fill med-high"></div></div>
+        <span class="impact-label med-high">Developer Trust</span>
+      </div>
+      <p>Active documentation pages reference old technical names. Developers following these docs may use deprecated names or domains. The <code>helix-query.yaml</code> reference in indexing docs is particularly confusing since this is a filename developers need to create.</p>
+      <h4>Action</h4>
+      <p>Search-and-replace old technical references. Verify whether <code>helix-query.yaml</code> is still the actual filename or has been renamed. Update email references from <code>helix@adobe.com</code> if applicable.</p>
+      <h4>Affected</h4>
+      <div class="affected">
+        <div class="affected-item"><span class="af-path">/docs/indexing-reference</span><span class="af-title">References helix-query.yaml</span></div>
+        <div class="affected-item"><span class="af-path">/docs/setup-googledrive</span><span class="af-title">References helix@adobe.com</span></div>
+        <div class="affected-item"><span class="af-path">/docs/faq</span><span class="af-title">Explains Franklin/Helix naming</span></div>
+        <div class="affected-item"><span class="af-path">/developer/upgrade</span><span class="af-title">Upgrading from hlx.live</span></div>
+        <div class="affected-item"><span class="af-path">/blog/hlx-is-now-aem-live</span><span class="af-title">Migration announcement</span></div>
+        <div class="affected-item"><span class="af-path">/blog/organizing-source-code-ensemble</span><span class="af-title">References Helix 5</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action 8 -->
+  <div class="action" id="a8">
+    <div class="action-header" onclick="toggleAction(this)">
+      <span class="action-num">08</span>
+      <div class="action-title-block">
+        <div class="action-title">Add descriptions to 6 pages with empty meta descriptions</div>
+        <div class="action-subtitle">Impacts SEO snippets and social sharing previews</div>
+      </div>
+      <div class="action-badges">
+        <span class="badge badge-p2">P2</span>
+        <span class="badge badge-effort-low">Low effort</span>
+      </div>
+      <span class="toggle-icon">&#x25B6;</span>
+    </div>
+    <div class="action-body">
+      <h4>Impact</h4>
+      <div class="impact-bar">
+        <div class="impact-track"><div class="impact-fill med-high"></div></div>
+        <span class="impact-label med-high">SEO</span>
+      </div>
+      <p>Pages without descriptions show auto-generated snippets in search results and blank text in social shares. The <code>/developer/cli-reference</code> page is a real documentation page that should have a proper description. The others are mostly utility pages.</p>
+      <h4>Action</h4>
+      <p>Add a description to the metadata block of each page. For utility pages (gnav, thank-you), consider whether they should be excluded from the index instead.</p>
+      <h4>Affected</h4>
+      <div class="affected">
+        <div class="affected-item"><span class="af-path">/developer/cli-reference</span><span class="af-title">aem Command Line Reference</span></div>
+        <div class="affected-item"><span class="af-path">/docs/setup-sharepoint</span><span class="af-title">How to use Sharepoint</span></div>
+        <div class="affected-item"><span class="af-path">/tools/sidekick/library</span><span class="af-title">Sidekick library</span></div>
+        <div class="affected-item"><span class="af-path">/business/comms-channel-thank-you</span><span class="af-title">Thank you for submitting the form.</span></div>
+        <div class="affected-item"><span class="af-path">/gnav</span><span class="af-title">Getting Started (navigation fragment)</span></div>
+        <div class="affected-item"><span class="af-path">/mwp-demo</span><span class="af-title">Hello World. (dead page &mdash; see #1)</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action 9 -->
+  <div class="action" id="a9">
+    <div class="action-header" onclick="toggleAction(this)">
+      <span class="action-num">09</span>
+      <div class="action-title-block">
+        <div class="action-title">Add custom OG images to high-traffic pages</div>
+        <div class="action-subtitle">65 pages use default social image &mdash; prioritize docs hub, developer hub, key guides</div>
+      </div>
+      <div class="action-badges">
+        <span class="badge badge-p2">P2</span>
+        <span class="badge badge-effort-high">High effort</span>
+      </div>
+      <span class="toggle-icon">&#x25B6;</span>
+    </div>
+    <div class="action-body">
+      <h4>Impact</h4>
+      <div class="impact-bar">
+        <div class="impact-track"><div class="impact-fill med-high"></div></div>
+        <span class="impact-label med-high">Social &amp; Brand</span>
+      </div>
+      <p>33% of pages (65/197) use the default social image. When shared on Twitter/LinkedIn/Slack, they all look identical. The highest-impact pages to fix are the entry points: <code>/docs/</code> (Documentation hub), <code>/developer</code> (Developer hub), <code>/business/demo</code>, and the keeping-it-100 guide.</p>
+      <h4>Action</h4>
+      <p>Create custom OG images for the top-priority pages first. For block-collection pages, a consistent template with the block name would work. This is a large batch &mdash; tackle in waves. Utility/fragment pages can be deprioritized.</p>
+      <h4>Top priority pages (no custom image)</h4>
+      <div class="affected">
+        <div class="affected-item"><span class="af-path">/docs/</span><span class="af-title">Documentation hub</span></div>
+        <div class="affected-item"><span class="af-path">/developer</span><span class="af-title">AEM for Developers hub</span></div>
+        <div class="affected-item"><span class="af-path">/business/demo</span><span class="af-title">VIP Program / Demo page</span></div>
+        <div class="affected-item"><span class="af-path">/developer/keeping-it-100</span><span class="af-title">Lighthouse Score 100</span></div>
+        <div class="affected-item"><span class="af-path">/developer/importer</span><span class="af-title">Importing Content</span></div>
+        <div class="affected-item"><span class="af-path">/developer/block-collection</span><span class="af-title">Block Collection index</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== P3 MEDIUM ===== -->
+<section class="section" id="p3">
+  <h2 class="section-title" style="color:var(--blue);">P3 &mdash; Medium</h2>
+
+  <!-- Action 10 -->
+  <div class="action" id="a10">
+    <div class="action-header" onclick="toggleAction(this)">
+      <span class="action-num">10</span>
+      <div class="action-title-block">
+        <div class="action-title">Decide the future of 6 legacy /previous/ CDN setup pages</div>
+        <div class="action-subtitle">Old hlx.live CDN docs &mdash; redirect, archive, or keep with clearer deprecation notice</div>
+      </div>
+      <div class="action-badges">
+        <span class="badge badge-p3">P3</span>
+        <span class="badge badge-effort-med">Med effort</span>
+      </div>
+      <span class="toggle-icon">&#x25B6;</span>
+    </div>
+    <div class="action-body">
+      <h4>Impact</h4>
+      <div class="impact-bar">
+        <div class="impact-track"><div class="impact-fill med"></div></div>
+        <span class="impact-label med">Clarity</span>
+      </div>
+      <p>The <code>/previous/</code> section contains CDN setup guides for the deprecated hlx.live domain. Since hlx.live was blocked in December 2025, these guides are now historical. They may still receive search traffic from cached results.</p>
+      <h4>Action</h4>
+      <p>Options: <strong>(a)</strong> Redirect each to its current <code>/docs/</code> equivalent with a 301. <strong>(b)</strong> Keep but add prominent "this page is outdated" banners with links to current docs. <strong>(c)</strong> Remove from index and sitemap to reduce noise. Option (a) is cleanest for SEO.</p>
+      <h4>Affected</h4>
+      <div class="affected">
+        <div class="affected-item"><span class="af-path">/previous/byo-cdn-setup</span><span class="af-title">BYO CDN Setup for hlx.live</span></div>
+        <div class="affected-item"><span class="af-path">/previous/byo-cdn-fastly-setup</span><span class="af-title">Fastly Setup for hlx.live</span></div>
+        <div class="affected-item"><span class="af-path">/previous/byo-cdn-cloudfront-setup</span><span class="af-title">CloudFront Setup for hlx.live</span></div>
+        <div class="affected-item"><span class="af-path">/previous/byo-cdn-cloudflare-worker-wrangler-setup</span><span class="af-title">Cloudflare (wrangler) for hlx.live</span></div>
+        <div class="affected-item"><span class="af-path">/previous/byo-cdn-cloudflare-worker-setup</span><span class="af-title">Cloudflare (worker) for hlx.live</span></div>
+        <div class="affected-item"><span class="af-path">/previous/byo-cdn-akamai-setup</span><span class="af-title">Akamai Setup for hlx.live</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action 11 -->
+  <div class="action" id="a11">
+    <div class="action-header" onclick="toggleAction(this)">
+      <span class="action-num">11</span>
+      <div class="action-title-block">
+        <div class="action-title">Review 14 labs/experimental pages for graduation or removal</div>
+        <div class="action-subtitle">Features flagged as labs &mdash; some may be ready for GA, others may need sunset</div>
+      </div>
+      <div class="action-badges">
+        <span class="badge badge-p3">P3</span>
+        <span class="badge badge-effort-med">Med effort</span>
+      </div>
+      <span class="toggle-icon">&#x25B6;</span>
+    </div>
+    <div class="action-body">
+      <h4>Impact</h4>
+      <div class="impact-bar">
+        <div class="impact-track"><div class="impact-fill med"></div></div>
+        <span class="impact-label med">Completeness</span>
+      </div>
+      <p>14 pages are flagged as labs/experimental. Some features (like AI coding agents, experimentation) may have matured since they were tagged. Others may need to be sunsetted. A review ensures the labs field reflects current product reality.</p>
+      <h4>Action</h4>
+      <p>For each labs page, check with the product team: is this feature now GA? Still experimental? Deprecated? Update the labs metadata accordingly. Features that have graduated should have the labs tag removed to increase their visibility.</p>
+      <h4>Affected</h4>
+      <div class="affected">
+        <div class="affected-item"><span class="af-path">/docs/experimentation</span><span class="af-title">AEM Sites</span></div>
+        <div class="affected-item"><span class="af-path">/docs/aem-assets-sidekick-plugin</span><span class="af-title">AEM Assets</span></div>
+        <div class="affected-item"><span class="af-path">/developer/target-integration</span><span class="af-title">AEM Sites</span></div>
+        <div class="affected-item"><span class="af-path">/developer/web-components</span><span class="af-title">Non mainstream tech</span></div>
+        <div class="affected-item"><span class="af-path">/developer/da-tutorial</span><span class="af-title">Document Authoring</span></div>
+        <div class="affected-item"><span class="af-path">/developer/ai-coding-agents</span><span class="af-title">Early-Access Technology</span></div>
+        <div class="affected-item"><span class="af-path">/developer/json2html</span><span class="af-title">AEM Sites</span></div>
+        <div class="affected-item"><span class="af-path">/developer/content-fragment-overlay</span><span class="af-title">Sites</span></div>
+        <div class="affected-item"><span class="af-path">/docs/snapshots-reviews</span><span class="af-title">AEM Sites</span></div>
+        <div class="affected-item"><span class="af-path">/docs/aem-embed</span><span class="af-title">AEM Sites</span></div>
+        <div class="affected-item"><span class="af-path">/developer/byo-git</span><span class="af-title">AEM Cloud Foundation</span></div>
+        <div class="affected-item"><span class="af-path">/developer/gtm-martech-integration</span><span class="af-title">AEM Sites</span></div>
+        <div class="affected-item"><span class="af-path">/developer/martech-integration</span><span class="af-title">AEM Sites</span></div>
+        <div class="affected-item"><span class="af-path">/docs/recurring</span><span class="af-title">AEM Sites</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action 12 -->
+  <div class="action" id="a12">
+    <div class="action-header" onclick="toggleAction(this)">
+      <span class="action-num">12</span>
+      <div class="action-title-block">
+        <div class="action-title">Add deprecation banners to 2 deprecated feature pages</div>
+        <div class="action-subtitle">Folder Mapping and Scheduling have deprecation metadata but may lack visible warnings</div>
+      </div>
+      <div class="action-badges">
+        <span class="badge badge-p3">P3</span>
+        <span class="badge badge-effort-low">Low effort</span>
+      </div>
+      <span class="toggle-icon">&#x25B6;</span>
+    </div>
+    <div class="action-body">
+      <h4>Impact</h4>
+      <div class="impact-bar">
+        <div class="impact-track"><div class="impact-fill med"></div></div>
+        <span class="impact-label med">Developer Guidance</span>
+      </div>
+      <p>These pages have deprecation messages in their metadata, but verify that the deprecation is prominently displayed in the page content itself &mdash; not just in the metadata that only machines read.</p>
+      <h4>Action</h4>
+      <p>Verify each page has a visible deprecation banner at the top. If not, add one with the migration guidance already present in the metadata. Link to alternative solutions.</p>
+      <h4>Affected</h4>
+      <div class="affected">
+        <div class="affected-item"><span class="af-path">/developer/folder-mapping</span><span class="af-title">Folder Mapping</span></div>
+        <div class="affected-item"><span class="af-path">/docs/scheduling</span><span class="af-title">Scheduling</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action 13 -->
+  <div class="action" id="a13">
+    <div class="action-header" onclick="toggleAction(this)">
+      <span class="action-num">13</span>
+      <div class="action-title-block">
+        <div class="action-title">Resolve /home navigation reference</div>
+        <div class="action-subtitle">Global nav and footer link to /home which is not in the query index</div>
+      </div>
+      <div class="action-badges">
+        <span class="badge badge-p3">P3</span>
+        <span class="badge badge-effort-low">Low effort</span>
+      </div>
+      <span class="toggle-icon">&#x25B6;</span>
+    </div>
+    <div class="action-body">
+      <h4>Impact</h4>
+      <div class="impact-bar">
+        <div class="impact-track"><div class="impact-fill low"></div></div>
+        <span class="impact-label low">Consistency</span>
+      </div>
+      <p>The gnav and footer link to <code>/home</code> which returns HTTP 200 but is not in the query index (the homepage is indexed as <code>/</code>). This works via redirect/alias but creates an inconsistency in the content model.</p>
+      <h4>Action</h4>
+      <p>Either update the nav/footer to link to <code>/</code> directly, or add <code>/home</code> to the query index. The former is cleaner.</p>
+    </div>
+  </div>
+
+  <!-- Action 14 -->
+  <div class="action" id="a14">
+    <div class="action-header" onclick="toggleAction(this)">
+      <span class="action-num">14</span>
+      <div class="action-title-block">
+        <div class="action-title">Add custom OG images to remaining 44 content pages</div>
+        <div class="action-subtitle">After prioritized pages (#9), address the long tail of docs with default images</div>
+      </div>
+      <div class="action-badges">
+        <span class="badge badge-p3">P3</span>
+        <span class="badge badge-effort-high">High effort</span>
+      </div>
+      <span class="toggle-icon">&#x25B6;</span>
+    </div>
+    <div class="action-body">
+      <h4>Impact</h4>
+      <div class="impact-bar">
+        <div class="impact-track"><div class="impact-fill med"></div></div>
+        <span class="impact-label med">Social &amp; Brand</span>
+      </div>
+      <p>After addressing the high-traffic pages in action #9, there are ~44 remaining content pages (excluding utility/fragment pages) that still use the default social image. These are lower-traffic but still benefit from custom imagery when shared.</p>
+      <h4>Action</h4>
+      <p>Consider a templated approach: generate OG images from page titles using a consistent template (many tools automate this). This would cover all pages at once rather than creating individual images.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== P4 LOW ===== -->
+<section class="section" id="p4">
+  <h2 class="section-title" style="color:var(--purple);">P4 &mdash; Low</h2>
+
+  <!-- Action 15 -->
+  <div class="action" id="a15">
+    <div class="action-header" onclick="toggleAction(this)">
+      <span class="action-num">15</span>
+      <div class="action-title-block">
+        <div class="action-title">Remove 8 utility/fragment pages from the query index</div>
+        <div class="action-subtitle">Thank-you pages, gnav, footers, and experiments pollute content lists</div>
+      </div>
+      <div class="action-badges">
+        <span class="badge badge-p4">P4</span>
+        <span class="badge badge-effort-low">Low effort</span>
+      </div>
+      <span class="toggle-icon">&#x25B6;</span>
+    </div>
+    <div class="action-body">
+      <h4>Impact</h4>
+      <div class="impact-bar">
+        <div class="impact-track"><div class="impact-fill low"></div></div>
+        <span class="impact-label low">Index Hygiene</span>
+      </div>
+      <p>These are not real content pages &mdash; they're navigation fragments, form confirmation pages, test experiments, and footer content. They add noise to the query index and appear in search results.</p>
+      <h4>Action</h4>
+      <p>Exclude these paths from the indexing configuration in <code>helix-query.yaml</code>. Alternatively, add a <code>robots: noindex</code> metadata property to each page.</p>
+      <h4>Affected</h4>
+      <div class="affected">
+        <div class="affected-item"><span class="af-path">/gnav</span><span class="af-title">Global navigation fragment</span></div>
+        <div class="affected-item"><span class="af-path">/footer</span><span class="af-title">Footer fragment</span></div>
+        <div class="affected-item"><span class="af-path">/new-footer</span><span class="af-title">New footer fragment</span></div>
+        <div class="affected-item"><span class="af-path">/developer/block-party/thank-you</span><span class="af-title">Block Party thank-you</span></div>
+        <div class="affected-item"><span class="af-path">/developer/example-form/thank-you</span><span class="af-title">Example form thank-you</span></div>
+        <div class="affected-item"><span class="af-path">/business/comms-channel-thank-you</span><span class="af-title">Comms channel thank-you</span></div>
+        <div class="affected-item"><span class="af-path">/experiments/short-home/home</span><span class="af-title">Homepage experiment</span></div>
+        <div class="affected-item"><span class="af-path">/mwp-demo</span><span class="af-title">Dead test page (also action #1)</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action 16 -->
+  <div class="action" id="a16">
+    <div class="action-header" onclick="toggleAction(this)">
+      <span class="action-num">16</span>
+      <div class="action-title-block">
+        <div class="action-title">Resolve 2 duplicate page titles</div>
+        <div class="action-subtitle">Same title used by different pages &mdash; confusing in search results and content lists</div>
+      </div>
+      <div class="action-badges">
+        <span class="badge badge-p4">P4</span>
+        <span class="badge badge-effort-low">Low effort</span>
+      </div>
+      <span class="toggle-icon">&#x25B6;</span>
+    </div>
+    <div class="action-body">
+      <h4>Impact</h4>
+      <div class="impact-bar">
+        <div class="impact-track"><div class="impact-fill low"></div></div>
+        <span class="impact-label low">Clarity</span>
+      </div>
+      <p>Two sets of pages share identical titles. When these appear in search results or content lists, users can't tell them apart.</p>
+      <h4>Action</h4>
+      <p>Add disambiguating prefixes or suffixes to the titles. For example, "Thank you for your submission" could become "Block Party — Thank You" and "Example Form — Thank You".</p>
+    </div>
+  </div>
+
+  <!-- Action 17 -->
+  <div class="action" id="a17">
+    <div class="action-header" onclick="toggleAction(this)">
+      <span class="action-num">17</span>
+      <div class="action-title-block">
+        <div class="action-title">Update copyright year in footer</div>
+        <div class="action-subtitle">Footer still shows "Copyright © 2025" &mdash; should be 2026</div>
+      </div>
+      <div class="action-badges">
+        <span class="badge badge-p4">P4</span>
+        <span class="badge badge-effort-low">Low effort</span>
+      </div>
+      <span class="toggle-icon">&#x25B6;</span>
+    </div>
+    <div class="action-body">
+      <h4>Impact</h4>
+      <div class="impact-bar">
+        <div class="impact-track"><div class="impact-fill low"></div></div>
+        <span class="impact-label low">Professionalism</span>
+      </div>
+      <p>The footer page title contains "Copyright © 2025" which appears on every page of the site. It's February 2026.</p>
+      <h4>Action</h4>
+      <p>Update the footer document in the content source. Consider using a dynamic year via JavaScript to prevent this from recurring.</p>
+    </div>
+  </div>
+
+  <!-- Action 18 -->
+  <div class="action" id="a18">
+    <div class="action-header" onclick="toggleAction(this)">
+      <span class="action-num">18</span>
+      <div class="action-title-block">
+        <div class="action-title">Set up automated content health monitoring</div>
+        <div class="action-subtitle">Re-run this analysis periodically to catch new gaps before they accumulate</div>
+      </div>
+      <div class="action-badges">
+        <span class="badge badge-p4">P4</span>
+        <span class="badge badge-effort-med">Med effort</span>
+      </div>
+      <span class="toggle-icon">&#x25B6;</span>
+    </div>
+    <div class="action-body">
+      <h4>Impact</h4>
+      <div class="impact-bar">
+        <div class="impact-track"><div class="impact-fill med"></div></div>
+        <span class="impact-label med">Prevention</span>
+      </div>
+      <p>The analysis script (<code>scripts/aem-live-content-gaps.mjs</code>) can be re-run anytime to produce fresh data. Setting up a periodic run (monthly or after major content changes) would catch new gaps early &mdash; before 72 pages go stale again.</p>
+      <h4>Action</h4>
+      <p>Schedule the analysis script to run periodically (GitHub Action, cron, or manual). Compare results against the previous run to highlight changes. This is what blazar is being built to do.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="report-footer">
+  <div class="container">
+    <p>Action Plan generated by <strong>Blazar</strong> &mdash; LLM-driven experience management</p>
+    <p style="margin-top:4px;">Based on <a href="aem-live-content-gaps.html">Content Gaps Analysis</a> (Feb 24, 2026)</p>
+  </div>
+</footer>
+
+<button class="back-to-top" onclick="window.scrollTo({top:0})" aria-label="Back to top">&#x2191;</button>
+
+<script>
+function toggleAction(header) {
+  header.closest('.action').classList.toggle('open');
+}
+
+// Expand all on load for printing
+if (window.matchMedia('print').matches) {
+  document.querySelectorAll('.action').forEach(a => a.classList.add('open'));
+}
+
+// Back to top visibility
+const btn = document.querySelector('.back-to-top');
+window.addEventListener('scroll', () => {
+  btn.classList.toggle('visible', window.scrollY > 400);
+}, { passive: true });
+</script>
+</body>
+</html>

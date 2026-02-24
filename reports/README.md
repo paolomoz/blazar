@@ -27,7 +27,16 @@ Each entry: `id`, `file`, `title`, `date`, `category`, `related` (IDs of connect
     "date": "2026-02-24",
     "category": "audit",
     "summary": "197 indexed pages, 192 sitemap URLs. 10 pages missing from sitemap, 5 sitemap-only pages, 4 broken nav links, 65 missing OG images, 72 stale pages (37%), 17 old branding references.",
-    "related": []
+    "related": ["aem-live-action-plan"]
+  },
+  {
+    "id": "aem-live-action-plan",
+    "file": "aem-live-action-plan.html",
+    "title": "Action Plan: www.aem.live",
+    "date": "2026-02-24",
+    "category": "optimization",
+    "summary": "18 prioritized actions derived from content gaps analysis. 4 critical (dead page, sitemap/index sync, nav fix), 5 high (rebranding, stale content triage, metadata), 5 medium (legacy pages, labs review, deprecation), 4 low (index hygiene, monitoring).",
+    "related": ["aem-live-content-gaps"]
   }
 ]
 ```
