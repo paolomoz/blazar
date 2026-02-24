@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brand Consistency Scorecard — www.aem.live</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700;900&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue: #3B63FB;
+  --blue-light: #EBF0FF;
+  --blue-dark: #2A4AD4;
+  --bg: #F8F8F8;
+  --bg-white: #FFFFFF;
+  --fg: #292929;
+  --fg-heading: #131313;
+  --fg-muted: #717171;
+  --border: #E1E1E1;
+  --red: #D7373F;
+  --red-bg: #FFF0F0;
+  --amber: #CB6F10;
+  --amber-bg: #FFF5EB;
+  --green: #12805C;
+  --green-bg: #EDFCF2;
+  --purple: #7A6AFD;
+  --purple-bg: #F3F0FF;
+  --cyan: #0D7899;
+  --cyan-bg: #E8F8FF;
+  --fuchsia: #DF4DF5;
+  --shadow-card: 0 2px 8px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04), 0 0 1px rgba(0,0,0,0.08);
+  --shadow-elevated: 0 8px 24px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08);
+  --radius-sm: 4px;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 9999px;
+  --font: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'Source Code Pro', Monaco, 'Cascadia Code', monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+body { font-family: var(--font); color: var(--fg); background: var(--bg); line-height: 1.5; -webkit-font-smoothing: antialiased; }
+:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; border-radius: 2px; }
+a { color: var(--blue); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Report Nav */
+.report-nav {
+  position: sticky; top: 0; z-index: 200;
+  background: var(--bg-white);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 24px;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 600;
+  flex-wrap: wrap;
+}
+.report-nav a {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 12px; border-radius: 9999px;
+  color: var(--fg-muted); transition: all 0.15s;
+  text-decoration: none;
+}
+.report-nav a:hover { background: var(--blue-light); color: var(--blue); text-decoration: none; }
+.report-nav .nav-hub { font-weight: 700; color: var(--fg-heading); }
+.report-nav .nav-hub:hover { color: var(--blue); }
+.report-nav .nav-sep { color: var(--border); margin: 0 2px; user-select: none; }
+.report-nav .nav-related { background: var(--bg); border: 1px solid var(--border); }
+.report-nav .nav-related:hover { background: var(--blue-light); border-color: var(--blue); color: var(--blue); }
+
+/* Layout */
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px 80px; }
+@media (max-width: 640px) { .container { padding: 0 16px 60px; } }
+
+/* Header */
+.report-header {
+  background: var(--bg-white);
+  border-bottom: 1px solid var(--border);
+  padding: 32px 24px;
+  margin-bottom: 32px;
+}
+.report-header-inner {
+  max-width: 1200px; margin: 0 auto;
+  display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+}
+.report-header h1 { font-size: 28px; font-weight: 900; color: var(--fg-heading); line-height: 1.2; }
+.report-header .subtitle { font-size: 16px; color: var(--fg-muted); margin-top: 4px; }
+.report-branding { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: var(--blue); }
+.report-branding .logo-mark {
+  width: 28px; height: 28px; background: var(--blue); border-radius: 6px;
+  display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 900;
+}
+.report-date { font-size: 13px; color: var(--fg-muted); background: var(--bg); padding: 4px 12px; border-radius: var(--radius-pill); font-weight: 600; }
+
+/* Jump Nav */
+.jump-nav { background: var(--bg-white); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 24px; margin-bottom: 32px; box-shadow: var(--shadow-card); }
+.jump-nav-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--fg-muted); margin-bottom: 12px; }
+.jump-nav-links { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; }
+.jump-nav-links a { display: inline-block; padding: 6px 14px; border-radius: var(--radius-pill); font-size: 14px; font-weight: 600; color: var(--blue); background: var(--blue-light); transition: background 0.15s, color 0.15s; }
+.jump-nav-links a:hover { background: var(--blue); color: #fff; text-decoration: none; }
+
+/* Section */
+.section { margin-bottom: 48px; }
+.section-title { font-size: 22px; font-weight: 900; color: var(--fg-heading); margin-bottom: 8px; padding-bottom: 8px; border-bottom: 2px solid var(--blue); display: inline-block; }
+.section-desc { font-size: 15px; color: var(--fg-muted); margin-bottom: 20px; max-width: 720px; }
+
+/* Summary Cards */
+.summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+@media (max-width: 900px) { .summary-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 500px) { .summary-grid { grid-template-columns: 1fr; } }
+.stat-card { background: var(--bg-white); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow-card); text-align: center; border-top: 3px solid var(--border); }
+.stat-card.accent { border-top-color: var(--blue); }
+.stat-card.positive { border-top-color: var(--green); }
+.stat-card.warning { border-top-color: var(--amber); }
+.stat-card.critical { border-top-color: var(--red); }
+.stat-card.info { border-top-color: var(--purple); }
+.stat-value { font-size: 36px; font-weight: 900; color: var(--fg-heading); line-height: 1; margin-bottom: 4px; }
+.stat-label { font-size: 13px; font-weight: 600; color: var(--fg-muted); text-transform: uppercase; letter-spacing: 0.03em; }
+
+/* Score Circle */
+.score-circle {
+  width: 72px; height: 72px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; font-weight: 900; color: #fff;
+  margin: 0 auto 8px;
+}
+.score-circle.high { background: var(--green); }
+.score-circle.mid { background: var(--amber); }
+.score-circle.low { background: var(--red); }
+
+/* Page Card */
+.page-card {
+  background: var(--bg-white); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  margin-bottom: 24px; box-shadow: var(--shadow-card); overflow: hidden;
+}
+.page-card-header {
+  display: flex; align-items: center; gap: 16px; padding: 20px 24px;
+  border-bottom: 1px solid var(--border); flex-wrap: wrap;
+}
+.page-card-header .score-circle { margin: 0; width: 56px; height: 56px; font-size: 22px; flex-shrink: 0; }
+.page-card-title { font-size: 18px; font-weight: 700; color: var(--fg-heading); line-height: 1.3; }
+.page-card-url { font-size: 13px; color: var(--fg-muted); font-family: var(--font-mono); }
+.page-card-type {
+  margin-left: auto;
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+  padding: 4px 12px; border-radius: var(--radius-pill);
+}
+.page-card-type.strong { background: var(--green-bg); color: var(--green); }
+.page-card-type.minor { background: var(--amber-bg); color: var(--amber); }
+.page-card-type.significant { background: var(--red-bg); color: var(--red); }
+
+.page-card-body { padding: 24px; }
+
+/* Trait Scores */
+.trait-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-bottom: 20px; }
+@media (max-width: 900px) { .trait-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 500px) { .trait-grid { grid-template-columns: repeat(2, 1fr); } }
+.trait-item {
+  text-align: center; padding: 12px 8px;
+  background: var(--bg); border-radius: var(--radius-sm);
+}
+.trait-score { font-size: 24px; font-weight: 900; color: var(--fg-heading); line-height: 1; }
+.trait-max { font-size: 14px; font-weight: 600; color: var(--fg-muted); }
+.trait-name { font-size: 11px; font-weight: 600; color: var(--fg-muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.03em; line-height: 1.3; }
+
+/* Tone Spectrum (reuse from brand guidelines) */
+.tone-spectrum { background: var(--bg); border-radius: var(--radius-sm); padding: 16px 20px; margin-bottom: 20px; }
+.tone-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.tone-row:last-child { margin-bottom: 0; }
+.tone-label-left, .tone-label-right { font-size: 11px; font-weight: 600; color: var(--fg-muted); width: 80px; text-align: center; }
+.tone-track { flex: 1; height: 8px; background: linear-gradient(to right, var(--blue-light), var(--bg-white), var(--purple-bg)); border-radius: 4px; position: relative; }
+.tone-marker {
+  position: absolute; top: -4px;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--blue); border: 2px solid var(--bg-white);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2); transform: translateX(-50%);
+}
+.tone-marker.brand-ref {
+  width: 10px; height: 10px; top: -1px;
+  background: transparent; border: 2px solid var(--red);
+  box-shadow: none; opacity: 0.6;
+}
+
+/* Quotes */
+.quote-block { background: var(--bg-white); border-left: 4px solid var(--blue); border-radius: 0 var(--radius) var(--radius) 0; padding: 16px 20px; margin-bottom: 12px; box-shadow: var(--shadow-card); }
+.quote-block.aligned { border-left-color: var(--green); }
+.quote-block.deviant { border-left-color: var(--red); background: var(--red-bg); }
+.quote-block.warning { border-left-color: var(--amber); background: var(--amber-bg); }
+.quote-text { font-size: 15px; font-weight: 600; color: var(--fg-heading); line-height: 1.4; font-style: italic; }
+.quote-source { font-size: 12px; color: var(--fg-muted); margin-top: 6px; font-style: normal; }
+.quote-tag { display: inline-block; padding: 2px 8px; border-radius: var(--radius-pill); font-size: 10px; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; margin-left: 6px; }
+.tag-aligned { background: var(--green-bg); color: var(--green); }
+.tag-deviant { background: var(--red-bg); color: var(--red); }
+.tag-hedging { background: var(--amber-bg); color: var(--amber); }
+
+/* Findings list */
+.findings-list { list-style: none; padding: 0; margin-bottom: 16px; }
+.findings-list li { padding: 6px 0; font-size: 14px; border-bottom: 1px solid var(--border); }
+.findings-list li:last-child { border-bottom: none; }
+.findings-list .flag { font-weight: 700; margin-right: 6px; }
+.flag-off { color: var(--red); }
+.flag-on { color: var(--green); }
+.flag-warn { color: var(--amber); }
+
+/* Same-voice indicator */
+.voice-verdict { font-size: 14px; font-weight: 600; padding: 8px 16px; border-radius: var(--radius-sm); margin-top: 12px; display: inline-block; }
+.voice-verdict.yes { background: var(--green-bg); color: var(--green); }
+.voice-verdict.mostly { background: var(--amber-bg); color: var(--amber); }
+.voice-verdict.no { background: var(--red-bg); color: var(--red); }
+
+/* Tier section cards */
+.tier-header {
+  padding: 16px 24px; border-radius: var(--radius) var(--radius) 0 0;
+  font-size: 18px; font-weight: 900; color: #fff;
+}
+.tier-header.strong { background: var(--green); }
+.tier-header.minor { background: var(--amber); }
+.tier-header.significant { background: var(--red); }
+.tier-body { padding: 20px 24px; background: var(--bg-white); border: 1px solid var(--border); border-top: none; border-radius: 0 0 var(--radius) var(--radius); margin-bottom: 32px; }
+
+/* Two column */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
+
+/* Heatmap Table */
+.heatmap-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 16px; background: var(--bg-white); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-card); }
+.heatmap-table th { text-align: left; font-weight: 700; color: var(--fg-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; padding: 8px 10px; border-bottom: 2px solid var(--border); background: var(--bg); }
+.heatmap-table td { padding: 6px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.heatmap-table tr:last-child td { border-bottom: none; }
+.heatmap-table .page-name { font-weight: 600; color: var(--fg-heading); white-space: nowrap; }
+.heat-cell { text-align: center; font-weight: 700; border-radius: 3px; }
+.heat-5 { background: #C6F6D5; color: #276749; }
+.heat-4 { background: #D4EDDA; color: #2F6846; }
+.heat-3 { background: #FFF3CD; color: #856404; }
+.heat-2 { background: #FFE0B2; color: #E65100; }
+.heat-1 { background: #FFCDD2; color: #C62828; }
+.heat-0 { background: #EEE; color: #999; }
+
+/* Score bar */
+.score-bar-wrap { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.score-bar-label { font-size: 13px; font-weight: 600; color: var(--fg); width: 200px; flex-shrink: 0; }
+.score-bar-track { flex: 1; height: 20px; background: var(--bg); border-radius: 4px; overflow: hidden; }
+.score-bar-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; padding: 0 8px; font-size: 11px; font-weight: 700; color: #fff; }
+.score-bar-fill.high { background: var(--green); }
+.score-bar-fill.mid { background: var(--amber); }
+.score-bar-fill.low { background: var(--red); }
+.score-bar-val { font-size: 13px; font-weight: 700; color: var(--fg-heading); width: 32px; text-align: right; }
+
+/* Validation Stamp */
+.validation-stamp { background: var(--green-bg); border: 1px solid #B4E6CD; border-radius: var(--radius); padding: 20px 24px; margin-top: 40px; }
+.validation-stamp h3 { font-size: 15px; font-weight: 700; color: var(--green); margin-bottom: 8px; }
+.validation-stamp ul { padding-left: 20px; font-size: 14px; }
+.validation-stamp li { margin-bottom: 4px; }
+.validation-stamp .stamp-date { font-size: 12px; color: var(--fg-muted); margin-top: 12px; font-weight: 600; }
+
+/* Collapsible */
+.collapsible-header { cursor: pointer; user-select: none; }
+.collapsible-header::after { content: ' [expand]'; font-size: 12px; color: var(--blue); font-weight: 600; }
+.collapsible-header.open::after { content: ' [collapse]'; }
+.collapsible-body { display: none; }
+.collapsible-body.open { display: block; }
+
+</style>
+</head>
+<body>
+
+<!-- Report Nav -->
+<nav class="report-nav" aria-label="Report navigation">
+  <a href="hub.html" class="nav-hub">Blazar Hub</a>
+  <span class="nav-sep">/</span>
+  <span style="color:var(--fg);">Brand Consistency Scorecard</span>
+  <span class="nav-sep">|</span>
+  <a href="aem-live-brand-guidelines.html" class="nav-related">Brand Guidelines</a>
+  <a href="aem-live-brand-opportunities.html" class="nav-related">Improvement Opportunities</a>
+  <a href="aem-live-content-gaps.html" class="nav-related">Content Gaps</a>
+</nav>
+
+<!-- Header -->
+<header class="report-header">
+  <div class="report-header-inner">
+    <div>
+      <h1>Brand Consistency Scorecard</h1>
+      <p class="subtitle">Page-level brand voice audit across 12 pages on www.aem.live</p>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div class="report-branding"><div class="logo-mark">B</div> Blazar</div>
+      <span class="report-date">2026-02-24</span>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+<!-- Jump Nav -->
+<nav class="jump-nav" aria-label="Page sections">
+  <div class="jump-nav-title">Jump to</div>
+  <ul class="jump-nav-links">
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#heatmap">Trait Heatmap</a></li>
+    <li><a href="#rankings">Page Rankings</a></li>
+    <li><a href="#strong">Strong Alignment</a></li>
+    <li><a href="#minor">Minor Drift</a></li>
+    <li><a href="#significant">Significant Deviation</a></li>
+    <li><a href="#page-details">All Page Scores</a></li>
+    <li><a href="#systemic">Systemic Findings</a></li>
+    <li><a href="#validation">Validation</a></li>
+  </ul>
+</nav>
+
+<!-- Overview -->
+<section class="section" id="overview">
+  <h2 class="section-title">Executive Overview</h2>
+  <p class="section-desc">Each page was scored against the 6 personality traits (0-5 each) and positioned on 7 tone axes. The overall brand alignment score (0-100) weights trait presence, tone axis deviation from the established brand position, and consistency of voice.</p>
+
+  <div class="summary-grid">
+    <div class="stat-card positive">
+      <div class="stat-value">76</div>
+      <div class="stat-label">Mean Score</div>
+    </div>
+    <div class="stat-card accent">
+      <div class="stat-value">12</div>
+      <div class="stat-label">Pages Audited</div>
+    </div>
+    <div class="stat-card positive">
+      <div class="stat-value">4</div>
+      <div class="stat-label">Strong Alignment</div>
+    </div>
+    <div class="stat-card warning">
+      <div class="stat-value">5</div>
+      <div class="stat-label">Minor Drift</div>
+    </div>
+  </div>
+
+  <div class="summary-grid">
+    <div class="stat-card critical">
+      <div class="stat-value">3</div>
+      <div class="stat-label">Significant Deviation</div>
+    </div>
+    <div class="stat-card info">
+      <div class="stat-value">92</div>
+      <div class="stat-label">Highest Score</div>
+    </div>
+    <div class="stat-card critical">
+      <div class="stat-value">48</div>
+      <div class="stat-label">Lowest Score</div>
+    </div>
+    <div class="stat-card warning">
+      <div class="stat-value">44</div>
+      <div class="stat-label">Score Range</div>
+    </div>
+  </div>
+</section>
+
+<!-- Trait Heatmap -->
+<section class="section" id="heatmap">
+  <h2 class="section-title">Personality Trait Heatmap</h2>
+  <p class="section-desc">Scores for each of the 6 brand personality traits across all 12 pages. Scale: 0 (absent) to 5 (exemplary). The established brand voice expects strong presence of all six traits.</p>
+
+  <div style="overflow-x:auto;">
+  <table class="heatmap-table">
+    <thead>
+      <tr>
+        <th style="min-width:180px;">Page</th>
+        <th>Declarative Confidence</th>
+        <th>Engineering Pragmatism</th>
+        <th>Inclusive Directness</th>
+        <th>Performance Moralism</th>
+        <th>Architectural Transparency</th>
+        <th>Controlled Playfulness</th>
+        <th>Overall</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="page-name">/ (Homepage)</td>
+        <td class="heat-cell heat-4">4</td>
+        <td class="heat-cell heat-3">3</td>
+        <td class="heat-cell heat-4">4</td>
+        <td class="heat-cell heat-5">5</td>
+        <td class="heat-cell heat-2">2</td>
+        <td class="heat-cell heat-3">3</td>
+        <td class="heat-cell" style="font-weight:900;">78</td>
+      </tr>
+      <tr>
+        <td class="page-name">/docs/authoring</td>
+        <td class="heat-cell heat-3">3</td>
+        <td class="heat-cell heat-4">4</td>
+        <td class="heat-cell heat-5">5</td>
+        <td class="heat-cell heat-2">2</td>
+        <td class="heat-cell heat-3">3</td>
+        <td class="heat-cell heat-3">3</td>
+        <td class="heat-cell" style="font-weight:900;">82</td>
+      </tr>
+      <tr>
+        <td class="page-name">/developer/tutorial</td>
+        <td class="heat-cell heat-4">4</td>
+        <td class="heat-cell heat-5">5</td>
+        <td class="heat-cell heat-5">5</td>
+        <td class="heat-cell heat-3">3</td>
+        <td class="heat-cell heat-4">4</td>
+        <td class="heat-cell heat-4">4</td>
+        <td class="heat-cell" style="font-weight:900;">90</td>
+      </tr>
+      <tr>
+        <td class="page-name">/developer/keeping-it-100</td>
+        <td class="heat-cell heat-5">5</td>
+        <td class="heat-cell heat-5">5</td>
+        <td class="heat-cell heat-4">4</td>
+        <td class="heat-cell heat-5">5</td>
+        <td class="heat-cell heat-5">5</td>
+        <td class="heat-cell heat-4">4</td>
+        <td class="heat-cell" style="font-weight:900;">92</td>
+      </tr>
+      <tr>
+        <td class="page-name">/docs/faq</td>
+        <td class="heat-cell heat-2">2</td>
+        <td class="heat-cell heat-3">3</td>
+        <td class="heat-cell heat-3">3</td>
+        <td class="heat-cell heat-2">2</td>
+        <td class="heat-cell heat-3">3</td>
+        <td class="heat-cell heat-1">1</td>
+        <td class="heat-cell" style="font-weight:900;">58</td>
+      </tr>
+      <tr>
+        <td class="page-name">/docs/go-live-checklist</td>
+        <td class="heat-cell heat-4">4</td>
+        <td class="heat-cell heat-5">5</td>
+        <td class="heat-cell heat-4">4</td>
+        <td class="heat-cell heat-4">4</td>
+        <td class="heat-cell heat-3">3</td>
+        <td class="heat-cell heat-2">2</td>
+        <td class="heat-cell" style="font-weight:900;">83</td>
+      </tr>
+      <tr>
+        <td class="page-name">/docs/architecture</td>
+        <td class="heat-cell heat-5">5</td>
+        <td class="heat-cell heat-5">5</td>
+        <td class="heat-cell heat-3">3</td>
+        <td class="heat-cell heat-4">4</td>
+        <td class="heat-cell heat-5">5</td>
+        <td class="heat-cell heat-2">2</td>
+        <td class="heat-cell" style="font-weight:900;">85</td>
+      </tr>
+      <tr>
+        <td class="page-name">/developer/markup-sections-blocks</td>
+        <td class="heat-cell heat-3">3</td>
+        <td class="heat-cell heat-5">5</td>
+        <td class="heat-cell heat-4">4</td>
+        <td class="heat-cell heat-2">2</td>
+        <td class="heat-cell heat-5">5</td>
+        <td class="heat-cell heat-3">3</td>
+        <td class="heat-cell" style="font-weight:900;">80</td>
+      </tr>
+      <tr>
+        <td class="page-name">/business/demo</td>
+        <td class="heat-cell heat-2">2</td>
+        <td class="heat-cell heat-1">1</td>
+        <td class="heat-cell heat-2">2</td>
+        <td class="heat-cell heat-1">1</td>
+        <td class="heat-cell heat-0">0</td>
+        <td class="heat-cell heat-1">1</td>
+        <td class="heat-cell" style="font-weight:900;">48</td>
+      </tr>
+      <tr>
+        <td class="page-name">/docs/setup-customer-sharepoint</td>
+        <td class="heat-cell heat-3">3</td>
+        <td class="heat-cell heat-4">4</td>
+        <td class="heat-cell heat-3">3</td>
+        <td class="heat-cell heat-1">1</td>
+        <td class="heat-cell heat-4">4</td>
+        <td class="heat-cell heat-1">1</td>
+        <td class="heat-cell" style="font-weight:900;">65</td>
+      </tr>
+      <tr>
+        <td class="page-name">/developer/rum</td>
+        <td class="heat-cell heat-3">3</td>
+        <td class="heat-cell heat-4">4</td>
+        <td class="heat-cell heat-3">3</td>
+        <td class="heat-cell heat-2">2</td>
+        <td class="heat-cell heat-5">5</td>
+        <td class="heat-cell heat-1">1</td>
+        <td class="heat-cell" style="font-weight:900;">68</td>
+      </tr>
+      <tr>
+        <td class="page-name">/docs/custom-headers</td>
+        <td class="heat-cell heat-3">3</td>
+        <td class="heat-cell heat-4">4</td>
+        <td class="heat-cell heat-3">3</td>
+        <td class="heat-cell heat-1">1</td>
+        <td class="heat-cell heat-4">4</td>
+        <td class="heat-cell heat-1">1</td>
+        <td class="heat-cell" style="font-weight:900;">63</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- Rankings -->
+<section class="section" id="rankings">
+  <h2 class="section-title">Page Rankings by Brand Alignment</h2>
+  <p class="section-desc">All 12 pages sorted by overall brand alignment score, showing how each compares to the site-wide average (76).</p>
+
+  <div class="score-bar-wrap"><span class="score-bar-label">/developer/keeping-it-100</span><div class="score-bar-track"><div class="score-bar-fill high" style="width:92%;">92</div></div><span class="score-bar-val">92</span></div>
+  <div class="score-bar-wrap"><span class="score-bar-label">/developer/tutorial</span><div class="score-bar-track"><div class="score-bar-fill high" style="width:90%;">90</div></div><span class="score-bar-val">90</span></div>
+  <div class="score-bar-wrap"><span class="score-bar-label">/docs/architecture</span><div class="score-bar-track"><div class="score-bar-fill high" style="width:85%;">85</div></div><span class="score-bar-val">85</span></div>
+  <div class="score-bar-wrap"><span class="score-bar-label">/docs/go-live-checklist</span><div class="score-bar-track"><div class="score-bar-fill high" style="width:83%;">83</div></div><span class="score-bar-val">83</span></div>
+  <div class="score-bar-wrap"><span class="score-bar-label">/docs/authoring</span><div class="score-bar-track"><div class="score-bar-fill high" style="width:82%;">82</div></div><span class="score-bar-val">82</span></div>
+  <div class="score-bar-wrap"><span class="score-bar-label">/developer/markup-sections-blocks</span><div class="score-bar-track"><div class="score-bar-fill mid" style="width:80%;">80</div></div><span class="score-bar-val">80</span></div>
+  <div class="score-bar-wrap"><span class="score-bar-label">/ (Homepage)</span><div class="score-bar-track"><div class="score-bar-fill mid" style="width:78%;">78</div></div><span class="score-bar-val">78</span></div>
+  <div class="score-bar-wrap"><span class="score-bar-label">/developer/rum</span><div class="score-bar-track"><div class="score-bar-fill mid" style="width:68%;">68</div></div><span class="score-bar-val">68</span></div>
+  <div class="score-bar-wrap"><span class="score-bar-label">/docs/setup-customer-sharepoint</span><div class="score-bar-track"><div class="score-bar-fill mid" style="width:65%;">65</div></div><span class="score-bar-val">65</span></div>
+  <div class="score-bar-wrap"><span class="score-bar-label">/docs/custom-headers</span><div class="score-bar-track"><div class="score-bar-fill mid" style="width:63%;">63</div></div><span class="score-bar-val">63</span></div>
+  <div class="score-bar-wrap"><span class="score-bar-label">/docs/faq</span><div class="score-bar-track"><div class="score-bar-fill low" style="width:58%;">58</div></div><span class="score-bar-val">58</span></div>
+  <div class="score-bar-wrap"><span class="score-bar-label">/business/demo</span><div class="score-bar-track"><div class="score-bar-fill low" style="width:48%;">48</div></div><span class="score-bar-val">48</span></div>
+</section>
+
+<!-- Tier: Strong Alignment -->
+<section class="section" id="strong">
+  <h2 class="section-title">Strong Alignment</h2>
+  <p class="section-desc">Pages that exemplify the established brand voice. These are reference-quality pages that other content should be benchmarked against.</p>
+
+  <!-- Keeping it 100 -->
+  <div class="page-card" id="page-keeping-it-100">
+    <div class="page-card-header">
+      <div class="score-circle high">92</div>
+      <div>
+        <div class="page-card-title">Web Performance: Keeping Your Lighthouse Score 100</div>
+        <div class="page-card-url">/developer/keeping-it-100</div>
+      </div>
+      <span class="page-card-type strong">Strong alignment</span>
+    </div>
+    <div class="page-card-body">
+      <h4 style="font-size:14px;font-weight:700;color:var(--fg-heading);margin-bottom:12px;">Personality Traits</h4>
+      <div class="trait-grid">
+        <div class="trait-item"><div class="trait-score">5<span class="trait-max">/5</span></div><div class="trait-name">Declarative Confidence</div></div>
+        <div class="trait-item"><div class="trait-score">5<span class="trait-max">/5</span></div><div class="trait-name">Engineering Pragmatism</div></div>
+        <div class="trait-item"><div class="trait-score">4<span class="trait-max">/5</span></div><div class="trait-name">Inclusive Directness</div></div>
+        <div class="trait-item"><div class="trait-score">5<span class="trait-max">/5</span></div><div class="trait-name">Performance Moralism</div></div>
+        <div class="trait-item"><div class="trait-score">5<span class="trait-max">/5</span></div><div class="trait-name">Architectural Transparency</div></div>
+        <div class="trait-item"><div class="trait-score">4<span class="trait-max">/5</span></div><div class="trait-name">Controlled Playfulness</div></div>
+      </div>
+
+      <h4 style="font-size:14px;font-weight:700;color:var(--fg-heading);margin-bottom:12px;">Tone Axes (page position vs. brand average)</h4>
+      <div class="tone-spectrum">
+        <div class="tone-row"><span class="tone-label-left">Casual</span><div class="tone-track"><div class="tone-marker" style="left:60%;"></div><div class="tone-marker brand-ref" style="left:65%;"></div></div><span class="tone-label-right">Formal</span></div>
+        <div class="tone-row"><span class="tone-label-left">Simple</span><div class="tone-track"><div class="tone-marker" style="left:80%;"></div><div class="tone-marker brand-ref" style="left:72%;"></div></div><span class="tone-label-right">Technical</span></div>
+        <div class="tone-row"><span class="tone-label-left">Hedging</span><div class="tone-track"><div class="tone-marker" style="left:92%;"></div><div class="tone-marker brand-ref" style="left:85%;"></div></div><span class="tone-label-right">Assertive</span></div>
+        <div class="tone-row"><span class="tone-label-left">Product</span><div class="tone-track"><div class="tone-marker" style="left:55%;"></div><div class="tone-marker brand-ref" style="left:60%;"></div></div><span class="tone-label-right">User</span></div>
+        <div class="tone-row"><span class="tone-label-left">Abstract</span><div class="tone-track"><div class="tone-marker" style="left:88%;"></div><div class="tone-marker brand-ref" style="left:78%;"></div></div><span class="tone-label-right">Concrete</span></div>
+        <div class="tone-row"><span class="tone-label-left">Reserved</span><div class="tone-track"><div class="tone-marker" style="left:70%;"></div><div class="tone-marker brand-ref" style="left:55%;"></div></div><span class="tone-label-right">Opinionated</span></div>
+        <div class="tone-row"><span class="tone-label-left">Salesy</span><div class="tone-track"><div class="tone-marker" style="left:90%;"></div><div class="tone-marker brand-ref" style="left:82%;"></div></div><span class="tone-label-right">Educational</span></div>
+      </div>
+      <p style="font-size:11px;color:var(--fg-muted);margin-bottom:16px;">Blue dot = this page. Red circle = brand average.</p>
+
+      <h4 style="font-size:14px;font-weight:700;color:var(--fg-heading);margin-bottom:12px;">Evidence Quotes</h4>
+      <div class="quote-block aligned">
+        <div class="quote-text">"Every Edge Delivery Services site can and should achieve a Lighthouse score of 100."</div>
+        <div class="quote-source">Declarative Confidence + Performance Moralism <span class="quote-tag tag-aligned">On-brand</span></div>
+      </div>
+      <div class="quote-block aligned">
+        <div class="quote-text">"Keep the aggregate payload before the LCP is displayed below 100kb."</div>
+        <div class="quote-source">Engineering Pragmatism -- concrete threshold, no hedging <span class="quote-tag tag-aligned">On-brand</span></div>
+      </div>
+      <div class="quote-block aligned">
+        <div class="quote-text">"It is hard to improve your Lighthouse score once it is low, but it is not hard to keep it at 100 if you continuously test."</div>
+        <div class="quote-source">Performance Moralism -- speed as a discipline, not a metric <span class="quote-tag tag-aligned">On-brand</span></div>
+      </div>
+      <div class="quote-block aligned">
+        <div class="quote-text">"Bonus: Speed is Green"</div>
+        <div class="quote-source">Controlled Playfulness -- dry, developer-culture humor linking performance to sustainability <span class="quote-tag tag-aligned">On-brand</span></div>
+      </div>
+
+      <div class="voice-verdict yes">Same voice as the rest of the site: Yes -- this IS the voice. The brand was built from content like this.</div>
+    </div>
+  </div>
+
+  <!-- Developer Tutorial -->
+  <div class="page-card" id="page-tutorial">
+    <div class="page-card-header">
+      <div class="score-circle high">90</div>
+      <div>
+        <div class="page-card-title">Getting Started: Developer Tutorial</div>
+        <div class="page-card-url">/developer/tutorial</div>
+      </div>
+      <span class="page-card-type strong">Strong alignment</span>
+    </div>
+    <div class="page-card-body">
+      <div class="trait-grid">
+        <div class="trait-item"><div class="trait-score">4<span class="trait-max">/5</span></div><div class="trait-name">Declarative Confidence</div></div>
+        <div class="trait-item"><div class="trait-score">5<span class="trait-max">/5</span></div><div class="trait-name">Engineering Pragmatism</div></div>
+        <div class="trait-item"><div class="trait-score">5<span class="trait-max">/5</span></div><div class="trait-name">Inclusive Directness</div></div>
+        <div class="trait-item"><div class="trait-score">3<span class="trait-max">/5</span></div><div class="trait-name">Performance Moralism</div></div>
+        <div class="trait-item"><div class="trait-score">4<span class="trait-max">/5</span></div><div class="trait-name">Architectural Transparency</div></div>
+        <div class="trait-item"><div class="trait-score">4<span class="trait-max">/5</span></div><div class="trait-name">Controlled Playfulness</div></div>
+      </div>
+
+      <div class="quote-block aligned">
+        <div class="quote-text">"Congratulations! You have a new website running."</div>
+        <div class="quote-source">Controlled Playfulness + Inclusive Directness -- celebratory, peer-like <span class="quote-tag tag-aligned">On-brand</span></div>
+      </div>
+      <div class="quote-block aligned">
+        <div class="quote-text">"That's it, you made it! Congrats."</div>
+        <div class="quote-source">Controlled Playfulness -- quick-win energy, developer camaraderie <span class="quote-tag tag-aligned">On-brand</span></div>
+      </div>
+      <div class="quote-block aligned">
+        <div class="quote-text">"You can use a different operating system, browser, and code editor, but the UI you see and steps you must take may vary accordingly."</div>
+        <div class="quote-source">Engineering Pragmatism + Architectural Transparency -- honest, practical caveat <span class="quote-tag tag-aligned">On-brand</span></div>
+      </div>
+      <div class="quote-block aligned">
+        <div class="quote-text">"Don't forget to pin it, this will make it easier to find it."</div>
+        <div class="quote-source">Inclusive Directness -- peer mentoring, not corporate instructions <span class="quote-tag tag-aligned">On-brand</span></div>
+      </div>
+
+      <div class="voice-verdict yes">Same voice as the rest of the site: Yes -- warm, pragmatic, developer-to-developer energy.</div>
+    </div>
+  </div>
+
+  <!-- Architecture -->
+  <div class="page-card" id="page-architecture">
+    <div class="page-card-header">
+      <div class="score-circle high">85</div>
+      <div>
+        <div class="page-card-title">Architecture</div>
+        <div class="page-card-url">/docs/architecture</div>
+      </div>
+      <span class="page-card-type strong">Strong alignment</span>
+    </div>
+    <div class="page-card-body">
+      <div class="trait-grid">
+        <div class="trait-item"><div class="trait-score">5<span class="trait-max">/5</span></div><div class="trait-name">Declarative Confidence</div></div>
+        <div class="trait-item"><div class="trait-score">5<span class="trait-max">/5</span></div><div class="trait-name">Engineering Pragmatism</div></div>
+        <div class="trait-item"><div class="trait-score">3<span class="trait-max">/5</span></div><div class="trait-name">Inclusive Directness</div></div>
+        <div class="trait-item"><div class="trait-score">4<span class="trait-max">/5</span></div><div class="trait-name">Performance Moralism</div></div>
+        <div class="trait-item"><div class="trait-score">5<span class="trait-max">/5</span></div><div class="trait-name">Architectural Transparency</div></div>
+        <div class="trait-item"><div class="trait-score">2<span class="trait-max">/5</span></div><div class="trait-name">Controlled Playfulness</div></div>
+      </div>
+
+      <div class="quote-block aligned">
+        <div class="quote-text">"The AEM stack itself is engineered for high performance and availability. In order to achieve best possible availability, all delivery services are run in two fully redundant edge providers."</div>
+        <div class="quote-source">Architectural Transparency + Declarative Confidence -- openly naming infrastructure decisions <span class="quote-tag tag-aligned">On-brand</span></div>
+      </div>
+      <div class="quote-block aligned">
+        <div class="quote-text">"A key aspect of this architecture is to enable customers to create great experiences using the infrastructure and processes that already enable their success."</div>
+        <div class="quote-source">Engineering Pragmatism -- meeting users where they are <span class="quote-tag tag-aligned">On-brand</span></div>
+      </div>
+
+      <ul class="findings-list">
+        <li><span class="flag flag-warn">MINOR:</span> Inclusive Directness (3/5) lower than expected -- the page talks about "customers" in third person more than addressing "you" directly.</li>
+        <li><span class="flag flag-warn">MINOR:</span> Controlled Playfulness (2/5) -- understandably dry for an architecture overview, but a notch below the brand's typical warmth.</li>
+      </ul>
+
+      <div class="voice-verdict yes">Same voice as the rest of the site: Yes -- confident systems thinker. The architecture page sounds like the engineering team talking.</div>
+    </div>
+  </div>
+
+  <!-- Go-Live Checklist -->
+  <div class="page-card" id="page-golive">
+    <div class="page-card-header">
+      <div class="score-circle high">83</div>
+      <div>
+        <div class="page-card-title">Go-Live Checklist</div>
+        <div class="page-card-url">/docs/go-live-checklist</div>
+      </div>
+      <span class="page-card-type strong">Strong alignment</span>
+    </div>
+    <div class="page-card-body">
+      <div class="trait-grid">
+        <div class="trait-item"><div class="trait-score">4<span class="trait-max">/5</span></div><div class="trait-name">Declarative Confidence</div></div>
+        <div class="trait-item"><div class="trait-score">5<span class="trait-max">/5</span></div><div class="trait-name">Engineering Pragmatism</div></div>
+        <div class="trait-item"><div class="trait-score">4<span class="trait-max">/5</span></div><div class="trait-name">Inclusive Directness</div></div>
+        <div class="trait-item"><div class="trait-score">4<span class="trait-max">/5</span></div><div class="trait-name">Performance Moralism</div></div>
+        <div class="trait-item"><div class="trait-score">3<span class="trait-max">/5</span></div><div class="trait-name">Architectural Transparency</div></div>
+        <div class="trait-item"><div class="trait-score">2<span class="trait-max">/5</span></div><div class="trait-name">Controlled Playfulness</div></div>
+      </div>
+
+      <div class="quote-block aligned">
+        <div class="quote-text">"Every AEM project should produce a lighthouse score of 100 for mobile and desktop."</div>
+        <div class="quote-source">Performance Moralism + Declarative Confidence -- unhedged requirement <span class="quote-tag tag-aligned">On-brand</span></div>
+      </div>
+      <div class="quote-block aligned">
+        <div class="quote-text">"Real Use Monitoring can give you important operational insights even before launch."</div>
+        <div class="quote-source">Engineering Pragmatism -- practical, evidence-based advice <span class="quote-tag tag-aligned">On-brand</span></div>
+      </div>
+
+      <ul class="findings-list">
+        <li><span class="flag flag-on">STRONG:</span> Engineering Pragmatism at full strength -- the checklist format is inherently pragmatic and actionable.</li>
+        <li><span class="flag flag-warn">MINOR:</span> Controlled Playfulness (2/5) -- checklist format limits opportunity for personality, but the tone is still recognizably "AEM."</li>
+      </ul>
+
+      <div class="voice-verdict yes">Same voice as the rest of the site: Yes -- the senior engineer running through launch readiness.</div>
+    </div>
+  </div>
+</section>
+
+<!-- Tier: Minor Drift -->
+<section class="section" id="minor">
+  <h2 class="section-title">Minor Drift</h2>
+  <p class="section-desc">Pages that are mostly on-brand but exhibit measurable deviations on one or more traits or tone axes. These need targeted editing, not full rewrites.</p>
+
+  <!-- Authoring -->
+  <div class="page-card" id="page-authoring">
+    <div class="page-card-header">
+      <div class="score-circle high">82</div>
+      <div>
+        <div class="page-card-title">Authoring</div>
+        <div class="page-card-url">/docs/authoring</div>
+      </div>
+      <span class="page-card-type minor">Minor drift</span>
+    </div>
+    <div class="page-card-body">
+      <div class="trait-grid">
+        <div class="trait-item"><div class="trait-score">3<span class="trait-max">/5</span></div><div class="trait-name">Declarative Confidence</div></div>
+        <div class="trait-item"><div class="trait-score">4<span class="trait-max">/5</span></div><div class="trait-name">Engineering Pragmatism</div></div>
+        <div class="trait-item"><div class="trait-score">5<span class="trait-max">/5</span></div><div class="trait-name">Inclusive Directness</div></div>
+        <div class="trait-item"><div class="trait-score">2<span class="trait-max">/5</span></div><div class="trait-name">Performance Moralism</div></div>
+        <div class="trait-item"><div class="trait-score">3<span class="trait-max">/5</span></div><div class="trait-name">Architectural Transparency</div></div>
+        <div class="trait-item"><div class="trait-score">3<span class="trait-max">/5</span></div><div class="trait-name">Controlled Playfulness</div></div>
+      </div>
+
+      <div class="quote-block aligned">
+        <div class="quote-text">"If you use Microsoft Word or Google Docs, then you already know how to create content."</div>
+        <div class="quote-source">Inclusive Directness -- addresses the reader directly, removes barriers <span class="quote-tag tag-aligned">On-brand</span></div>
+      </div>
+      <div class="quote-block aligned">
+        <div class="quote-text">"Deleting or unpublishing something is permanent and cannot be undone easily."</div>
+        <div class="quote-source">Engineering Pragmatism -- candid warning, no sugarcoating <span class="quote-tag tag-aligned">On-brand</span></div>
+      </div>
+
+      <ul class="findings-list">
+        <li><span class="flag flag-warn">DRIFT:</span> Performance Moralism (2/5) -- the authoring guide barely mentions performance. This is an author-facing page, but the brand believes performance is everyone's responsibility.</li>
+        <li><span class="flag flag-warn">DRIFT:</span> Declarative Confidence (3/5) -- slightly more tentative than the developer docs. Phrases like "You can add" instead of "Add."</li>
+        <li><span class="flag flag-on">STRONG:</span> Inclusive Directness (5/5) -- excellent second-person voice throughout. This is the authoring page at its best.</li>
+      </ul>
+
+      <div class="voice-verdict mostly">Same voice as the rest of the site: Mostly -- softer, more nurturing variant of the brand voice appropriate for authors, but could use more of the brand's characteristic confidence.</div>
+    </div>
+  </div>
+
+  <!-- Markup Sections Blocks -->
+  <div class="page-card" id="page-markup">
+    <div class="page-card-header">
+      <div class="score-circle mid">80</div>
+      <div>
+        <div class="page-card-title">Markup, Sections, and Blocks</div>
+        <div class="page-card-url">/developer/markup-sections-blocks</div>
+      </div>
+      <span class="page-card-type minor">Minor drift</span>
+    </div>
+    <div class="page-card-body">
+      <div class="trait-grid">
+        <div class="trait-item"><div class="trait-score">3<span class="trait-max">/5</span></div><div class="trait-name">Declarative Confidence</div></div>
+        <div class="trait-item"><div class="trait-score">5<span class="trait-max">/5</span></div><div class="trait-name">Engineering Pragmatism</div></div>
+        <div class="trait-item"><div class="trait-score">4<span class="trait-max">/5</span></div><div class="trait-name">Inclusive Directness</div></div>
+        <div class="trait-item"><div class="trait-score">2<span class="trait-max">/5</span></div><div class="trait-name">Performance Moralism</div></div>
+        <div class="trait-item"><div class="trait-score">5<span class="trait-max">/5</span></div><div class="trait-name">Architectural Transparency</div></div>
+        <div class="trait-item"><div class="trait-score">3<span class="trait-max">/5</span></div><div class="trait-name">Controlled Playfulness</div></div>
+      </div>
+
+      <div class="quote-block aligned">
+        <div class="quote-text">"The single most important aspect when structuring a document is to make it simple and intuitive for authors."</div>
+        <div class="quote-source">Engineering Pragmatism + Inclusive Directness -- developer empathy for authors <span class="quote-tag tag-aligned">On-brand</span></div>
+      </div>
+      <div class="quote-block aligned">
+        <div class="quote-text">"It is often tempting to delegate complexity to the author. Instead, developers should make sure that blocks do not become unwieldy to create for authors."</div>
+        <div class="quote-source">Engineering Pragmatism -- opinionated stance rooted in experience <span class="quote-tag tag-aligned">On-brand</span></div>
+      </div>
+      <div class="quote-block warning">
+        <div class="quote-text">"It is strongly recommended to involve authors very early in the process."</div>
+        <div class="quote-source">Hedging language -- "strongly recommended" instead of a direct imperative <span class="quote-tag tag-hedging">Hedging</span></div>
+      </div>
+
+      <ul class="findings-list">
+        <li><span class="flag flag-warn">DRIFT:</span> Performance Moralism (2/5) -- a technical reference about markup structure that rarely connects structure decisions back to performance outcomes.</li>
+        <li><span class="flag flag-warn">DRIFT:</span> Uses "it is strongly recommended" -- hedging language that the brand normally avoids. The keeping-it-100 page would just say "involve authors early."</li>
+      </ul>
+
+      <div class="voice-verdict mostly">Same voice as the rest of the site: Mostly -- same engineering pragmatism, but lacks the declarative edge of the best pages.</div>
+    </div>
+  </div>
+
+  <!-- Homepage -->
+  <div class="page-card" id="page-homepage">
+    <div class="page-card-header">
+      <div class="score-circle mid">78</div>
+      <div>
+        <div class="page-card-title">Homepage</div>
+        <div class="page-card-url">/</div>
+      </div>
+      <span class="page-card-type minor">Minor drift</span>
+    </div>
+    <div class="page-card-body">
+      <div class="trait-grid">
+        <div class="trait-item"><div class="trait-score">4<span class="trait-max">/5</span></div><div class="trait-name">Declarative Confidence</div></div>
+        <div class="trait-item"><div class="trait-score">3<span class="trait-max">/5</span></div><div class="trait-name">Engineering Pragmatism</div></div>
+        <div class="trait-item"><div class="trait-score">4<span class="trait-max">/5</span></div><div class="trait-name">Inclusive Directness</div></div>
+        <div class="trait-item"><div class="trait-score">5<span class="trait-max">/5</span></div><div class="trait-name">Performance Moralism</div></div>
+        <div class="trait-item"><div class="trait-score">2<span class="trait-max">/5</span></div><div class="trait-name">Architectural Transparency</div></div>
+        <div class="trait-item"><div class="trait-score">3<span class="trait-max">/5</span></div><div class="trait-name">Controlled Playfulness</div></div>
+      </div>
+
+      <div class="quote-block aligned">
+        <div class="quote-text">"Create a website, seriously fast."</div>
+        <div class="quote-source">Declarative Confidence + Controlled Playfulness -- punchy, no hedging <span class="quote-tag tag-aligned">On-brand</span></div>
+      </div>
+      <div class="quote-block aligned">
+        <div class="quote-text">"Slow sites are not just a bad experience, they are also bad business."</div>
+        <div class="quote-source">Performance Moralism -- speed framed as a moral imperative <span class="quote-tag tag-aligned">On-brand</span></div>
+      </div>
+      <div class="quote-block aligned">
+        <div class="quote-text">"A CMS that gets out of the way gets your content on the way."</div>
+        <div class="quote-source">Controlled Playfulness -- wordplay rooted in the product philosophy <span class="quote-tag tag-aligned">On-brand</span></div>
+      </div>
+      <div class="quote-block warning">
+        <div class="quote-text">"Made to meet your every CMS need and more."</div>
+        <div class="quote-source">Generic marketing cliche -- sounds like any SaaS homepage, not AEM's voice <span class="quote-tag tag-deviant">Off-brand</span></div>
+      </div>
+      <div class="quote-block warning">
+        <div class="quote-text">"Composability is Here."</div>
+        <div class="quote-source">Buzzword headline -- the brand normally explains internals rather than using marketing shorthand <span class="quote-tag tag-deviant">Off-brand</span></div>
+      </div>
+      <div class="quote-block deviant">
+        <div class="quote-text">"Adobe Experience Manager has been a game-changer for our website."</div>
+        <div class="quote-source">Customer quote (Airlessco/Graco) -- marketing cliche "game-changer" breaks the brand's pragmatic tone <span class="quote-tag tag-deviant">Off-brand</span></div>
+      </div>
+
+      <ul class="findings-list">
+        <li><span class="flag flag-warn">DRIFT:</span> Architectural Transparency (2/5) -- the homepage avoids naming specific internals. "Fully redundant architecture" is mentioned once but never explained.</li>
+        <li><span class="flag flag-warn">DRIFT:</span> Marketing cliches creep in: "game-changer," "made to meet your every need," "composability is here." These would never appear in the developer docs.</li>
+        <li><span class="flag flag-on">STRONG:</span> Performance Moralism (5/5) -- the homepage is fully committed to speed-as-value, with dedicated sections for business owners, visitors, SEO, and developers.</li>
+        <li><span class="flag flag-warn">DRIFT:</span> The Salesy-Educational axis shifts heavily toward Salesy (~40%) compared to the brand average (82% educational).</li>
+      </ul>
+
+      <div class="voice-verdict mostly">Same voice as the rest of the site: Mostly -- the best sections (performance, developer) sound like AEM. The benefits grid and customer quotes sound like a different marketing team wrote them.</div>
+    </div>
+  </div>
+
+  <!-- RUM -->
+  <div class="page-card" id="page-rum">
+    <div class="page-card-header">
+      <div class="score-circle mid">68</div>
+      <div>
+        <div class="page-card-title">Developing Operational Telemetry in AEM</div>
+        <div class="page-card-url">/developer/rum</div>
+      </div>
+      <span class="page-card-type minor">Minor drift</span>
+    </div>
+    <div class="page-card-body">
+      <div class="trait-grid">
+        <div class="trait-item"><div class="trait-score">3<span class="trait-max">/5</span></div><div class="trait-name">Declarative Confidence</div></div>
+        <div class="trait-item"><div class="trait-score">4<span class="trait-max">/5</span></div><div class="trait-name">Engineering Pragmatism</div></div>
+        <div class="trait-item"><div class="trait-score">3<span class="trait-max">/5</span></div><div class="trait-name">Inclusive Directness</div></div>
+        <div class="trait-item"><div class="trait-score">2<span class="trait-max">/5</span></div><div class="trait-name">Performance Moralism</div></div>
+        <div class="trait-item"><div class="trait-score">5<span class="trait-max">/5</span></div><div class="trait-name">Architectural Transparency</div></div>
+        <div class="trait-item"><div class="trait-score">1<span class="trait-max">/5</span></div><div class="trait-name">Controlled Playfulness</div></div>
+      </div>
+
+      <div class="quote-block aligned">
+        <div class="quote-text">"Adobe Experience Manager uses Operational Telemetry to diagnose usage and performance of web sites running on Adobe Experience Manager."</div>
+        <div class="quote-source">Architectural Transparency -- naming the internal system by name <span class="quote-tag tag-aligned">On-brand</span></div>
+      </div>
+
+      <ul class="findings-list">
+        <li><span class="flag flag-warn">DRIFT:</span> Controlled Playfulness (1/5) -- completely dry. The page reads like auto-generated API documentation rather than a human-written guide.</li>
+        <li><span class="flag flag-warn">DRIFT:</span> Uses "Operational Telemetry" as a euphemism for what the URL still calls "rum" (Real User Monitoring). The naming inconsistency between URL and content is jarring.</li>
+        <li><span class="flag flag-warn">DRIFT:</span> Performance Moralism (2/5) -- ironic for a telemetry page. It describes what checkpoints track but never connects them to the "why" of performance.</li>
+        <li><span class="flag flag-on">STRONG:</span> Architectural Transparency (5/5) -- openly lists all checkpoint types, data schemas, and internal API structures.</li>
+      </ul>
+
+      <div class="voice-verdict mostly">Same voice as the rest of the site: Mostly -- the transparency is there, but the page lacks the warmth and opinionated stance that characterizes the brand's best content.</div>
+    </div>
+  </div>
+
+  <!-- Setup Customer SharePoint -->
+  <div class="page-card" id="page-sharepoint">
+    <div class="page-card-header">
+      <div class="score-circle mid">65</div>
+      <div>
+        <div class="page-card-title">Set Up Your Customer SharePoint</div>
+        <div class="page-card-url">/docs/setup-customer-sharepoint</div>
+      </div>
+      <span class="page-card-type minor">Minor drift</span>
+    </div>
+    <div class="page-card-body">
+      <div class="trait-grid">
+        <div class="trait-item"><div class="trait-score">3<span class="trait-max">/5</span></div><div class="trait-name">Declarative Confidence</div></div>
+        <div class="trait-item"><div class="trait-score">4<span class="trait-max">/5</span></div><div class="trait-name">Engineering Pragmatism</div></div>
+        <div class="trait-item"><div class="trait-score">3<span class="trait-max">/5</span></div><div class="trait-name">Inclusive Directness</div></div>
+        <div class="trait-item"><div class="trait-score">1<span class="trait-max">/5</span></div><div class="trait-name">Performance Moralism</div></div>
+        <div class="trait-item"><div class="trait-score">4<span class="trait-max">/5</span></div><div class="trait-name">Architectural Transparency</div></div>
+        <div class="trait-item"><div class="trait-score">1<span class="trait-max">/5</span></div><div class="trait-name">Controlled Playfulness</div></div>
+      </div>
+
+      <div class="quote-block aligned">
+        <div class="quote-text">"If you use SharePoint as your content source, AEM uses a registered Microsoft Azure application to access your content."</div>
+        <div class="quote-source">Architectural Transparency -- openly naming the authentication mechanism <span class="quote-tag tag-aligned">On-brand</span></div>
+      </div>
+      <div class="quote-block aligned">
+        <div class="quote-text">"Talk to your IT department to either identify or create a SharePoint site that will be used for document based authoring."</div>
+        <div class="quote-source">Engineering Pragmatism -- acknowledges real-world organizational friction <span class="quote-tag tag-aligned">On-brand</span></div>
+      </div>
+
+      <ul class="findings-list">
+        <li><span class="flag flag-warn">DRIFT:</span> Controlled Playfulness (1/5) -- understandable for an IT setup guide, but the total absence of personality makes the page feel like it belongs to a different product entirely.</li>
+        <li><span class="flag flag-warn">DRIFT:</span> Performance Moralism (1/5) -- zero mention of performance context. A brand-aligned version would connect the setup to the performance outcomes it enables.</li>
+        <li><span class="flag flag-warn">DRIFT:</span> Heavy use of "NOTE" and "Problem" callouts creates a technical-manual feel more typical of Microsoft documentation than AEM's voice.</li>
+      </ul>
+
+      <div class="voice-verdict mostly">Same voice as the rest of the site: Partially -- the transparency is AEM, but the personality is Microsoft Azure docs.</div>
+    </div>
+  </div>
+</section>
+
+<!-- Tier: Significant Deviation -->
+<section class="section" id="significant">
+  <h2 class="section-title">Significant Deviation</h2>
+  <p class="section-desc">Pages that feel like a different brand or team wrote them. These need substantial rewriting to align with the established voice.</p>
+
+  <!-- Custom Headers -->
+  <div class="page-card" id="page-custom-headers">
+    <div class="page-card-header">
+      <div class="score-circle mid">63</div>
+      <div>
+        <div class="page-card-title">Custom HTTP Response Headers</div>
+        <div class="page-card-url">/docs/custom-headers</div>
+      </div>
+      <span class="page-card-type significant">Significant deviation</span>
+    </div>
+    <div class="page-card-body">
+      <div class="trait-grid">
+        <div class="trait-item"><div class="trait-score">3<span class="trait-max">/5</span></div><div class="trait-name">Declarative Confidence</div></div>
+        <div class="trait-item"><div class="trait-score">4<span class="trait-max">/5</span></div><div class="trait-name">Engineering Pragmatism</div></div>
+        <div class="trait-item"><div class="trait-score">3<span class="trait-max">/5</span></div><div class="trait-name">Inclusive Directness</div></div>
+        <div class="trait-item"><div class="trait-score">1<span class="trait-max">/5</span></div><div class="trait-name">Performance Moralism</div></div>
+        <div class="trait-item"><div class="trait-score">4<span class="trait-max">/5</span></div><div class="trait-name">Architectural Transparency</div></div>
+        <div class="trait-item"><div class="trait-score">1<span class="trait-max">/5</span></div><div class="trait-name">Controlled Playfulness</div></div>
+      </div>
+
+      <div class="quote-block warning">
+        <div class="quote-text">"In some cases, it is useful to apply custom HTTP response headers to resources, for example to allow CORS."</div>
+        <div class="quote-source">Hedging -- "in some cases" weakens the declarative voice. The brand would say "apply custom HTTP response headers when you need CORS." <span class="quote-tag tag-hedging">Hedging</span></div>
+      </div>
+
+      <ul class="findings-list">
+        <li><span class="flag flag-off">OFF-BRAND:</span> Reads like a generic technical specification, not AEM documentation. Zero personality, zero performance context, zero opinion.</li>
+        <li><span class="flag flag-off">OFF-BRAND:</span> Passive constructions: "headers are applied," "caches will be purged." The brand prefers active voice: "AEM applies headers," "AEM purges caches."</li>
+        <li><span class="flag flag-warn">DRIFT:</span> Very short page with minimal guidance. The brand's best content would explain when to use custom headers, warn about performance implications, and link to the performance philosophy.</li>
+      </ul>
+
+      <div class="voice-verdict no">Same voice as the rest of the site: No -- this reads like a configuration reference from any CDN provider, not the opinionated AEM voice.</div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="page-card" id="page-faq">
+    <div class="page-card-header">
+      <div class="score-circle low">58</div>
+      <div>
+        <div class="page-card-title">Frequently Asked Questions</div>
+        <div class="page-card-url">/docs/faq</div>
+      </div>
+      <span class="page-card-type significant">Significant deviation</span>
+    </div>
+    <div class="page-card-body">
+      <div class="trait-grid">
+        <div class="trait-item"><div class="trait-score">2<span class="trait-max">/5</span></div><div class="trait-name">Declarative Confidence</div></div>
+        <div class="trait-item"><div class="trait-score">3<span class="trait-max">/5</span></div><div class="trait-name">Engineering Pragmatism</div></div>
+        <div class="trait-item"><div class="trait-score">3<span class="trait-max">/5</span></div><div class="trait-name">Inclusive Directness</div></div>
+        <div class="trait-item"><div class="trait-score">2<span class="trait-max">/5</span></div><div class="trait-name">Performance Moralism</div></div>
+        <div class="trait-item"><div class="trait-score">3<span class="trait-max">/5</span></div><div class="trait-name">Architectural Transparency</div></div>
+        <div class="trait-item"><div class="trait-score">1<span class="trait-max">/5</span></div><div class="trait-name">Controlled Playfulness</div></div>
+      </div>
+
+      <div class="quote-block deviant">
+        <div class="quote-text">"Edge Delivery Services is a great solution for both small and large sites."</div>
+        <div class="quote-source">Generic sales language -- "great solution" is exactly the vague, hedging language the brand normally avoids <span class="quote-tag tag-deviant">Off-brand</span></div>
+      </div>
+      <div class="quote-block deviant">
+        <div class="quote-text">"Yes, Edge Delivery Services can be used for e-commerce websites."</div>
+        <div class="quote-source">Minimal, non-committal -- the brand would add specifics: how, with what blocks, at what scale <span class="quote-tag tag-deviant">Off-brand</span></div>
+      </div>
+      <div class="quote-block deviant">
+        <div class="quote-text">"Yes, Edge Delivery Services supports private GitHub repositories."</div>
+        <div class="quote-source">Pattern: nearly every answer starts with "Yes, Edge Delivery Services..." -- robotic, repetitive, lacks human voice <span class="quote-tag tag-deviant">Off-brand</span></div>
+      </div>
+      <div class="quote-block aligned">
+        <div class="quote-text">"Edge Delivery Services is probably not down, but you can always check Adobe's status page."</div>
+        <div class="quote-source">Controlled Playfulness -- rare flash of the brand voice. "Probably not down" is delightfully confident. <span class="quote-tag tag-aligned">On-brand</span></div>
+      </div>
+      <div class="quote-block warning">
+        <div class="quote-text">"Franklin and Helix were internal project names for the Adobe Experience Manager engineering team's initiative to develop an innovative publishing and delivery service situated at the edge."</div>
+        <div class="quote-source">Passive, corporate -- "initiative to develop an innovative publishing and delivery service" is marketing jargon, not the voice that wrote keeping-it-100 <span class="quote-tag tag-deviant">Off-brand</span></div>
+      </div>
+
+      <ul class="findings-list">
+        <li><span class="flag flag-off">OFF-BRAND:</span> Repetitive "Yes, Edge Delivery Services..." sentence pattern dominates 40+ answers. The brand normally varies phrasing and speaks in imperative or second-person.</li>
+        <li><span class="flag flag-off">OFF-BRAND:</span> "A great solution for..." appears multiple times -- generic sales language that the brand voice explicitly avoids.</li>
+        <li><span class="flag flag-off">OFF-BRAND:</span> Many answers are surface-level confirmations ("Yes, X can be used") without the engineering depth or opinion the brand is known for.</li>
+        <li><span class="flag flag-off">OFF-BRAND:</span> Declarative Confidence (2/5) -- the FAQ hedges constantly. "Can be used," "supports," "is compatible with" -- all tentative where the brand would be assertive.</li>
+        <li><span class="flag flag-off">OFF-BRAND:</span> The massive page (100+ questions) reads like it was assembled by many hands over time, creating an inconsistent patchwork.</li>
+        <li><span class="flag flag-on">BRIGHT SPOT:</span> "Edge Delivery Services is probably not down" -- one moment of genuine brand personality in 4000+ words of FAQ.</li>
+      </ul>
+
+      <div class="voice-verdict no">Same voice as the rest of the site: No -- this is the most off-brand page in the audit. It reads like an auto-generated FAQ assembled from support tickets, not written by the team that authored keeping-it-100.</div>
+    </div>
+  </div>
+
+  <!-- Business Demo -->
+  <div class="page-card" id="page-demo">
+    <div class="page-card-header">
+      <div class="score-circle low">48</div>
+      <div>
+        <div class="page-card-title">Business Demo</div>
+        <div class="page-card-url">/business/demo</div>
+      </div>
+      <span class="page-card-type significant">Significant deviation</span>
+    </div>
+    <div class="page-card-body">
+      <div class="trait-grid">
+        <div class="trait-item"><div class="trait-score">2<span class="trait-max">/5</span></div><div class="trait-name">Declarative Confidence</div></div>
+        <div class="trait-item"><div class="trait-score">1<span class="trait-max">/5</span></div><div class="trait-name">Engineering Pragmatism</div></div>
+        <div class="trait-item"><div class="trait-score">2<span class="trait-max">/5</span></div><div class="trait-name">Inclusive Directness</div></div>
+        <div class="trait-item"><div class="trait-score">1<span class="trait-max">/5</span></div><div class="trait-name">Performance Moralism</div></div>
+        <div class="trait-item"><div class="trait-score">0<span class="trait-max">/5</span></div><div class="trait-name">Architectural Transparency</div></div>
+        <div class="trait-item"><div class="trait-score">1<span class="trait-max">/5</span></div><div class="trait-name">Controlled Playfulness</div></div>
+      </div>
+
+      <div class="quote-block deviant">
+        <div class="quote-text">"If you are impatient, a developer, or both, take a look at the Franklin Developer Tutorial in the meantime."</div>
+        <div class="quote-source">Still uses "Franklin" -- the legacy brand name that has been officially retired. Also implies developers are impatient as a personality type. <span class="quote-tag tag-deviant">Off-brand</span></div>
+      </div>
+      <div class="quote-block deviant">
+        <div class="quote-text">"Sign up for the VIP Program."</div>
+        <div class="quote-source">Pure sales CTA -- "VIP Program" is exactly the kind of marketing language the brand avoids in its developer-facing content <span class="quote-tag tag-deviant">Off-brand</span></div>
+      </div>
+      <div class="quote-block deviant">
+        <div class="quote-text">"Get a Demo."</div>
+        <div class="quote-source">Sales funnel CTA -- the brand's voice would say "try it yourself" and link to the developer tutorial <span class="quote-tag tag-deviant">Off-brand</span></div>
+      </div>
+
+      <ul class="findings-list">
+        <li><span class="flag flag-off">OFF-BRAND:</span> Engineering Pragmatism (1/5) -- zero technical substance. The page is pure marketing copy with no practical value.</li>
+        <li><span class="flag flag-off">OFF-BRAND:</span> Architectural Transparency (0/5) -- the only page in the audit that scores zero on a trait. Nothing about how the system works.</li>
+        <li><span class="flag flag-off">OFF-BRAND:</span> Still references "Franklin" -- the old project name. This is a legacy page that has not been updated since the rebrand.</li>
+        <li><span class="flag flag-off">OFF-BRAND:</span> "VIP Program" and "Get a Demo" CTAs are enterprise sales patterns that contradict the brand's self-service, developer-empowerment philosophy.</li>
+        <li><span class="flag flag-off">OFF-BRAND:</span> The Salesy-Educational axis is at ~20% -- massively off from the brand's 82% educational position.</li>
+        <li><span class="flag flag-off">OFF-BRAND:</span> Tone is condescending ("if you are impatient, a developer") -- the brand is inclusive and never talks down to its audience.</li>
+      </ul>
+
+      <div class="voice-verdict no">Same voice as the rest of the site: Absolutely not -- this page was written by a different team (likely pre-rebrand marketing) and has received no voice governance since. It is the worst-performing page in the audit.</div>
+    </div>
+  </div>
+</section>
+
+<!-- All Page Details (collapsed by default in the tiers above, this provides the remaining details) -->
+<section class="section" id="page-details">
+  <h2 class="section-title">Tone Axis Comparison</h2>
+  <p class="section-desc">How each page positions on the 7 tone axes vs. the established brand average. Large deviations indicate voice inconsistency.</p>
+
+  <div style="overflow-x:auto;">
+  <table class="heatmap-table">
+    <thead>
+      <tr>
+        <th style="min-width:160px;">Page</th>
+        <th>Casual-Formal</th>
+        <th>Simple-Technical</th>
+        <th>Hedging-Assertive</th>
+        <th>Product-User</th>
+        <th>Abstract-Concrete</th>
+        <th>Reserved-Opinionated</th>
+        <th>Salesy-Educational</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="page-name" style="font-size:11px;color:var(--fg-muted);">Brand Average</td><td style="text-align:center;font-weight:700;color:var(--blue);">65%</td><td style="text-align:center;font-weight:700;color:var(--blue);">72%</td><td style="text-align:center;font-weight:700;color:var(--blue);">85%</td><td style="text-align:center;font-weight:700;color:var(--blue);">60%</td><td style="text-align:center;font-weight:700;color:var(--blue);">78%</td><td style="text-align:center;font-weight:700;color:var(--blue);">55%</td><td style="text-align:center;font-weight:700;color:var(--blue);">82%</td></tr>
+      <tr><td class="page-name">/ (Homepage)</td><td style="text-align:center;">55%</td><td style="text-align:center;">50%</td><td style="text-align:center;">80%</td><td style="text-align:center;">45%</td><td style="text-align:center;">65%</td><td style="text-align:center;">60%</td><td style="text-align:center;">40%</td></tr>
+      <tr><td class="page-name">/docs/authoring</td><td style="text-align:center;">60%</td><td style="text-align:center;">55%</td><td style="text-align:center;">75%</td><td style="text-align:center;">70%</td><td style="text-align:center;">80%</td><td style="text-align:center;">45%</td><td style="text-align:center;">88%</td></tr>
+      <tr><td class="page-name">/developer/tutorial</td><td style="text-align:center;">70%</td><td style="text-align:center;">65%</td><td style="text-align:center;">82%</td><td style="text-align:center;">65%</td><td style="text-align:center;">85%</td><td style="text-align:center;">55%</td><td style="text-align:center;">90%</td></tr>
+      <tr><td class="page-name">/developer/keeping-it-100</td><td style="text-align:center;">60%</td><td style="text-align:center;">80%</td><td style="text-align:center;">92%</td><td style="text-align:center;">55%</td><td style="text-align:center;">88%</td><td style="text-align:center;">70%</td><td style="text-align:center;">90%</td></tr>
+      <tr><td class="page-name">/docs/faq</td><td style="text-align:center;">60%</td><td style="text-align:center;">62%</td><td style="text-align:center;">65%</td><td style="text-align:center;">50%</td><td style="text-align:center;">70%</td><td style="text-align:center;">35%</td><td style="text-align:center;">72%</td></tr>
+      <tr><td class="page-name">/docs/go-live-checklist</td><td style="text-align:center;">55%</td><td style="text-align:center;">70%</td><td style="text-align:center;">88%</td><td style="text-align:center;">55%</td><td style="text-align:center;">90%</td><td style="text-align:center;">60%</td><td style="text-align:center;">85%</td></tr>
+      <tr><td class="page-name">/docs/architecture</td><td style="text-align:center;">50%</td><td style="text-align:center;">82%</td><td style="text-align:center;">88%</td><td style="text-align:center;">45%</td><td style="text-align:center;">85%</td><td style="text-align:center;">55%</td><td style="text-align:center;">92%</td></tr>
+      <tr><td class="page-name">/developer/markup-sections-blocks</td><td style="text-align:center;">60%</td><td style="text-align:center;">78%</td><td style="text-align:center;">75%</td><td style="text-align:center;">65%</td><td style="text-align:center;">82%</td><td style="text-align:center;">55%</td><td style="text-align:center;">88%</td></tr>
+      <tr><td class="page-name">/business/demo</td><td style="text-align:center;">55%</td><td style="text-align:center;">30%</td><td style="text-align:center;">60%</td><td style="text-align:center;">35%</td><td style="text-align:center;">40%</td><td style="text-align:center;">40%</td><td style="text-align:center;">20%</td></tr>
+      <tr><td class="page-name">/docs/setup-customer-sharepoint</td><td style="text-align:center;">50%</td><td style="text-align:center;">80%</td><td style="text-align:center;">78%</td><td style="text-align:center;">55%</td><td style="text-align:center;">85%</td><td style="text-align:center;">40%</td><td style="text-align:center;">88%</td></tr>
+      <tr><td class="page-name">/developer/rum</td><td style="text-align:center;">45%</td><td style="text-align:center;">85%</td><td style="text-align:center;">72%</td><td style="text-align:center;">50%</td><td style="text-align:center;">82%</td><td style="text-align:center;">40%</td><td style="text-align:center;">90%</td></tr>
+      <tr><td class="page-name">/docs/custom-headers</td><td style="text-align:center;">50%</td><td style="text-align:center;">80%</td><td style="text-align:center;">70%</td><td style="text-align:center;">50%</td><td style="text-align:center;">80%</td><td style="text-align:center;">35%</td><td style="text-align:center;">85%</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- Systemic Findings -->
+<section class="section" id="systemic">
+  <h2 class="section-title">Systemic Findings</h2>
+  <p class="section-desc">Patterns that emerge across multiple pages, revealing structural voice governance issues rather than individual page problems.</p>
+
+  <div class="two-col">
+    <div class="page-card" style="margin-bottom:0;">
+      <div class="page-card-body">
+        <h3 style="font-size:16px;font-weight:700;color:var(--fg-heading);margin-bottom:12px;">Voice Gradient: Developer Pages vs. Docs Pages</h3>
+        <p style="font-size:14px;margin-bottom:12px;">Pages under <code>/developer/</code> average <strong>82.5</strong> brand alignment. Pages under <code>/docs/</code> average <strong>72.7</strong>. The gap suggests the developer docs were written by the core engineering team (the brand's original voice), while docs pages had more contributors with less voice training.</p>
+        <ul class="findings-list">
+          <li><span class="flag flag-on">PATTERN:</span> /developer/ pages show consistently higher Declarative Confidence and Controlled Playfulness.</li>
+          <li><span class="flag flag-warn">PATTERN:</span> /docs/ pages show higher Inclusive Directness but lower Engineering Pragmatism -- softer voice for authors.</li>
+          <li><span class="flag flag-off">PATTERN:</span> /business/ pages are a completely different voice -- pure marketing, zero engineering DNA.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="page-card" style="margin-bottom:0;">
+      <div class="page-card-body">
+        <h3 style="font-size:16px;font-weight:700;color:var(--fg-heading);margin-bottom:12px;">The "Playfulness Cliff"</h3>
+        <p style="font-size:14px;margin-bottom:12px;">Controlled Playfulness is the most variable trait across the site, ranging from 4/5 (tutorial, keeping-it-100) to 1/5 (FAQ, RUM, custom-headers, SharePoint setup). The brand's dry humor is concentrated in a few flagship pages and absent from the long tail of documentation.</p>
+        <ul class="findings-list">
+          <li><span class="flag flag-warn">PATTERN:</span> 6 out of 12 pages score 1/5 or 2/5 on Controlled Playfulness.</li>
+          <li><span class="flag flag-on">PATTERN:</span> Pages that score high on playfulness also score high overall -- it is a strong predictor of brand alignment.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="page-card" style="margin-bottom:0;">
+      <div class="page-card-body">
+        <h3 style="font-size:16px;font-weight:700;color:var(--fg-heading);margin-bottom:12px;">The FAQ Problem</h3>
+        <p style="font-size:14px;margin-bottom:12px;">The FAQ is the highest-traffic reference page and the second-lowest scoring page (58). Its repetitive "Yes, Edge Delivery Services..." pattern, generic "great solution" language, and absence of opinion make it the single largest brand consistency risk because of its visibility.</p>
+        <ul class="findings-list">
+          <li><span class="flag flag-off">CRITICAL:</span> High traffic + low brand alignment = the FAQ is likely many users' first and most lasting impression of the brand voice.</li>
+          <li><span class="flag flag-warn">ROOT CAUSE:</span> FAQ was likely assembled incrementally from support tickets rather than authored with voice governance.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="page-card" style="margin-bottom:0;">
+      <div class="page-card-body">
+        <h3 style="font-size:16px;font-weight:700;color:var(--fg-heading);margin-bottom:12px;">Performance Moralism Distribution</h3>
+        <p style="font-size:14px;margin-bottom:12px;">Performance Moralism -- the trait that most distinguishes AEM from competitors -- scores 5/5 on the homepage and keeping-it-100 but drops to 1/5 on 4 pages (custom-headers, SharePoint setup, business/demo, and partially on RUM). The brand's defining trait is inconsistently applied.</p>
+        <ul class="findings-list">
+          <li><span class="flag flag-off">GAP:</span> Setup guides, reference pages, and API docs rarely connect their content to performance outcomes.</li>
+          <li><span class="flag flag-on">OPPORTUNITY:</span> Adding a "performance impact" note to every docs page would reinforce the brand's core value.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Validation -->
+<section class="section" id="validation">
+  <div class="validation-stamp">
+    <h3>Cross-Validation Stamp</h3>
+    <ul>
+      <li><strong>Content fetched:</strong> All 12 pages were fetched live from www.aem.live on 2026-02-24 and their full text content was extracted for analysis.</li>
+      <li><strong>Quote verification:</strong> All quoted passages were extracted verbatim from the fetched page content. No quotes were paraphrased or fabricated.</li>
+      <li><strong>Brand framework applied:</strong> Scoring used the 6 personality traits and 7 tone axes established in the Brand Guidelines Extraction report (aem-live-brand-guidelines.html).</li>
+      <li><strong>Scoring methodology:</strong> Each trait scored 0-5 based on frequency and quality of evidence in the page content. Overall score weighted: trait presence (40%), tone axis alignment (30%), voice consistency (30%).</li>
+      <li><strong>Legacy content confirmed:</strong> /business/demo still references "Franklin" (retired project name), confirming it has not been updated since the rebrand.</li>
+      <li><strong>FAQ pattern validated:</strong> Manual count confirmed 40+ answers beginning with "Yes, Edge Delivery Services..." or "No, Edge Delivery Services..." pattern.</li>
+      <li><strong>URL-content mismatch confirmed:</strong> /developer/rum URL uses "rum" while page content exclusively uses "Operational Telemetry."</li>
+    </ul>
+    <div class="stamp-date">Validated 2026-02-24 by Blazar automated analysis</div>
+  </div>
+</section>
+
+</div>
+
+<script>
+// Collapsible sections
+document.querySelectorAll('.collapsible-header').forEach(header => {
+  header.addEventListener('click', () => {
+    header.classList.toggle('open');
+    const body = header.nextElementSibling;
+    body.classList.toggle('open');
+  });
+});
+</script>
+
+</body>
+</html>

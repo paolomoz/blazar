@@ -1,0 +1,45 @@
+{
+  "reports": [
+    {
+      "id": "aem-live-content-gaps",
+      "file": "aem-live-content-gaps.html",
+      "title": "Content Gaps Analysis",
+      "sections": ["summary", "distribution", "structural", "metadata", "freshness", "brand", "inventory"]
+    },
+    {
+      "id": "aem-live-action-plan",
+      "file": "aem-live-action-plan.html",
+      "title": "Action Plan",
+      "sections": ["overview", "p1", "p2", "p3", "p4", "a1", "a2", "a3", "a4", "a5", "a6", "a7", "a8", "a9", "a10", "a11", "a12", "a13", "a14", "a15", "a16", "a17", "a18"]
+    },
+    {
+      "id": "aem-live-brand-guidelines",
+      "file": "aem-live-brand-guidelines.html",
+      "title": "Brand Guidelines",
+      "sections": ["positioning", "tone", "personality", "terminology", "structure", "doc-patterns", "images", "visual-identity"]
+    },
+    {
+      "id": "aem-live-brand-opportunities",
+      "file": "aem-live-brand-opportunities.html",
+      "title": "Improvement Opportunities",
+      "sections": ["overview", "critical", "high", "medium", "low", "matrix"]
+    }
+  ],
+  "prompts": {
+    "Learn": [
+      "What does aem.live's brand voice sound like?",
+      "How many pages are in the content inventory?",
+      "What are the 4 brand positioning pillars?"
+    ],
+    "Analyze": [
+      "What are the critical issues to fix first?",
+      "How many pages have missing OG images?",
+      "Which pages use old branding?"
+    ],
+    "Optimize": [
+      "What's the recommended execution plan?",
+      "How can we improve image accessibility?",
+      "What quick wins are in the action plan?"
+    ]
+  }
+}

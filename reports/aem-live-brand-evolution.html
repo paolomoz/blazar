@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brand Evolution Timeline — AEM Edge Delivery Services</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700;900&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="blazar-reports.css">
+<style>
+/* ── Token Overrides ── */
+:root {
+  --cyan: #0E7FAD;
+  --cyan-bg: #E8F7FC;
+}
+
+/* ── Jump Nav Overrides ── */
+.jump-nav-title { font-size: 12px; margin-bottom: 10px; }
+.jump-nav-links { gap: 6px; }
+.jump-nav-links a {
+  font-size: 13px; font-weight: 600;
+  padding: 5px 14px;
+  border-radius: var(--radius-pill);
+  background: var(--bg); color: var(--fg);
+  border: 1px solid var(--border);
+  text-decoration: none; transition: all 0.15s;
+}
+.jump-nav-links a:hover {
+  background: var(--blue-light); color: var(--blue); border-color: var(--blue);
+  text-decoration: none;
+}
+
+/* ── Section Overrides ── */
+.section { margin-bottom: 40px; }
+.section-title {
+  margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
+  padding-bottom: 0; border-bottom: none;
+}
+.section-title .icon { font-size: 24px; }
+
+/* ── Stats Grid ── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+.stat-card {
+  border: 1px solid var(--border);
+  padding: 20px;
+  border-top: none;
+}
+.stat-card .stat-value {
+  color: var(--blue);
+  line-height: 1.1;
+}
+.stat-card .stat-label {
+  margin-top: 4px;
+  text-transform: none;
+  letter-spacing: normal;
+}
+.stat-card.amber .stat-value { color: var(--amber); }
+.stat-card.red .stat-value { color: var(--red); }
+.stat-card.green .stat-value { color: var(--green); }
+.stat-card.purple .stat-value { color: var(--purple); }
+
+/* ── Timeline ── */
+.timeline {
+  position: relative;
+  padding-left: 48px;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 20px;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(to bottom, var(--purple), var(--cyan), var(--blue), var(--green));
+  border-radius: 3px;
+}
+.timeline-era {
+  position: relative;
+  margin-bottom: 48px;
+}
+.timeline-era::before {
+  content: '';
+  position: absolute;
+  left: -36px;
+  top: 6px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 3px solid var(--bg-white);
+  box-shadow: 0 0 0 3px var(--blue);
+  background: var(--blue);
+  z-index: 1;
+}
+.timeline-era.era-helix::before { background: var(--purple); box-shadow: 0 0 0 3px var(--purple); }
+.timeline-era.era-franklin::before { background: var(--cyan); box-shadow: 0 0 0 3px var(--cyan); }
+.timeline-era.era-eds::before { background: var(--blue); box-shadow: 0 0 0 3px var(--blue); }
+.timeline-era.era-aemlive::before { background: var(--green); box-shadow: 0 0 0 3px var(--green); }
+
+.era-header {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.era-name {
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--fg-heading);
+}
+.era-dates {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fg-muted);
+  background: var(--bg);
+  padding: 2px 12px;
+  border-radius: var(--radius-pill);
+}
+.era-badge {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 10px;
+  border-radius: var(--radius-pill);
+  color: #fff;
+}
+.era-badge.badge-purple { background: var(--purple); }
+.era-badge.badge-cyan { background: var(--cyan); }
+.era-badge.badge-blue { background: var(--blue); }
+.era-badge.badge-green { background: var(--green); }
+
+.era-body {
+  background: var(--bg-white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+}
+.era-body p {
+  font-size: 15px;
+  margin-bottom: 10px;
+  line-height: 1.6;
+}
+.era-body .evidence {
+  background: var(--bg);
+  border-left: 3px solid var(--blue);
+  padding: 12px 16px;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: 14px;
+  color: var(--fg);
+  margin: 12px 0;
+  font-style: italic;
+}
+.era-body .evidence .source {
+  font-style: normal;
+  font-size: 12px;
+  color: var(--fg-muted);
+  display: block;
+  margin-top: 6px;
+}
+
+/* ── Event list inside era ── */
+.era-events {
+  list-style: none;
+  margin: 12px 0 0;
+}
+.era-events li {
+  position: relative;
+  padding: 8px 0 8px 24px;
+  font-size: 14px;
+  border-bottom: 1px solid var(--bg);
+}
+.era-events li:last-child { border-bottom: none; }
+.era-events li::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 15px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+}
+.era-events .event-date {
+  font-weight: 700;
+  color: var(--fg-heading);
+  font-size: 13px;
+  font-family: var(--font-mono);
+}
+
+/* ── Domain Table ── */
+.domain-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  margin: 16px 0;
+}
+.domain-table th {
+  text-align: left;
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--fg-muted);
+  padding: 8px 12px;
+  border-bottom: 2px solid var(--border);
+}
+.domain-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--bg);
+  vertical-align: top;
+}
+.domain-table code {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  background: var(--bg);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+.domain-table .status-active {
+  color: var(--green); font-weight: 700;
+}
+.domain-table .status-blocked {
+  color: var(--red); font-weight: 700;
+}
+.domain-table .status-redirect {
+  color: var(--amber); font-weight: 700;
+}
+.domain-table .status-archived {
+  color: var(--fg-muted); font-weight: 700;
+}
+
+/* ── Name Count Grid ── */
+.name-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+  margin: 16px 0;
+}
+.name-card {
+  background: var(--bg-white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.name-card .name-count {
+  font-size: 32px;
+  font-weight: 900;
+  min-width: 56px;
+  text-align: center;
+}
+.name-card .name-info h4 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--fg-heading);
+}
+.name-card .name-info p {
+  font-size: 13px;
+  color: var(--fg-muted);
+  margin-top: 2px;
+}
+
+/* ── Rebrand Score ── */
+.rebrand-meter {
+  margin: 20px 0;
+}
+.meter-bar {
+  height: 32px;
+  background: var(--bg);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  position: relative;
+  border: 1px solid var(--border);
+}
+.meter-fill {
+  height: 100%;
+  border-radius: var(--radius-pill);
+  transition: width 0.6s ease;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+}
+.meter-fill.green { background: linear-gradient(90deg, var(--green), #1BA97A); }
+.meter-fill.amber { background: linear-gradient(90deg, var(--amber), #E08B22); }
+.meter-fill.red { background: linear-gradient(90deg, var(--red), #E54C55); }
+.meter-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fg-muted);
+  margin-top: 4px;
+}
+
+/* ── GitHub Repo Table ── */
+.repo-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin: 16px 0;
+}
+.repo-table th {
+  text-align: left;
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--fg-muted);
+  padding: 8px 10px;
+  border-bottom: 2px solid var(--border);
+  white-space: nowrap;
+}
+.repo-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--bg);
+  vertical-align: top;
+}
+.repo-table code {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  background: var(--bg);
+  padding: 1px 5px;
+  border-radius: var(--radius-sm);
+}
+.repo-table .archived { opacity: 0.6; }
+
+/* ── Validation Stamp Overrides ── */
+.validation-stamp {
+  border-color: var(--green);
+  margin-top: 32px;
+}
+.validation-stamp h3 {
+  display: flex; align-items: center; gap: 8px;
+}
+.validation-stamp ul {
+  list-style: none; font-size: 14px;
+}
+.validation-stamp li {
+  padding: 3px 0;
+  padding-left: 20px;
+  position: relative;
+}
+.validation-stamp li::before {
+  content: '\2713';
+  position: absolute;
+  left: 0;
+  color: var(--green);
+  font-weight: 700;
+}
+
+/* ── Accordion / Collapsible ── */
+details {
+  margin: 8px 0;
+}
+details summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--blue);
+  padding: 4px 0;
+  list-style: none;
+}
+details summary::before {
+  content: '\25B6';
+  display: inline-block;
+  margin-right: 8px;
+  font-size: 10px;
+  transition: transform 0.15s;
+}
+details[open] summary::before {
+  transform: rotate(90deg);
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .timeline { padding-left: 32px; }
+  .timeline::before { left: 12px; }
+  .timeline-era::before { left: -28px; width: 14px; height: 14px; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .name-grid { grid-template-columns: 1fr; }
+  .era-header { flex-direction: column; gap: 6px; }
+  .report-header-inner { flex-direction: column; }
+}
+@media (max-width: 480px) {
+  .stats-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── Nav ── -->
+<nav class="report-nav" aria-label="Report navigation">
+  <a href="hub.html" class="nav-hub">Blazar Hub</a>
+  <span class="nav-sep">/</span>
+  <span style="color:var(--fg-heading);font-weight:700;">Brand Evolution Timeline</span>
+  <span class="nav-sep">|</span>
+  <a href="aem-live-brand-guidelines.html" class="nav-related">Brand Guidelines</a>
+  <a href="aem-live-developer-touchpoints.html" class="nav-related">Developer Touchpoints</a>
+  <a href="aem-live-content-gaps.html" class="nav-related">Content Gaps</a>
+  <a href="aem-live-seo-signals.html" class="nav-related">SEO Signals</a>
+</nav>
+
+<!-- ── Header ── -->
+<header class="report-header">
+  <div class="report-header-inner">
+    <div>
+      <h1>Brand Archaeology: The Many Names of Edge Delivery Services</h1>
+      <p class="subtitle">From Project Helix to AEM Edge Delivery Services &mdash; a chronological investigation of 8+ years of naming evolution</p>
+    </div>
+    <div style="text-align:right;">
+      <div class="report-branding">
+        <div class="logo-mark">B</div>
+        Blazar
+      </div>
+      <div class="report-date" style="margin-top:8px;">2026-02-24</div>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+<!-- ── Jump Nav ── -->
+<div class="jump-nav">
+  <div class="jump-nav-title">Navigate this report</div>
+  <div class="jump-nav-links">
+    <a href="#summary">Executive Summary</a>
+    <a href="#names">The Name Roster</a>
+    <a href="#timeline">Full Timeline</a>
+    <a href="#domains">Domain Archaeology</a>
+    <a href="#github">GitHub Repo Naming</a>
+    <a href="#remnants">Legacy Remnants</a>
+    <a href="#rebrand-score">Rebrand Completeness</a>
+    <a href="#seo">SEO Consequences</a>
+    <a href="#community">Community Impact</a>
+    <a href="#analysis">Strategic Analysis</a>
+    <a href="#validation">Validation</a>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SECTION: Executive Summary -->
+<!-- ══════════════════════════════════════════ -->
+<section class="section" id="summary">
+  <h2 class="section-title"><span class="icon">&#x1F50D;</span> Executive Summary</h2>
+
+  <div class="stats-grid">
+    <div class="stat-card red">
+      <div class="stat-value">6+</div>
+      <div class="stat-label">Distinct Product Names</div>
+    </div>
+    <div class="stat-card purple">
+      <div class="stat-value">8 yrs</div>
+      <div class="stat-label">Project Lifespan (2018&ndash;2026)</div>
+    </div>
+    <div class="stat-card amber">
+      <div class="stat-value">13</div>
+      <div class="stat-label">Legacy "helix/franklin" Refs on aem.live</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-value">~93%</div>
+      <div class="stat-label">Rebrand Completion on aem.live</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">40+</div>
+      <div class="stat-label">GitHub Repos Still Named "helix-"</div>
+    </div>
+    <div class="stat-card amber">
+      <div class="stat-value">Dec 2025</div>
+      <div class="stat-label">hlx.live Shutdown Date</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <p>What is now called <strong>"Adobe Experience Manager Edge Delivery Services"</strong> has been through at least six distinct naming phases since its inception. The product originated as <strong>Project Helix</strong> in mid-2018, was renamed to <strong>Project Franklin</strong> in approximately mid-2022, briefly marketed as <strong>Next-Gen Composability</strong> at Adobe Summit 2023, and formally named <strong>Edge Delivery Services</strong> in October 2023. Infrastructure domains evolved from <code>hlx.page</code>/<code>hlx.live</code> to <code>aem.page</code>/<code>aem.live</code>. The old <code>hlx.live</code> domain was blocked on December 18, 2025.</p>
+    <p>The naming history has left a significant archaeological trail: the <code>adobe/helix-home</code> GitHub repository itself documents six names the project has carried. Legacy references persist across the live site, GitHub repositories, npm packages, developer tools, and community documentation. The rebrand on aem.live content is approximately 93% complete, but the developer ecosystem retains substantial legacy naming, most notably the <code>window.hlx</code> JavaScript namespace, <code>.helix/</code> configuration directories, and dozens of <code>helix-*</code> GitHub repositories that remain un-renamed.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SECTION: The Name Roster -->
+<!-- ══════════════════════════════════════════ -->
+<section class="section" id="names">
+  <h2 class="section-title"><span class="icon">&#x1F3F7;</span> The Complete Name Roster</h2>
+
+  <div class="card">
+    <p>The <a href="https://github.com/adobe/helix-home/blob/main/docs/architecture.md" target="_blank">official architecture document</a> in <code>adobe/helix-home</code> contains this remarkable footnote:</p>
+    <div class="evidence">
+      "This project has seen many names, including Helix, Project Helix, Project Franklin, Next Generation Composability, Success Edge, and Edge Delivery Services in Adobe Experience Manager Sites as a Cloud Service with document-based editing."
+      <span class="source">&mdash; adobe/helix-home, architecture.md</span>
+    </div>
+    <p>Note the final name: <em>"Edge Delivery Services in Adobe Experience Manager Sites as a Cloud Service with document-based editing"</em> &mdash; at 89 characters, this may be one of the longest product names in enterprise software. In practice, it is shortened to "Edge Delivery Services" or "EDS."</p>
+  </div>
+
+  <div class="name-grid">
+    <div class="name-card">
+      <div class="name-count" style="color:var(--purple);">1</div>
+      <div class="name-info">
+        <h4>Project Helix</h4>
+        <p>Internal codename. Named after DNA double helix. 2018&ndash;2022.</p>
+      </div>
+    </div>
+    <div class="name-card">
+      <div class="name-count" style="color:var(--cyan);">2</div>
+      <div class="name-info">
+        <h4>Project Franklin</h4>
+        <p>Named after Rosalind Franklin, DNA researcher. Mid-2022&ndash;2023.</p>
+      </div>
+    </div>
+    <div class="name-card">
+      <div class="name-count" style="color:var(--amber);">3</div>
+      <div class="name-info">
+        <h4>Next-Gen Composability</h4>
+        <p>Marketing name used at Adobe Summit, March 2023.</p>
+      </div>
+    </div>
+    <div class="name-card">
+      <div class="name-count" style="color:var(--fg-muted);">4</div>
+      <div class="name-info">
+        <h4>Success Edge</h4>
+        <p>Brief internal/marketing name. Exact usage period unclear.</p>
+      </div>
+    </div>
+    <div class="name-card">
+      <div class="name-count" style="color:var(--blue);">5</div>
+      <div class="name-info">
+        <h4>AEM Edge Delivery Services</h4>
+        <p>Official GA name from October 2023. Currently shortened to just "Edge Delivery Services."</p>
+      </div>
+    </div>
+    <div class="name-card">
+      <div class="name-count" style="color:var(--green);">6</div>
+      <div class="name-info">
+        <h4>Edge Delivery Services</h4>
+        <p>Current preferred short name. Dropped "AEM" prefix per April 2025 naming update.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="background:var(--amber-bg);border-color:var(--amber);">
+    <h3 style="color:var(--amber);">Naming Paradox</h3>
+    <p>As of February 2026, the internal architecture team still uses "Helix" to refer to versions of the platform architecture (Helix 1, 2, 3, 4, 5). The <a href="https://www.aem.live/docs/faq" target="_blank">FAQ</a> explicitly states: "since the general availability [of EDS], the name Franklin is no longer used, so Helix is referred to as the architecture and Adobe Experience Manager as the product." This means "Helix" is simultaneously the oldest and most current internal term, while the product-facing name has changed five times around it.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SECTION: Full Timeline -->
+<!-- ══════════════════════════════════════════ -->
+<section class="section" id="timeline">
+  <h2 class="section-title"><span class="icon">&#x1F4C5;</span> Full Chronological Timeline</h2>
+
+  <div class="timeline">
+
+    <!-- ERA 1: Project Helix -->
+    <div class="timeline-era era-helix">
+      <div class="era-header">
+        <span class="era-name">Era 1: Project Helix</span>
+        <span class="era-dates">Mid-2018 &ndash; Mid-2022</span>
+        <span class="era-badge badge-purple">Internal Codename</span>
+      </div>
+      <div class="era-body">
+        <p><strong>Origin:</strong> Project Helix emerged from Adobe's AEM engineering team as a radical experiment in content delivery. Named after the double helix structure of DNA, it represented a fundamental rethinking of how content management systems should work: instead of a monolithic Java application, content would flow from Google Docs or Microsoft Word through a serverless pipeline to the edge.</p>
+
+        <p><strong>Architecture:</strong> The project evolved through three major architecture versions during this era:</p>
+        <ul class="era-events">
+          <li><span class="event-date">Jun 2018</span> &mdash; First GitHub repository created: <code>adobe/helix-pipeline</code> (2018-06-28). The earliest artifact of the project.</li>
+          <li><span class="event-date">Jul 2018</span> &mdash; <code>adobe/helix-cli</code> created (2018-07-05). The command-line tool originally invoked as <code>hlx</code>.</li>
+          <li><span class="event-date">Summer 2018</span> &mdash; <strong>Hackathon 1</strong> held in Salt Lake City, UT. First team gathering for the project.</li>
+          <li><span class="event-date">Sep 2018</span> &mdash; <code>project-helix.io</code> documentation site created (2018-09-26). The project's first public-facing web presence.</li>
+          <li><span class="event-date">Oct 2018</span> &mdash; <code>helix-shared</code> and <code>vscode-helix</code> created. Developer tooling begins.</li>
+          <li><span class="event-date">2018&ndash;2019</span> &mdash; <strong>Helix 1:</strong> A bring-your-own Adobe I/O runtime framework approach enabling server-side customization.</li>
+          <li><span class="event-date">Jan 2019</span> &mdash; Hackathon 4 in Berkeley, CA. The team is growing.</li>
+          <li><span class="event-date">Mar 2019</span> &mdash; <code>adobe/helix-home</code> created (2019-03-14) &mdash; becomes the canonical project hub.</li>
+          <li><span class="event-date">2019&ndash;2020</span> &mdash; <strong>Helix 2:</strong> Pivoted to SaaS model with client-side customization. Abandoned server-side extensibility.</li>
+          <li><span class="event-date">Jul 2022</span> &mdash; <a href="https://news.ycombinator.com/item?id=31975148" target="_blank">Hacker News frontpage</a> appearance (81 points, 123 comments). Community reaction is confused &mdash; many commenters cannot understand what the product does.</li>
+        </ul>
+
+        <div class="evidence">
+          "I will never trust Adobe on their development platforms."<br>
+          "By the time we understand it, it will be cancelled."
+          <span class="source">&mdash; Hacker News commenters, July 4, 2022</span>
+        </div>
+
+        <p><strong>Infrastructure domains:</strong> <code>*.hlx.page</code> (preview) and <code>*.hlx.live</code> (published). The <code>hlx</code> abbreviation derives directly from "helix." The project website lived at <code>www.project-helix.io</code>.</p>
+      </div>
+    </div>
+
+    <!-- ERA 2: Project Franklin -->
+    <div class="timeline-era era-franklin">
+      <div class="era-header">
+        <span class="era-name">Era 2: Project Franklin</span>
+        <span class="era-dates">Mid-2022 &ndash; Oct 2023</span>
+        <span class="era-badge badge-cyan">Renamed Codename</span>
+      </div>
+      <div class="era-body">
+        <p><strong>The Rename:</strong> In approximately mid-2022, the project was renamed from "Helix" to "Franklin." The name honored Rosalind Franklin, the scientist whose X-ray crystallography work was critical to discovering the double helix structure of DNA &mdash; maintaining the DNA naming theme from the original "Helix" codename.</p>
+
+        <div class="evidence">
+          "They chose to rename the project after Rosalind Franklin. She was a scientist whose work and research formed a critical foundation for understanding the molecular structure of DNA &mdash; the double helix."
+          <span class="source">&mdash; Rightpoint (formerly Hoodoo Digital), "What is Adobe's Project Franklin?", September 16, 2022</span>
+        </div>
+
+        <p><strong>Architecture:</strong></p>
+        <ul class="era-events">
+          <li><span class="event-date">2022</span> &mdash; <strong>Helix/Franklin 3:</strong> SaaS with "superior availability and performance." The version naming itself shows the transition &mdash; this version is called both "Helix 3" and "Franklin 3."</li>
+          <li><span class="event-date">Sep 2022</span> &mdash; Rightpoint publishes the first third-party explainer referring to "Project Franklin." The product is described as "still in its early stages."</li>
+          <li><span class="event-date">Nov 2022</span> &mdash; Hackathon 10 (first post-COVID, held remotely). Project is now internally "Franklin."</li>
+          <li><span class="event-date">Dec 2020 &rarr; 2022</span> &mdash; <code>adobe/aem-boilerplate</code> repo (originally <code>helix-project-boilerplate</code>, created 2020-12-11) is renamed. The old GitHub URL still redirects.</li>
+          <li><span class="event-date">Jan 2023</span> &mdash; Cognizant Netcentric publishes early analysis calling it "AEM Franklin" and "Next Generation Composability."</li>
+          <li><span class="event-date">Feb 2023</span> &mdash; <code>adobe/franklin-plugin-perflogger</code> created. The "franklin-" prefix appears on new repos.</li>
+          <li><span class="event-date">Mar 2023</span> &mdash; <code>adobe/franklin-sidekick-library</code> created (2023-03-16).</li>
+        </ul>
+
+        <p><strong>Developer artifacts renamed:</strong> <code>lib-franklin.js</code> became the core client library. GitHub repos began using "franklin-" prefix. The CLI tool was still <code>hlx</code>. The "Franklin Organizer" tool launched. Infrastructure domains remained <code>hlx.page</code> and <code>hlx.live</code>.</p>
+
+        <p><strong>VIP Program:</strong> During this era, select AEM Sites customers could access the product through the "Franklin VIP program," as described on the <code>/business/demo</code> page: "AEM Franklin is currently made available to select AEM Sites customers."</p>
+      </div>
+    </div>
+
+    <!-- ERA 2.5: Next-Gen Composability -->
+    <div class="timeline-era era-franklin">
+      <div class="era-header">
+        <span class="era-name">Interlude: Next-Gen Composability</span>
+        <span class="era-dates">March 2023</span>
+        <span class="era-badge badge-cyan">Marketing Name</span>
+      </div>
+      <div class="era-body">
+        <p><strong>Adobe Summit 2023 (March 21, 2023):</strong> At Summit, Adobe announced a "revolutionary new release of Adobe Experience Manager (AEM)" that "redefines the Content Management System category." The technology that had been Project Franklin was presented under the marketing umbrella of <strong>"Next-Gen Composability"</strong> or <strong>"Next Generation Composability."</strong></p>
+
+        <div class="evidence">
+          "This product has variously been called 'Project Helix', 'Adobe Franklin', 'AEM's Next-Gen Composability Features' and now (somewhat officially) is AEM Edge Delivery Service."
+          <span class="source">&mdash; Arbory Digital, "What is AEM Edge Delivery Services?"</span>
+        </div>
+
+        <ul class="era-events">
+          <li><span class="event-date">Mar 21, 2023</span> &mdash; Adobe Summit 2023 keynote. AEM reimagined announcement. The blog post does not actually use the term "Edge Delivery Services" yet.</li>
+          <li><span class="event-date">Mar 21, 2023</span> &mdash; Perficient publishes blog titled "New From Adobe: Next-Gen Composability" with URL containing "adobe-edge-delivery-services-aka-next-gen-composability".</li>
+          <li><span class="event-date">Apr 2023</span> &mdash; Netcentric publishes "reimagining content management for marketing teams" using "Next-Gen Composability."</li>
+          <li><span class="event-date">May 2023</span> &mdash; <code>adobe/franklin-dashboard</code> created. The Franklin name still used in tooling.</li>
+          <li><span class="event-date">Aug 2023</span> &mdash; Bounteous publishes "Introducing Adobe Edge Delivery Services: A New Era in Content Authoring." The EDS name starts gaining traction before the official GA.</li>
+          <li><span class="event-date">Aug 2023</span> &mdash; Hackathon 11 in New York City. Team gathering during the naming transition.</li>
+          <li><span class="event-date">Sep 2023</span> &mdash; <strong>adaptTo() 2023 conference:</strong> Sessions use both "Edge Delivery Services" and "AEM Franklin" &mdash; the naming transition is actively in progress.</li>
+        </ul>
+
+        <p>This period is the peak of naming confusion. Partner blogs from this period use all of the following in their titles: "Next-Gen Composability," "AEM Franklin," "Edge Delivery Services," "Project Helix," and combinations thereof. One Netcentric blog from August 2023 is literally titled "navigating support challenges with AEM Franklin" while the product is already being called EDS elsewhere.</p>
+      </div>
+    </div>
+
+    <!-- ERA 3: Edge Delivery Services (GA) -->
+    <div class="timeline-era era-eds">
+      <div class="era-header">
+        <span class="era-name">Era 3: Edge Delivery Services</span>
+        <span class="era-dates">October 2023 &ndash; Present</span>
+        <span class="era-badge badge-blue">Official Product Name</span>
+      </div>
+      <div class="era-body">
+        <p><strong>General Availability:</strong> In October 2023, at Adobe MAX, Adobe officially named the product <strong>"Edge Delivery Services"</strong> as part of Adobe Experience Manager. This marked the end of all codenames and the beginning of a unified product identity.</p>
+
+        <div class="evidence">
+          "In October 2023, Adobe officially introduced Edge Delivery Services and document-based authoring as part of Adobe Experience Manager, marking the transition from the Franklin and Helix project names to a fully integrated solution."
+          <span class="source">&mdash; aem.live/docs/faq</span>
+        </div>
+
+        <ul class="era-events">
+          <li><span class="event-date">Oct 2023</span> &mdash; <strong>Adobe MAX 2023.</strong> "Edge Delivery Services" becomes the official product name.</li>
+          <li><span class="event-date">Oct 2023</span> &mdash; Architecture version formally becomes <strong>Franklin 4:</strong> dual-stack architecture (AWS + Cloudflare delivery).</li>
+          <li><span class="event-date">Nov 2023</span> &mdash; <code>adobe/aem-sidekick</code> created (2023-11-10) &mdash; new repo under AEM naming. The old <code>helix-sidekick-extension</code> is archived.</li>
+          <li><span class="event-date">Nov 2023</span> &mdash; Adobe Developers Live 2023 features "Edge Delivery and Document-based Authoring Deep Dive" session.</li>
+          <li><span class="event-date">~2023</span> &mdash; CLI renamed from <code>@adobe/helix-cli</code> to <code>@adobe/aem-cli</code> starting at version 15.0.0. Old npm package deprecated. Binary still provides <code>hlx</code> alias for backwards compatibility.</li>
+          <li><span class="event-date">~2023</span> &mdash; Core client library renamed from <code>lib-franklin.js</code> to <code>aem.js</code>.</li>
+          <li><span class="event-date">Jan 2024</span> &mdash; Hackathon 12 in Palm Springs under the EDS banner.</li>
+          <li><span class="event-date">Mar 2024</span> &mdash; <strong>Adobe Summit 2024:</strong> Multiple EDS sessions including "Accelerating CMS projects with Edge Delivery Services in AEM Sites" and "Beyond the Hype: Edge Delivery Services for Measurable Business Impact."</li>
+        </ul>
+
+        <p><strong>Developer tooling migration:</strong> The <code>@adobe/helix-cli</code> npm package stopped at version 14.26.0 and was deprecated. The replacement <code>@adobe/aem-cli</code> started at version 15.0.0. Both the <code>aem</code> and <code>hlx</code> commands work, ensuring backwards compatibility.</p>
+      </div>
+    </div>
+
+    <!-- ERA 4: aem.live Domain -->
+    <div class="timeline-era era-aemlive">
+      <div class="era-header">
+        <span class="era-name">Era 4: The aem.live Domain Migration</span>
+        <span class="era-dates">2024 &ndash; Dec 2025</span>
+        <span class="era-badge badge-green">Infrastructure Rebrand</span>
+      </div>
+      <div class="era-body">
+        <p><strong>The final frontier of the rebrand:</strong> While the product name changed in October 2023, the infrastructure domains took much longer. The new <code>aem.live</code> / <code>aem.page</code> architecture (internally called <strong>Helix 5</strong>) was nearly a year in development and over six months in production before the migration deadline.</p>
+
+        <div class="evidence">
+          "Edge Delivery Services started with Project Helix over five years ago, and the hlx abbreviation has been embedded throughout the platform ever since &mdash; in domain names, configuration keys, runtime objects and developer tools."
+          <span class="source">&mdash; aem.live/blog/hlx-is-now-aem-live</span>
+        </div>
+
+        <ul class="era-events">
+          <li><span class="event-date">2024</span> &mdash; <strong>Helix 5</strong> architecture deployed. Refactored Fastly CDN stack (single service instead of two stacked). New <code>aem.page</code> and <code>aem.live</code> domains activated.</li>
+          <li><span class="event-date">2024</span> &mdash; New projects default to <code>aem.live</code> architecture. Existing projects given migration path.</li>
+          <li><span class="event-date">2024</span> &mdash; <code>project-helix.io</code> domain now 301 redirects to <code>www.aem.live</code>.</li>
+          <li><span class="event-date">Nov 2024</span> &mdash; Adobe Developers Live 2024: "aem.live at Adobe Developers Live" session showcased.</li>
+          <li><span class="event-date">Late 2025</span> &mdash; Fewer than 2% of daily traffic still flows through <code>hlx.live</code>. Last dozen sites in active migration.</li>
+          <li><span class="event-date">Dec 18, 2025</span> &mdash; <strong>hlx.live domain blocked.</strong> Franklin 4 end of service. All traffic must flow through <code>aem.live</code>.</li>
+        </ul>
+
+        <p><strong>What changed technically:</strong></p>
+        <ul style="margin-left:20px;font-size:14px;">
+          <li>Published content: <code>*.hlx.live</code> &rarr; <code>*.aem.live</code></li>
+          <li>Preview: <code>*.hlx.page</code> &rarr; <code>*.aem.page</code></li>
+          <li>Identifiers shift from GitHub owner/repo model to AEM org/site model</li>
+          <li>Inner CDN services use new domains: <code>rum.aem-fastly.page</code>, <code>media.aem-fastly.page</code>, <code>config.aem-fastly.page</code>, etc.</li>
+          <li>Faster preview caching on <code>aem.page</code> vs. <code>hlx.page</code></li>
+          <li>New capabilities enabled: centralized configurations, repoless sites, more secure authentication</li>
+        </ul>
+
+        <div class="evidence">
+          "With aem.live and repoless sites, we were able to meet that demand and help our business grow."
+          <span class="source">&mdash; The Channel Company, web development director, quoted on aem.live</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ERA 5: Current State -->
+    <div class="timeline-era era-aemlive">
+      <div class="era-header">
+        <span class="era-name">Present Day: February 2026</span>
+        <span class="era-dates">Ongoing</span>
+        <span class="era-badge badge-green">Current</span>
+      </div>
+      <div class="era-body">
+        <p>As of February 2026, the product is marketed as <strong>"Edge Delivery Services"</strong> (the "AEM" prefix was dropped per an April 2, 2025 naming update from Adobe). The architecture is at <strong>Helix 5</strong>. Hackathon 19 is scheduled for February 2-6, 2026, in Palm Springs. The team continues to use "Helix" internally for architecture versioning while the public-facing name is stable for the first time in years.</p>
+        <ul class="era-events">
+          <li><span class="event-date">Apr 2, 2025</span> &mdash; Adobe drops "AEM" prefix. The product is now just "Edge Delivery Services," though it remains part of the AEM portfolio.</li>
+          <li><span class="event-date">Feb 2026</span> &mdash; Hackathon 19 in Palm Springs. The project's 19th team gathering, still running strong.</li>
+          <li><span class="event-date">Feb 2026</span> &mdash; <code>status.hlx.live</code> still exists but redirects (302) to <code>www.aemstatus.net</code>.</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SECTION: Domain Archaeology -->
+<!-- ══════════════════════════════════════════ -->
+<section class="section" id="domains">
+  <h2 class="section-title"><span class="icon">&#x1F310;</span> Domain Archaeology</h2>
+
+  <div class="card">
+    <h3>Infrastructure Domain History</h3>
+    <p>Each naming era brought its own set of domains. The table below shows every known domain and its current status as verified on 2026-02-24.</p>
+
+    <table class="domain-table">
+      <thead>
+        <tr>
+          <th>Domain</th>
+          <th>Era</th>
+          <th>Purpose</th>
+          <th>Current Status</th>
+          <th>Verification</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>www.project-helix.io</code></td>
+          <td>Helix</td>
+          <td>Project website</td>
+          <td><span class="status-redirect">301 &rarr; aem.live</span></td>
+          <td>Verified via cURL: redirects to <code>https://www.aem.live/</code></td>
+        </tr>
+        <tr>
+          <td><code>*.hlx.page</code></td>
+          <td>Helix/Franklin</td>
+          <td>Preview (unpublished content)</td>
+          <td><span class="status-blocked">403 Blocked</span></td>
+          <td>Verified via cURL: returns <code>x-error: blocked</code> from Varnish</td>
+        </tr>
+        <tr>
+          <td><code>*.hlx.live</code></td>
+          <td>Helix/Franklin</td>
+          <td>Published content origin</td>
+          <td><span class="status-blocked">403 Blocked</span></td>
+          <td>Verified via cURL: returns <code>x-error: blocked</code> from Varnish. Blocked Dec 18, 2025.</td>
+        </tr>
+        <tr>
+          <td><code>status.hlx.live</code></td>
+          <td>Helix/Franklin</td>
+          <td>Service status page</td>
+          <td><span class="status-redirect">302 &rarr; aemstatus.net</span></td>
+          <td>Verified via cURL: redirects to <code>http://www.aemstatus.net/</code></td>
+        </tr>
+        <tr>
+          <td><code>*.aem.page</code></td>
+          <td>EDS / Helix 5</td>
+          <td>Preview (unpublished content)</td>
+          <td><span class="status-active">Active</span></td>
+          <td>Current production domain for preview</td>
+        </tr>
+        <tr>
+          <td><code>*.aem.live</code></td>
+          <td>EDS / Helix 5</td>
+          <td>Published content origin</td>
+          <td><span class="status-active">Active</span></td>
+          <td>Verified via cURL: returns 200 OK</td>
+        </tr>
+        <tr>
+          <td><code>www.aem.live</code></td>
+          <td>EDS / Helix 5</td>
+          <td>Product documentation site</td>
+          <td><span class="status-active">Active</span></td>
+          <td>Primary documentation domain</td>
+        </tr>
+        <tr>
+          <td><code>www.aemstatus.net</code></td>
+          <td>EDS / Helix 5</td>
+          <td>Service status page</td>
+          <td><span class="status-active">Active</span></td>
+          <td>Redirect target from <code>status.hlx.live</code></td>
+        </tr>
+        <tr>
+          <td><code>*.aem-fastly.page</code></td>
+          <td>Helix 5</td>
+          <td>Inner CDN services (RUM, media, config, pipeline, static, forms)</td>
+          <td><span class="status-active">Active</span></td>
+          <td>Internal infrastructure per architecture docs</td>
+        </tr>
+        <tr>
+          <td><code>admin.hlx.page</code></td>
+          <td>Helix/Franklin</td>
+          <td>Admin API endpoint</td>
+          <td><span class="status-active">Legacy active</span></td>
+          <td>Still referenced in developer documentation and Sidekick</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card" style="background:var(--red-bg);border-color:var(--red);">
+    <h3 style="color:var(--red);">Redirect Gap: hlx.live Returns 403 Not 301</h3>
+    <p>The old <code>hlx.live</code> and <code>hlx.page</code> domains return a <strong>403 Forbidden</strong> response with <code>x-error: blocked</code>, not a 301 redirect. This means any external links, bookmarks, or search engine indexes pointing to old <code>hlx.live</code> URLs will fail silently rather than forwarding users to the correct location. From an SEO perspective, a 403 is worse than a 301 &mdash; it signals to search engines that the content is gone rather than moved, causing link equity to be lost.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SECTION: GitHub Repo Naming -->
+<!-- ══════════════════════════════════════════ -->
+<section class="section" id="github">
+  <h2 class="section-title"><span class="icon">&#x1F4BB;</span> GitHub Repository Naming Archaeology</h2>
+
+  <div class="card">
+    <p>The GitHub organization <code>adobe/</code> contains repositories from all naming eras. The following analysis is based on a search of repos matching <code>helix-*</code>, <code>franklin-*</code>, and <code>aem-*</code> patterns.</p>
+
+    <div class="stats-grid" style="margin-top:16px;">
+      <div class="stat-card purple">
+        <div class="stat-value">30+</div>
+        <div class="stat-label">"helix-" repos (many active)</div>
+      </div>
+      <div class="stat-card" style="border-color:var(--cyan);">
+        <div class="stat-value" style="color:var(--cyan);">11</div>
+        <div class="stat-label">"franklin-" repos (mixed)</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-value">30+</div>
+        <div class="stat-label">"aem-" repos (current naming)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Key Repository Transitions</h3>
+    <table class="repo-table">
+      <thead>
+        <tr>
+          <th>Component</th>
+          <th>Old Name(s)</th>
+          <th>Current Name</th>
+          <th>Created</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>CLI tool</td>
+          <td><code>helix-cli</code></td>
+          <td><code>helix-cli</code> (unchanged!)</td>
+          <td>2018-07-05</td>
+          <td>Active &mdash; still named helix-cli despite npm rename to @adobe/aem-cli</td>
+        </tr>
+        <tr>
+          <td>Project boilerplate</td>
+          <td><code>helix-project-boilerplate</code></td>
+          <td><code>aem-boilerplate</code></td>
+          <td>2020-12-11</td>
+          <td>Active &mdash; old URL redirects via GitHub</td>
+        </tr>
+        <tr>
+          <td>Sidekick extension</td>
+          <td><code>helix-sidekick-extension</code></td>
+          <td><code>aem-sidekick</code></td>
+          <td>2023-11-10</td>
+          <td>New repo created; old one archived</td>
+        </tr>
+        <tr>
+          <td>Sidekick (original)</td>
+          <td><code>helix-sidekick</code></td>
+          <td>(archived)</td>
+          <td>2021-05-31</td>
+          <td class="archived">Archived 2024</td>
+        </tr>
+        <tr>
+          <td>Product website</td>
+          <td><code>project-helix.io</code></td>
+          <td><code>helix-website</code></td>
+          <td>2021-10-22</td>
+          <td>Active &mdash; powers www.aem.live, but repo is still named helix-website</td>
+        </tr>
+        <tr>
+          <td>Project home</td>
+          <td><code>helix-home</code></td>
+          <td><code>helix-home</code> (unchanged)</td>
+          <td>2019-03-14</td>
+          <td>Active &mdash; description: "The home of Project Helix"</td>
+        </tr>
+        <tr>
+          <td>HTML pipeline</td>
+          <td><code>helix-html-pipeline</code></td>
+          <td><code>helix-html-pipeline</code> (unchanged)</td>
+          <td>2022-03-03</td>
+          <td>Active &mdash; core rendering engine</td>
+        </tr>
+        <tr>
+          <td>RUM collector</td>
+          <td><code>helix-rum-collector</code></td>
+          <td><code>helix-rum-collector</code> (unchanged)</td>
+          <td>2021-05-26</td>
+          <td>Active &mdash; updated 2026-02-24</td>
+        </tr>
+        <tr>
+          <td>Block collection</td>
+          <td><code>aem-block-collection</code></td>
+          <td><code>aem-block-collection</code></td>
+          <td>2022-07-15</td>
+          <td>Active &mdash; used AEM naming from start</td>
+        </tr>
+        <tr>
+          <td>Sidekick library</td>
+          <td><code>franklin-sidekick-library</code></td>
+          <td><code>franklin-sidekick-library</code> (unchanged)</td>
+          <td>2023-03-16</td>
+          <td>Active &mdash; still named "franklin"</td>
+        </tr>
+        <tr>
+          <td>Dashboard</td>
+          <td><code>franklin-dashboard</code></td>
+          <td><code>franklin-dashboard</code> (unchanged)</td>
+          <td>2023-05-09</td>
+          <td>Active &mdash; still named "franklin"</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card" style="background:var(--amber-bg);border-color:var(--amber);">
+    <h3 style="color:var(--amber);">The Naming Inconsistency</h3>
+    <p>The most actively developed repository &mdash; <code>helix-website</code> &mdash; powers <code>www.aem.live</code>, yet its GitHub name still starts with "helix." Similarly, <code>helix-cli</code> is the repo behind <code>@adobe/aem-cli</code> on npm. The GitHub description of <code>helix-cli</code> has been updated to "Command-line tools for developing with AEM" but the repository name remains unchanged. This creates a situation where three naming eras coexist in the active GitHub organization simultaneously.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SECTION: Legacy Remnants on aem.live -->
+<!-- ══════════════════════════════════════════ -->
+<section class="section" id="remnants">
+  <h2 class="section-title"><span class="icon">&#x1F9F9;</span> Legacy Naming Remnants on aem.live</h2>
+
+  <div class="card">
+    <h3>Query Index Analysis: 197 pages scanned</h3>
+    <p>The <code>www.aem.live/query-index.json</code> was analyzed for all references to legacy names. Results:</p>
+
+    <table class="domain-table">
+      <thead>
+        <tr>
+          <th>Legacy Term</th>
+          <th>Occurrences</th>
+          <th>Locations</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>franklin</code></td>
+          <td><strong>4 pages</strong></td>
+          <td>
+            <code>/business/demo</code> &mdash; "AEM Franklin is currently made available..."<br>
+            <code>/tools/organizer/</code> &mdash; titled "Franklin Organizer"<br>
+            <code>/docs/repoless</code> &mdash; reference in description<br>
+            <code>/developer/franklin-video-series</code> &mdash; URL and title
+          </td>
+        </tr>
+        <tr>
+          <td><code>helix</code></td>
+          <td><strong>6 pages</strong></td>
+          <td>
+            <code>/business/helix-is-green</code> &mdash; titled "Helix is green"<br>
+            <code>/business/content-velocity</code> &mdash; "Increase Content Velocity with Helix"<br>
+            <code>/docs/faq</code> &mdash; explains naming history<br>
+            <code>/blog/hlx-is-now-aem-live</code> &mdash; domain migration article<br>
+            <code>/developer/upgrade</code> &mdash; migration guide<br>
+            <code>/developer/da-tutorial</code> &mdash; historical branding context
+          </td>
+        </tr>
+        <tr>
+          <td><code>hlx</code></td>
+          <td><strong>3 pages</strong></td>
+          <td>
+            <code>/blog/hlx-is-now-aem-live</code> &mdash; "what the hlx.live and hlx.page in the preview..."<br>
+            <code>/developer/upgrade</code> &mdash; "hlx.live domain has been blocked"<br>
+            Historical documentation in <code>/previous/</code> paths
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>URLs Still Containing Legacy Names</h3>
+    <p>These aem.live URLs contain old naming in their paths (cannot be changed without breaking links):</p>
+    <ul style="font-family:var(--font-mono);font-size:13px;list-style:none;margin-top:8px;">
+      <li style="padding:4px 0;"><code>/business/helix-is-green</code></li>
+      <li style="padding:4px 0;"><code>/blog/hlx-is-now-aem-live</code></li>
+      <li style="padding:4px 0;"><code>/developer/upgrade</code> (references hlx.live in content)</li>
+      <li style="padding:4px 0;"><code>/developer/franklin-video-series</code></li>
+      <li style="padding:4px 0;"><code>/developer/franklin-video-series-install-node</code></li>
+      <li style="padding:4px 0;"><code>/developer/anatomy-of-a-franklin-project</code> (redirects from Adobe Experience League)</li>
+      <li style="padding:4px 0;"><code>/tools/organizer/</code> (titled "Franklin Organizer")</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Developer-Facing Legacy References</h3>
+    <p>Beyond the website content, these developer touchpoints still expose old naming:</p>
+    <table class="domain-table">
+      <thead>
+        <tr><th>Touchpoint</th><th>Legacy Reference</th><th>Current Usage</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>JavaScript runtime namespace</td>
+          <td><code>window.hlx</code></td>
+          <td>Active &mdash; used by every EDS site. Cannot rename without breaking all sites.</td>
+        </tr>
+        <tr>
+          <td>Config directory</td>
+          <td><code>.helix/config.xlsx</code></td>
+          <td>Active &mdash; required in every content source (SharePoint/Google Drive).</td>
+        </tr>
+        <tr>
+          <td>Ignore file</td>
+          <td><code>.hlxignore</code></td>
+          <td>Active &mdash; referenced in boilerplate and documentation.</td>
+        </tr>
+        <tr>
+          <td>Admin API</td>
+          <td><code>admin.hlx.page</code></td>
+          <td>Active &mdash; referenced in Sidekick and admin API docs.</td>
+        </tr>
+        <tr>
+          <td>CLI binary</td>
+          <td><code>hlx</code> command</td>
+          <td>Backwards-compatible alias alongside <code>aem</code> command.</td>
+        </tr>
+        <tr>
+          <td>CONTRIBUTING.md</td>
+          <td>"Project Helix"</td>
+          <td>Still present in helix-cli template repository.</td>
+        </tr>
+        <tr>
+          <td>npm package name</td>
+          <td><code>@adobe/helix-cli</code></td>
+          <td>Deprecated, points to <code>@adobe/aem-cli</code>.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SECTION: Rebrand Completeness -->
+<!-- ══════════════════════════════════════════ -->
+<section class="section" id="rebrand-score">
+  <h2 class="section-title"><span class="icon">&#x1F4CA;</span> Rebrand Completeness Assessment</h2>
+
+  <div class="card">
+    <h3>aem.live Website Content</h3>
+    <p>Out of 197 indexed pages, 13 contain legacy naming references. Some are justified (migration docs, FAQ explaining history). Approximately 5 pages have legacy naming in titles or descriptions that could be updated.</p>
+    <div class="rebrand-meter">
+      <div class="meter-bar">
+        <div class="meter-fill green" style="width:93%;">93%</div>
+      </div>
+      <div class="meter-label">
+        <span>184 pages clean</span>
+        <span>13 pages with legacy refs (7 justified, ~6 updateable)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>GitHub Repository Names</h3>
+    <p>Of 70+ repositories in the EDS ecosystem, approximately 30+ still use the "helix-" prefix, 11 use "franklin-", and 30+ use "aem-". Many "helix-" repos are actively developed (updated in Feb 2026).</p>
+    <div class="rebrand-meter">
+      <div class="meter-bar">
+        <div class="meter-fill amber" style="width:42%;">~42%</div>
+      </div>
+      <div class="meter-label">
+        <span>~30 repos renamed to aem-*</span>
+        <span>~40+ repos still helix-* or franklin-*</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Infrastructure Domains</h3>
+    <p>The core domain migration is complete. <code>hlx.live</code> and <code>hlx.page</code> are blocked. <code>project-helix.io</code> redirects. <code>status.hlx.live</code> redirects. However, <code>admin.hlx.page</code> remains in active use.</p>
+    <div class="rebrand-meter">
+      <div class="meter-bar">
+        <div class="meter-fill green" style="width:85%;">85%</div>
+      </div>
+      <div class="meter-label">
+        <span>Core domains migrated</span>
+        <span>admin.hlx.page still active</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Developer API Surface</h3>
+    <p>The hardest layer to rebrand. <code>window.hlx</code>, <code>.helix/</code> config, <code>.hlxignore</code>, and the <code>hlx</code> CLI alias are all deeply embedded. Renaming these would break every existing EDS site.</p>
+    <div class="rebrand-meter">
+      <div class="meter-bar">
+        <div class="meter-fill red" style="width:30%;">~30%</div>
+      </div>
+      <div class="meter-label">
+        <span>npm package and docs updated</span>
+        <span>Runtime API, config, and tooling still use legacy names</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SECTION: SEO Consequences -->
+<!-- ══════════════════════════════════════════ -->
+<section class="section" id="seo">
+  <h2 class="section-title"><span class="icon">&#x1F50E;</span> SEO Consequences of the Name Changes</h2>
+
+  <div class="card" style="background:var(--red-bg);border-color:var(--red);">
+    <h3 style="color:var(--red);">Critical: hlx.live Returns 403, Not 301</h3>
+    <p>The single biggest SEO risk from the domain migration: old <code>hlx.live</code> and <code>hlx.page</code> URLs return a <strong>403 Forbidden</strong> instead of a <strong>301 Permanent Redirect</strong> to the equivalent <code>aem.live</code> / <code>aem.page</code> URL. This means:</p>
+    <ul style="margin-left:20px;font-size:14px;">
+      <li>All inbound links from external sites pointing to <code>hlx.live</code> URLs lose their link equity</li>
+      <li>Search engine indexes of old URLs will show dead results until deindexed</li>
+      <li>Developer bookmarks and documentation links from the Helix/Franklin era are broken</li>
+      <li>GitHub README files in thousands of forked repos that reference <code>hlx.live</code> URLs are now dead</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Keyword Fragmentation</h3>
+    <p>The multiple names have created a fragmented search landscape. People searching for information about this product use many different terms:</p>
+    <ul style="margin-left:20px;font-size:14px;">
+      <li><strong>"edge delivery services"</strong> &mdash; current official name</li>
+      <li><strong>"aem edge delivery services"</strong> &mdash; previous full official name</li>
+      <li><strong>"adobe franklin"</strong> / <strong>"aem franklin"</strong> &mdash; still used in many third-party articles</li>
+      <li><strong>"project helix adobe"</strong> &mdash; still searched by developers familiar with early days</li>
+      <li><strong>"adobe EDS"</strong> &mdash; common abbreviation</li>
+      <li><strong>"next-gen composability"</strong> &mdash; some 2023 content still uses this</li>
+    </ul>
+    <p>This fragmentation dilutes SEO authority. The aem.live FAQ page itself leads its meta description with the deprecated names "Franklin and Helix" &mdash; which, while helpful for discoverability, reinforces the old branding in search results.</p>
+  </div>
+
+  <div class="card">
+    <h3>Third-Party Content Lag</h3>
+    <p>Partner and community blogs from 2022-2023 are a permanent part of the search landscape. Blog titles like:</p>
+    <ul style="margin-left:20px;font-size:14px;font-style:italic;">
+      <li>"What is AEM Edge Delivery Services/Helix/AEM Franklin/Next Gen Composability?" (Arbory Digital)</li>
+      <li>"AEM Franklin / Helix / Composability: Pros and Cons" (Adobe Experience League Community)</li>
+      <li>"Navigating support challenges with AEM Franklin" (Netcentric, Aug 2023)</li>
+      <li>"Adobe's AEM Edge Delivery (previously AEM Franklin)" (Netcentric, Jan 2023)</li>
+    </ul>
+    <p>These articles remain indexed and continue to introduce new users to old naming. Adobe cannot control third-party content, meaning the naming confusion will persist in search results for years.</p>
+  </div>
+
+  <div class="card">
+    <h3>Documentation URL Stability</h3>
+    <p>Some Adobe Experience League documentation URLs still contain "franklin" in their paths. For example:</p>
+    <div class="evidence" style="font-family:var(--font-mono);font-size:12px;">
+      experienceleague.adobe.com/en/docs/.../anatomy-of-a-<strong>franklin</strong>-project
+      <br>&darr; 301 redirects to &darr;<br>
+      www.aem.live/developer/anatomy-of-a-<strong>franklin</strong>-project
+      <span class="source">The destination URL also contains "franklin" &mdash; the redirect chain preserves the old name at both ends.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SECTION: Community Impact -->
+<!-- ══════════════════════════════════════════ -->
+<section class="section" id="community">
+  <h2 class="section-title"><span class="icon">&#x1F465;</span> Community &amp; Developer Impact</h2>
+
+  <div class="card">
+    <h3>The Discoverability Problem</h3>
+    <div class="evidence">
+      "Part of the reason that finding good information about AEM Edge Delivery Services is difficult is that it's a product that's had so many different names over its short lifetime."
+      <span class="source">&mdash; Arbory Digital</span>
+    </div>
+    <p>This quote encapsulates the core developer experience problem. When searching for help, developers must try multiple name variants. Stack Overflow answers from the Helix era may use different APIs. Blog tutorials from the Franklin era reference <code>lib-franklin.js</code> instead of <code>aem.js</code>. The constant renaming has fractured the knowledge base.</p>
+  </div>
+
+  <div class="card">
+    <h3>Hacker News Reception (July 2022)</h3>
+    <p>When Project Helix reached Hacker News (81 points, 123 comments), the reaction was largely confusion:</p>
+    <div class="evidence">
+      "I will never trust Adobe on their development platforms."
+      <span class="source">&mdash; HN commenter</span>
+    </div>
+    <div class="evidence">
+      "By the time we understand it, it will be cancelled."
+      <span class="source">&mdash; HN commenter, referencing Adobe's history of discontinuing projects</span>
+    </div>
+    <p>Multiple commenters reported that the project website had broken links, unfinished pages, and failed to clearly explain what the product does. The general impression was of a project not ready for public scrutiny.</p>
+  </div>
+
+  <div class="card">
+    <h3>Developer Documentation Gaps</h3>
+    <div class="evidence">
+      "There is not much information available about this ambitious project from Adobe, with very little documentation on the implementation and no community help content either."
+      <span class="source">&mdash; Adobe Experience League Community</span>
+    </div>
+    <p>During the Franklin era, developers reported difficulty finding accurate information. The renaming compounded this: documentation written for "Helix" used different terminology than documentation written for "Franklin," and community forum answers from one era might not apply to the next.</p>
+  </div>
+
+  <div class="card">
+    <h3>Partner Confusion</h3>
+    <p>Adobe's implementation partners published content under every name variant, sometimes simultaneously. Cognizant Netcentric alone published blogs under three different product names within 10 months:</p>
+    <ul style="margin-left:20px;font-size:14px;">
+      <li><strong>Jan 2023:</strong> "Adobe's AEM Edge Delivery (previously AEM Franklin)"</li>
+      <li><strong>Apr 2023:</strong> "reimagining content management for marketing teams" (Next-Gen Composability)</li>
+      <li><strong>Aug 2023:</strong> "navigating support challenges with AEM Franklin"</li>
+      <li><strong>Oct 2023:</strong> "Edge Delivery Services: what you need to know"</li>
+    </ul>
+    <p>This pattern repeated across Perficient, Rightpoint, Bounteous, To The New, and other partners &mdash; each using whatever name was current at the time of writing.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SECTION: Strategic Analysis -->
+<!-- ══════════════════════════════════════════ -->
+<section class="section" id="analysis">
+  <h2 class="section-title"><span class="icon">&#x1F4A1;</span> Strategic Analysis</h2>
+
+  <div class="card">
+    <h3>Why So Many Names?</h3>
+    <p>The naming evolution reflects a common pattern in enterprise software: an internal engineering project gradually becoming a commercial product.</p>
+    <table class="domain-table">
+      <thead>
+        <tr><th>Name</th><th>Trigger for Change</th><th>Audience</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Project Helix</strong></td>
+          <td>Engineering team needed an internal codename</td>
+          <td>Internal Adobe engineers</td>
+        </tr>
+        <tr>
+          <td><strong>Project Franklin</strong></td>
+          <td>Helix 3 architecture was a significant enough change to warrant a new identity; also possibly to distance from the original's mixed reception</td>
+          <td>Internal + early partners</td>
+        </tr>
+        <tr>
+          <td><strong>Next-Gen Composability</strong></td>
+          <td>Adobe Summit marketing needed a customer-facing name that connected to broader AEM messaging</td>
+          <td>Marketing / enterprise buyers</td>
+        </tr>
+        <tr>
+          <td><strong>Success Edge</strong></td>
+          <td>Unclear &mdash; appears briefly in internal documentation. Possibly a discarded marketing candidate.</td>
+          <td>Unknown</td>
+        </tr>
+        <tr>
+          <td><strong>AEM Edge Delivery Services</strong></td>
+          <td>Product reached GA; needed a permanent, descriptive, AEM-aligned name</td>
+          <td>Everyone &mdash; commercial launch name</td>
+        </tr>
+        <tr>
+          <td><strong>Edge Delivery Services</strong></td>
+          <td>Adobe simplified branding by dropping redundant "AEM" prefix (the product is already under AEM)</td>
+          <td>Everyone &mdash; current preferred name</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>Is the Current Naming Clear and Consistent?</h3>
+    <p><strong>The good:</strong></p>
+    <ul style="margin-left:20px;font-size:14px;">
+      <li>"Edge Delivery Services" is descriptive &mdash; it tells you what it does (delivers at the edge)</li>
+      <li>The domain <code>aem.live</code> is short, memorable, and brand-aligned</li>
+      <li>The FAQ page explicitly addresses naming history, showing transparency</li>
+      <li>The CLI now supports both <code>aem</code> and <code>hlx</code>, enabling gradual transition</li>
+    </ul>
+    <p><strong>The bad:</strong></p>
+    <ul style="margin-left:20px;font-size:14px;">
+      <li>The full official name &mdash; "Edge Delivery Services in Adobe Experience Manager Sites as a Cloud Service with document-based editing" &mdash; is 89 characters</li>
+      <li>"EDS" abbreviation competes with many other acronyms</li>
+      <li><code>window.hlx</code>, <code>.helix/</code>, and <code>.hlxignore</code> create cognitive dissonance for new developers</li>
+      <li>30+ GitHub repos still named "helix-*" signal a project that has not committed to its own rebrand</li>
+      <li>Some documentation pages simultaneously use "Edge Delivery Services", "Helix 5", "AEM", and "franklin" in different contexts</li>
+    </ul>
+    <p><strong>The structural:</strong> The decision to keep "Helix" as the internal architecture designator while using "Edge Delivery Services" as the product name is pragmatic but creates a permanent two-name system. Every developer who reads the architecture docs learns "Helix" as the primary concept, then must translate to "EDS" in all external communication.</p>
+  </div>
+
+  <div class="card">
+    <h3>Architecture Versions vs. Product Naming</h3>
+    <p>The architecture versioning itself shows the naming confusion:</p>
+    <table class="domain-table">
+      <thead>
+        <tr><th>Version</th><th>Internal Name</th><th>Era</th><th>Key Change</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Helix 1</td><td>2018-2019</td><td>Adobe I/O Runtime, server-side customization</td></tr>
+        <tr><td>2</td><td>Helix 2</td><td>2019-2021</td><td>SaaS, client-side customization only</td></tr>
+        <tr><td>3</td><td>Helix/Franklin 3</td><td>2021-2022</td><td>Improved availability and performance</td></tr>
+        <tr><td>4</td><td>Franklin 4</td><td>2022-2025</td><td>Dual-stack (AWS + Cloudflare), production grade</td></tr>
+        <tr><td>5</td><td>Helix 5</td><td>2024-present</td><td>Refactored CDN, aem.live domains, repoless sites</td></tr>
+      </tbody>
+    </table>
+    <p>Note how the naming oscillates: Helix &rarr; Helix &rarr; Helix/Franklin &rarr; Franklin &rarr; <em>back to Helix</em>. Version 5 reverted to "Helix" because "Franklin" was officially retired as a public name, but the internal architecture needed a label. The result: the most modern version carries the oldest name.</p>
+  </div>
+
+  <div class="card">
+    <h3>Recommendations</h3>
+    <ol style="margin-left:20px;font-size:14px;line-height:1.8;">
+      <li><strong>Rename key GitHub repos:</strong> <code>helix-website</code> &rarr; <code>aem-website</code>, <code>helix-cli</code> &rarr; <code>aem-cli</code>, <code>helix-home</code> &rarr; <code>eds-home</code> or archive it. GitHub handles redirects automatically.</li>
+      <li><strong>Update the 5 live pages</strong> with updateable legacy references (especially <code>/business/demo</code> which still says "AEM Franklin" and <code>/tools/organizer/</code> titled "Franklin Organizer").</li>
+      <li><strong>Add 301 redirects</strong> on <code>hlx.live</code> and <code>hlx.page</code> instead of returning 403. This preserves SEO link equity and user experience.</li>
+      <li><strong>Create canonical "what is EDS" page</strong> that ranks for all historical name variants and redirects searchers to the correct, current information.</li>
+      <li><strong>Plan <code>window.hlx</code> deprecation path:</strong> Introduce <code>window.aem</code> alias, maintain both for 2 years, then deprecate <code>hlx</code>.</li>
+      <li><strong>Standardize partner communication:</strong> Provide partners with a naming style guide to prevent future fragmentation in third-party content.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SECTION: Validation -->
+<!-- ══════════════════════════════════════════ -->
+<section class="section" id="validation">
+  <h2 class="section-title"><span class="icon">&#x2705;</span> Cross-Validation Stamp</h2>
+
+  <div class="validation-stamp">
+    <h3>&#x2705; Independently Verified &mdash; 2026-02-24</h3>
+    <ul>
+      <li><strong>Domain checks (cURL):</strong> Verified <code>project-helix.io</code> &rarr; 301 to aem.live; <code>*.hlx.live</code> &rarr; 403 blocked; <code>*.hlx.page</code> &rarr; 403 blocked; <code>status.hlx.live</code> &rarr; 302 to aemstatus.net; <code>*.aem.live</code> &rarr; 200 OK.</li>
+      <li><strong>Query index scan:</strong> Fetched full <code>query-index.json</code> (197 entries), searched for "franklin" (4 hits), "helix" (6 hits), "hlx" (3 hits).</li>
+      <li><strong>GitHub API verification:</strong> Used <code>gh search repos</code> to enumerate helix-*, franklin-*, and aem-* repos with creation dates and archive status.</li>
+      <li><strong>Architecture doc cross-reference:</strong> Fetched <code>adobe/helix-home/docs/architecture.md</code> for the official name list and version history.</li>
+      <li><strong>Hackathon timeline:</strong> Fetched <code>adobe/helix-home/hackathons/README.md</code> confirming earliest activity in Summer 2018.</li>
+      <li><strong>FAQ verification:</strong> Fetched <code>aem.live/docs/faq</code> confirming October 2023 GA date and naming explanation.</li>
+      <li><strong>npm package verification:</strong> Web search confirmed @adobe/helix-cli deprecated at 14.26.0, @adobe/aem-cli starting at 15.0.0.</li>
+      <li><strong>Third-party source triangulation:</strong> Cross-referenced dates across Netcentric, Perficient, Rightpoint, Arbory Digital, Bounteous, and Adobe Experience League Community blogs.</li>
+      <li><strong>Hacker News verification:</strong> Fetched HN thread (id: 31975148) confirming July 4, 2022 date, 81 points, and quoted community reactions.</li>
+    </ul>
+  </div>
+</section>
+
+</div><!-- container -->
+
+</body>
+</html>

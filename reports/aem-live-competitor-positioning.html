@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Competitor Brand Positioning — www.aem.live</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700;900&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue: #3B63FB;
+  --blue-light: #EBF0FF;
+  --blue-dark: #2A4AD4;
+  --bg: #F8F8F8;
+  --bg-white: #FFFFFF;
+  --fg: #292929;
+  --fg-heading: #131313;
+  --fg-muted: #717171;
+  --border: #E1E1E1;
+  --red: #D7373F;
+  --red-bg: #FFF0F0;
+  --amber: #CB6F10;
+  --amber-bg: #FFF5EB;
+  --green: #12805C;
+  --green-bg: #EDFCF2;
+  --purple: #7A6AFD;
+  --purple-bg: #F3F0FF;
+  --cyan: #0D7899;
+  --cyan-bg: #E8F8FF;
+  --fuchsia: #DF4DF5;
+  --shadow-card: 0 2px 8px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04), 0 0 1px rgba(0,0,0,0.08);
+  --shadow-elevated: 0 8px 24px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08);
+  --radius-sm: 4px;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 9999px;
+  --font: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'Source Code Pro', Monaco, 'Cascadia Code', monospace;
+  /* Brand colors */
+  --c-aem: #EB1000;
+  --c-contentful: #2478CC;
+  --c-sanity: #F36458;
+  --c-netlify: #00C7B7;
+  --c-vercel: #000000;
+  --c-wpvip: #3858E9;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+body { font-family: var(--font); color: var(--fg); background: var(--bg); line-height: 1.5; -webkit-font-smoothing: antialiased; }
+:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; border-radius: 2px; }
+a { color: var(--blue); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── Report Nav ── */
+.report-nav {
+  position: sticky; top: 0; z-index: 200;
+  background: var(--bg-white);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 24px;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 600;
+}
+.report-nav a {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 12px; border-radius: 9999px;
+  color: var(--fg-muted); transition: all 0.15s;
+  text-decoration: none;
+}
+.report-nav a:hover { background: var(--blue-light); color: var(--blue); text-decoration: none; }
+.report-nav .nav-hub { font-weight: 700; color: var(--fg-heading); }
+.report-nav .nav-hub:hover { color: var(--blue); }
+.report-nav .nav-sep { color: var(--border); margin: 0 2px; user-select: none; }
+.report-nav .nav-related { background: var(--bg); border: 1px solid var(--border); }
+.report-nav .nav-related:hover { background: var(--blue-light); border-color: var(--blue); color: var(--blue); }
+
+/* ── Layout ── */
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px 80px; }
+@media (max-width: 640px) { .container { padding: 0 16px 60px; } }
+
+/* ── Header ── */
+.report-header {
+  background: var(--bg-white);
+  border-bottom: 1px solid var(--border);
+  padding: 32px 24px;
+  margin-bottom: 32px;
+}
+.report-header-inner {
+  max-width: 1200px; margin: 0 auto;
+  display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+}
+.report-header h1 { font-size: 28px; font-weight: 900; color: var(--fg-heading); line-height: 1.2; }
+.report-header .subtitle { font-size: 16px; color: var(--fg-muted); margin-top: 4px; }
+.report-branding { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: var(--blue); }
+.report-branding .logo-mark {
+  width: 28px; height: 28px; background: var(--blue); border-radius: 6px;
+  display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 900;
+}
+.report-date { font-size: 13px; color: var(--fg-muted); background: var(--bg); padding: 4px 12px; border-radius: var(--radius-pill); font-weight: 600; }
+
+/* ── Jump Nav ── */
+.jump-nav { background: var(--bg-white); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 24px; margin-bottom: 32px; box-shadow: var(--shadow-card); }
+.jump-nav-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--fg-muted); margin-bottom: 12px; }
+.jump-nav-links { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; }
+.jump-nav-links a { display: inline-block; padding: 6px 14px; border-radius: var(--radius-pill); font-size: 14px; font-weight: 600; color: var(--blue); background: var(--blue-light); transition: background 0.15s, color 0.15s; }
+.jump-nav-links a:hover { background: var(--blue); color: #fff; text-decoration: none; }
+
+/* ── Section ── */
+.section { margin-bottom: 48px; }
+.section-title { font-size: 22px; font-weight: 900; color: var(--fg-heading); margin-bottom: 8px; padding-bottom: 8px; border-bottom: 2px solid var(--blue); display: inline-block; }
+.section-desc { font-size: 15px; color: var(--fg-muted); margin-bottom: 20px; max-width: 720px; }
+
+/* ── Summary Cards ── */
+.summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px; }
+@media (max-width: 900px) { .summary-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 500px) { .summary-grid { grid-template-columns: 1fr; } }
+.stat-card { background: var(--bg-white); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow-card); text-align: center; border-top: 3px solid var(--border); }
+.stat-card.accent { border-top-color: var(--blue); }
+.stat-card.positive { border-top-color: var(--green); }
+.stat-card.warning { border-top-color: var(--amber); }
+.stat-card.critical { border-top-color: var(--red); }
+.stat-card.info { border-top-color: var(--purple); }
+.stat-value { font-size: 36px; font-weight: 900; color: var(--fg-heading); line-height: 1; margin-bottom: 4px; }
+.stat-label { font-size: 13px; font-weight: 600; color: var(--fg-muted); text-transform: uppercase; letter-spacing: 0.03em; }
+
+/* ── Card ── */
+.card { background: var(--bg-white); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 16px; box-shadow: var(--shadow-card); }
+.card h3 { font-size: 17px; font-weight: 700; color: var(--fg-heading); margin-bottom: 8px; }
+.card p, .card li { font-size: 15px; color: var(--fg); line-height: 1.6; }
+.card ul { padding-left: 20px; margin-top: 8px; }
+.card li { margin-bottom: 6px; }
+
+/* ── Quote Block ── */
+.quote-block { background: var(--bg-white); border-left: 4px solid var(--blue); border-radius: 0 var(--radius) var(--radius) 0; padding: 20px 24px; margin-bottom: 16px; box-shadow: var(--shadow-card); }
+.quote-block.hero { border-left-color: var(--purple); background: var(--purple-bg); }
+.quote-text { font-size: 18px; font-weight: 700; color: var(--fg-heading); line-height: 1.4; font-style: italic; }
+.quote-text.sm { font-size: 15px; font-weight: 600; }
+.quote-source { font-size: 13px; color: var(--fg-muted); margin-top: 8px; font-style: normal; }
+
+/* ── Positioning Map (SVG) ── */
+.map-container { background: var(--bg-white); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 24px; box-shadow: var(--shadow-card); overflow-x: auto; }
+.map-container svg { display: block; margin: 0 auto; }
+
+/* ── Competitor Cards ── */
+.competitor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+@media (max-width: 900px) { .competitor-grid { grid-template-columns: 1fr; } }
+.competitor-card { background: var(--bg-white); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-card); }
+.competitor-header { padding: 20px 24px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+.competitor-logo { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 900; color: #fff; flex-shrink: 0; }
+.competitor-name { font-size: 18px; font-weight: 900; color: var(--fg-heading); }
+.competitor-claim { font-size: 13px; color: var(--fg-muted); font-weight: 600; }
+.competitor-body { padding: 20px 24px; }
+.competitor-body dt { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--fg-muted); margin-top: 12px; }
+.competitor-body dt:first-child { margin-top: 0; }
+.competitor-body dd { font-size: 15px; color: var(--fg); margin-top: 2px; }
+.competitor-body dd em { font-style: italic; color: var(--fg-muted); }
+.competitor-body dd strong { font-weight: 700; color: var(--fg-heading); }
+
+/* ── Tone Radar ── */
+.tone-compare { background: var(--bg-white); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 24px; box-shadow: var(--shadow-card); overflow-x: auto; }
+
+/* ── Tone Spectrum (multi) ── */
+.tone-spectrum { background: var(--bg-white); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 16px; box-shadow: var(--shadow-card); }
+.tone-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.tone-row:last-child { margin-bottom: 0; }
+.tone-label-left, .tone-label-right { font-size: 12px; font-weight: 600; color: var(--fg-muted); width: 100px; text-align: center; }
+.tone-track { flex: 1; height: 28px; background: var(--bg); border-radius: 14px; position: relative; }
+.tone-marker { position: absolute; top: 50%; width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--bg-white); box-shadow: 0 1px 4px rgba(0,0,0,0.25); transform: translate(-50%, -50%); transition: left 0.3s; }
+.tone-marker-label { position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%); font-size: 9px; font-weight: 700; white-space: nowrap; }
+
+/* ── Comparison Table ── */
+.data-table { width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 16px; background: var(--bg-white); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-card); }
+.data-table th { text-align: left; font-weight: 700; color: var(--fg-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; padding: 10px 16px; border-bottom: 2px solid var(--border); background: var(--bg); }
+.data-table td { padding: 10px 16px; border-bottom: 1px solid var(--border); vertical-align: top; font-size: 14px; }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: #FAFAFA; }
+.data-table .brand-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+.data-table td.highlight { background: var(--blue-light); font-weight: 700; }
+
+/* ── CTA Strategy ── */
+.cta-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+@media (max-width: 900px) { .cta-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 500px) { .cta-grid { grid-template-columns: 1fr; } }
+.cta-card { background: var(--bg-white); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow-card); text-align: center; }
+.cta-card .brand-name { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 12px; }
+.cta-card .cta-button { display: inline-block; padding: 10px 24px; border-radius: var(--radius-pill); font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 12px; }
+.cta-card .cta-secondary { font-size: 13px; color: var(--fg-muted); }
+.cta-card .free-tier { font-size: 12px; font-weight: 600; margin-top: 8px; padding: 4px 12px; border-radius: var(--radius-pill); display: inline-block; }
+.free-yes { background: var(--green-bg); color: var(--green); }
+.free-no { background: var(--red-bg); color: var(--red); }
+.free-hidden { background: var(--amber-bg); color: var(--amber); }
+
+/* ── Badge ── */
+.badge { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 2px 10px; border-radius: var(--radius-pill); display: inline-block; }
+.badge-dev { background: var(--cyan-bg); color: var(--cyan); }
+.badge-biz { background: var(--amber-bg); color: var(--amber); }
+.badge-both { background: var(--purple-bg); color: var(--purple); }
+
+/* ── Insights ── */
+.insight-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+@media (max-width: 768px) { .insight-grid { grid-template-columns: 1fr; } }
+.insight-card { background: var(--bg-white); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 24px; box-shadow: var(--shadow-card); }
+.insight-card h4 { font-size: 15px; font-weight: 700; color: var(--fg-heading); margin-bottom: 6px; }
+.insight-card p { font-size: 14px; color: var(--fg); line-height: 1.6; }
+
+/* ── Validation Stamp ── */
+.validation-stamp { background: var(--green-bg); border: 1px solid #B4E6CD; border-radius: var(--radius); padding: 20px 24px; margin-top: 40px; }
+.validation-stamp h3 { font-size: 15px; font-weight: 700; color: var(--green); margin-bottom: 8px; }
+.validation-stamp ul { padding-left: 20px; font-size: 14px; }
+.validation-stamp li { margin-bottom: 4px; }
+.validation-stamp .stamp-date { font-size: 12px; color: var(--fg-muted); margin-top: 12px; font-weight: 600; }
+
+/* ── Legend ── */
+.legend { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 16px; font-size: 13px; font-weight: 600; }
+.legend-item { display: flex; align-items: center; gap: 6px; }
+.legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+</style>
+</head>
+<body>
+
+<!-- ── Report Nav ── -->
+<nav class="report-nav" aria-label="Report navigation">
+  <a href="hub.html" class="nav-hub">Blazar Hub</a>
+  <span class="nav-sep">/</span>
+  <span style="color:var(--fg);">Competitor Positioning</span>
+  <span class="nav-sep">|</span>
+  <a href="aem-live-brand-guidelines.html" class="nav-related">Brand Guidelines</a>
+  <a href="aem-live-brand-opportunities.html" class="nav-related">Improvement Opportunities</a>
+  <a href="aem-live-content-gaps.html" class="nav-related">Content Gaps</a>
+</nav>
+
+<!-- ── Header ── -->
+<header class="report-header">
+  <div class="report-header-inner">
+    <div>
+      <h1>Competitor Brand Positioning Audit</h1>
+      <p class="subtitle">www.aem.live vs. 5 Competitors &mdash; Messaging, Tone, Strategy &amp; Differentiation</p>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div class="report-branding"><div class="logo-mark">B</div> Blazar</div>
+      <span class="report-date">2026-02-24</span>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+<!-- ── Jump Nav ── -->
+<nav class="jump-nav" aria-label="Quick navigation">
+  <div class="jump-nav-title">Jump to</div>
+  <div class="jump-nav-links">
+    <a href="#exec-summary">Executive Summary</a>
+    <a href="#positioning-map">Positioning Map</a>
+    <a href="#hero-messaging">Hero Messaging</a>
+    <a href="#tone-comparison">Tone of Voice</a>
+    <a href="#cta-strategy">CTA Strategy</a>
+    <a href="#audience-focus">Audience Focus</a>
+    <a href="#pricing">Pricing Transparency</a>
+    <a href="#social-proof">Social Proof</a>
+    <a href="#differentiators">Key Differentiators</a>
+    <a href="#profiles">Full Profiles</a>
+    <a href="#strategic-insights">Strategic Insights</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SECTION: Executive Summary                      -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="section" id="exec-summary">
+  <h2 class="section-title">Executive Summary</h2>
+  <p class="section-desc">Competitive landscape analysis of 6 brands in the web experience platform space. Each competitor's homepage was fetched and analyzed across 10 brand dimensions on 2026-02-24.</p>
+
+  <div class="summary-grid">
+    <div class="stat-card accent">
+      <div class="stat-value">6</div>
+      <div class="stat-label">Brands Analyzed</div>
+    </div>
+    <div class="stat-card info">
+      <div class="stat-value">10</div>
+      <div class="stat-label">Dimensions Scored</div>
+    </div>
+    <div class="stat-card positive">
+      <div class="stat-value">7</div>
+      <div class="stat-label">Tone Axes Mapped</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Key Findings</h3>
+    <ul>
+      <li><strong>aem.live owns the performance niche.</strong> No competitor leads with a Lighthouse 100 guarantee. This is a genuine moat.</li>
+      <li><strong>The "AI" land grab is universal.</strong> Every competitor (Contentful, Sanity, Netlify, Vercel) now leads with AI messaging. aem.live does not mention AI in its hero.</li>
+      <li><strong>aem.live is uniquely educational.</strong> Scoring 82 on the educational axis, it stands apart from Contentful (28) and Vercel (35) which lean heavily salesy.</li>
+      <li><strong>Category fragmentation is extreme.</strong> Contentful says "dynamic content platform," Sanity says "content operating system," Netlify says "web platform," Vercel says "AI cloud." No two brands claim the same category.</li>
+      <li><strong>Pricing transparency is a differentiator.</strong> Sanity, Netlify, and Vercel all show clear free-to-paid tiers. aem.live and WordPress VIP hide pricing entirely.</li>
+      <li><strong>Developer-first is the dominant strategy.</strong> 4 of 6 brands lead with developer messaging. Only Contentful and WordPress VIP prioritize business users.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SECTION: Positioning Map                        -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="section" id="positioning-map">
+  <h2 class="section-title">Positioning Map</h2>
+  <p class="section-desc">Two-axis positioning: Developer-focus vs. Business-focus (horizontal) and Performance-first vs. Content-first (vertical). Bubble size represents relative market presence.</p>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--c-aem)"></div> aem.live</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--c-contentful)"></div> Contentful</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--c-sanity)"></div> Sanity</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--c-netlify)"></div> Netlify</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--c-vercel)"></div> Vercel</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--c-wpvip)"></div> WordPress VIP</div>
+  </div>
+
+  <div class="map-container">
+    <svg viewBox="0 0 700 500" width="700" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Brand positioning map showing 6 brands plotted on developer-vs-business and performance-vs-content axes">
+      <!-- Grid -->
+      <rect x="80" y="40" width="560" height="400" fill="#F8F8F8" stroke="#E1E1E1" rx="8"/>
+      <line x1="360" y1="40" x2="360" y2="440" stroke="#E1E1E1" stroke-dasharray="4,4"/>
+      <line x1="80" y1="240" x2="640" y2="240" stroke="#E1E1E1" stroke-dasharray="4,4"/>
+      <!-- Grid lines -->
+      <line x1="220" y1="40" x2="220" y2="440" stroke="#F0F0F0"/>
+      <line x1="500" y1="40" x2="500" y2="440" stroke="#F0F0F0"/>
+      <line x1="80" y1="140" x2="640" y2="140" stroke="#F0F0F0"/>
+      <line x1="80" y1="340" x2="640" y2="340" stroke="#F0F0F0"/>
+
+      <!-- Axis labels -->
+      <text x="360" y="30" text-anchor="middle" font-family="Source Sans Pro, sans-serif" font-size="12" font-weight="700" fill="#717171">PERFORMANCE-FIRST</text>
+      <text x="360" y="468" text-anchor="middle" font-family="Source Sans Pro, sans-serif" font-size="12" font-weight="700" fill="#717171">CONTENT-FIRST</text>
+      <text x="68" y="244" text-anchor="end" font-family="Source Sans Pro, sans-serif" font-size="12" font-weight="700" fill="#717171" transform="rotate(-90,52,244)">DEVELOPER-FOCUS</text>
+      <text x="668" y="244" text-anchor="start" font-family="Source Sans Pro, sans-serif" font-size="12" font-weight="700" fill="#717171" transform="rotate(90,668,244)">BUSINESS-FOCUS</text>
+
+      <!-- aem.live: Very performance-focused, slight developer lean -->
+      <circle cx="310" cy="80" r="28" fill="#EB1000" opacity="0.85"/>
+      <text x="310" y="84" text-anchor="middle" font-family="Source Sans Pro, sans-serif" font-size="11" font-weight="700" fill="#fff">aem.live</text>
+
+      <!-- Vercel: Performance + developer heavy -->
+      <circle cx="190" cy="120" r="32" fill="#000000" opacity="0.8"/>
+      <text x="190" y="124" text-anchor="middle" font-family="Source Sans Pro, sans-serif" font-size="11" font-weight="700" fill="#fff">Vercel</text>
+
+      <!-- Netlify: Developer-focused, balanced perf/content -->
+      <circle cx="220" cy="220" r="30" fill="#00C7B7" opacity="0.85"/>
+      <text x="220" y="224" text-anchor="middle" font-family="Source Sans Pro, sans-serif" font-size="11" font-weight="700" fill="#fff">Netlify</text>
+
+      <!-- Sanity: Developer-focused, content-first -->
+      <circle cx="250" cy="340" r="28" fill="#F36458" opacity="0.85"/>
+      <text x="250" y="344" text-anchor="middle" font-family="Source Sans Pro, sans-serif" font-size="11" font-weight="700" fill="#fff">Sanity</text>
+
+      <!-- Contentful: Business-focused, content-first -->
+      <circle cx="480" cy="320" r="34" fill="#2478CC" opacity="0.85"/>
+      <text x="480" y="316" text-anchor="middle" font-family="Source Sans Pro, sans-serif" font-size="10" font-weight="700" fill="#fff">Content-</text>
+      <text x="480" y="328" text-anchor="middle" font-family="Source Sans Pro, sans-serif" font-size="10" font-weight="700" fill="#fff">ful</text>
+
+      <!-- WordPress VIP: Very business-focused, content-first -->
+      <circle cx="530" cy="380" r="26" fill="#3858E9" opacity="0.85"/>
+      <text x="530" y="376" text-anchor="middle" font-family="Source Sans Pro, sans-serif" font-size="9" font-weight="700" fill="#fff">WordPress</text>
+      <text x="530" y="388" text-anchor="middle" font-family="Source Sans Pro, sans-serif" font-size="9" font-weight="700" fill="#fff">VIP</text>
+
+      <!-- Quadrant labels -->
+      <text x="180" y="66" font-family="Source Sans Pro, sans-serif" font-size="10" fill="#B0B0B0" font-weight="600">Dev + Performance</text>
+      <text x="450" y="66" font-family="Source Sans Pro, sans-serif" font-size="10" fill="#B0B0B0" font-weight="600">Biz + Performance</text>
+      <text x="180" y="430" font-family="Source Sans Pro, sans-serif" font-size="10" fill="#B0B0B0" font-weight="600">Dev + Content</text>
+      <text x="450" y="430" font-family="Source Sans Pro, sans-serif" font-size="10" fill="#B0B0B0" font-weight="600">Biz + Content</text>
+    </svg>
+  </div>
+
+  <div class="card">
+    <h3>Reading the Map</h3>
+    <p>aem.live occupies a unique position: <strong>performance-first with balanced audience appeal</strong>. Its closest neighbor is Vercel (performance + developer), but Vercel has shifted toward AI-cloud positioning. The content-first quadrant is crowded with Contentful, Sanity, and WordPress VIP competing for content management mindshare. Netlify sits at the center, attempting to be everything to everyone.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SECTION: Hero Messaging                         -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="section" id="hero-messaging">
+  <h2 class="section-title">Hero Messaging Comparison</h2>
+  <p class="section-desc">The exact hero headline, tagline, and positioning claim from each competitor's homepage, fetched 2026-02-24.</p>
+
+  <div class="quote-block hero">
+    <div class="quote-text">"Create a website, seriously fast."</div>
+    <div class="quote-source">aem.live &mdash; Tagline: "Adobe Experience Manager now integrates the tech you already own, know, and love."</div>
+  </div>
+
+  <div class="quote-block" style="border-left-color: var(--c-contentful);">
+    <div class="quote-text">"If you're not personalizing, your content is just filler."</div>
+    <div class="quote-source">Contentful &mdash; Sub-headline: "Break through with hyper-relevant engagement, powered by AI." &mdash; Category: "Dynamic content platform"</div>
+  </div>
+
+  <div class="quote-block" style="border-left-color: var(--c-sanity);">
+    <div class="quote-text">"The Content Operating System"</div>
+    <div class="quote-source">Sanity &mdash; Sub-headline: "Unlock your business with a fully customizable all-code backend for content applications and AI workflows."</div>
+  </div>
+
+  <div class="quote-block" style="border-left-color: var(--c-netlify);">
+    <div class="quote-text">"Push your ideas to the web"</div>
+    <div class="quote-source">Netlify &mdash; Sub-headline: "Build with AI or code, deploy instantly. One platform with everything you need."</div>
+  </div>
+
+  <div class="quote-block" style="border-left-color: var(--c-vercel);">
+    <div class="quote-text">"Build and deploy on the AI Cloud."</div>
+    <div class="quote-source">Vercel &mdash; Sub-headline: "Vercel provides the developer tools and cloud infrastructure to build, scale, and secure a faster, more personalized web."</div>
+  </div>
+
+  <div class="quote-block" style="border-left-color: var(--c-wpvip);">
+    <div class="quote-text">"The Leading Enterprise Content Platform"</div>
+    <div class="quote-source">WordPress VIP &mdash; Sub-headline: "Build, publish, and scale without limits. Speed, security, and flexibility enterprises need."</div>
+  </div>
+
+  <div class="card">
+    <h3>Messaging Pattern Analysis</h3>
+    <ul>
+      <li><strong>Speed claims:</strong> aem.live ("seriously fast"), Vercel ("faster web"), Netlify ("deploy instantly"). Three brands compete on speed, but only aem.live makes it the entire hero.</li>
+      <li><strong>AI claims:</strong> Contentful ("powered by AI"), Sanity ("AI workflows"), Netlify ("Build with AI"), Vercel ("AI Cloud"). 4 of 5 competitors mention AI in the hero. aem.live does not.</li>
+      <li><strong>Scale claims:</strong> Contentful ("at scale"), WordPress VIP ("scale without limits"), Sanity ("at scale"). Enterprise scalability is a common secondary message.</li>
+      <li><strong>Simplicity claims:</strong> aem.live ("tech you already own"), Netlify ("everything you need"). Two brands emphasize reducing complexity.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SECTION: Tone of Voice Comparison               -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="section" id="tone-comparison">
+  <h2 class="section-title">Tone of Voice Comparison</h2>
+  <p class="section-desc">Each brand rated on 7 axes (0-100). Markers show where each brand sits on the spectrum. All scores are based on homepage copy analysis.</p>
+
+  <!-- Axis 1: Casual ←→ Formal -->
+  <div class="tone-spectrum">
+    <h4 style="font-size:15px;font-weight:700;color:var(--fg-heading);margin-bottom:16px;">Casual &#x2194; Formal</h4>
+    <div class="tone-row">
+      <span class="tone-label-left">Casual</span>
+      <div class="tone-track">
+        <div class="tone-marker" style="left:65%;background:var(--c-aem);" title="aem.live: 65"></div>
+        <div class="tone-marker" style="left:70%;background:var(--c-contentful);" title="Contentful: 70"></div>
+        <div class="tone-marker" style="left:45%;background:var(--c-sanity);" title="Sanity: 45"></div>
+        <div class="tone-marker" style="left:38%;background:var(--c-netlify);" title="Netlify: 38"></div>
+        <div class="tone-marker" style="left:55%;background:var(--c-vercel);" title="Vercel: 55"></div>
+        <div class="tone-marker" style="left:78%;background:var(--c-wpvip);" title="WordPress VIP: 78"></div>
+      </div>
+      <span class="tone-label-right">Formal</span>
+    </div>
+    <div class="legend" style="margin-top:8px;justify-content:center;">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-aem);width:10px;height:10px;"></div> 65</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-contentful);width:10px;height:10px;"></div> 70</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-sanity);width:10px;height:10px;"></div> 45</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-netlify);width:10px;height:10px;"></div> 38</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-vercel);width:10px;height:10px;"></div> 55</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-wpvip);width:10px;height:10px;"></div> 78</div>
+    </div>
+  </div>
+
+  <!-- Axis 2: Simple ←→ Technical -->
+  <div class="tone-spectrum">
+    <h4 style="font-size:15px;font-weight:700;color:var(--fg-heading);margin-bottom:16px;">Simple &#x2194; Technical</h4>
+    <div class="tone-row">
+      <span class="tone-label-left">Simple</span>
+      <div class="tone-track">
+        <div class="tone-marker" style="left:72%;background:var(--c-aem);" title="aem.live: 72"></div>
+        <div class="tone-marker" style="left:42%;background:var(--c-contentful);" title="Contentful: 42"></div>
+        <div class="tone-marker" style="left:78%;background:var(--c-sanity);" title="Sanity: 78"></div>
+        <div class="tone-marker" style="left:60%;background:var(--c-netlify);" title="Netlify: 60"></div>
+        <div class="tone-marker" style="left:80%;background:var(--c-vercel);" title="Vercel: 80"></div>
+        <div class="tone-marker" style="left:35%;background:var(--c-wpvip);" title="WordPress VIP: 35"></div>
+      </div>
+      <span class="tone-label-right">Technical</span>
+    </div>
+    <div class="legend" style="margin-top:8px;justify-content:center;">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-aem);width:10px;height:10px;"></div> 72</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-contentful);width:10px;height:10px;"></div> 42</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-sanity);width:10px;height:10px;"></div> 78</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-netlify);width:10px;height:10px;"></div> 60</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-vercel);width:10px;height:10px;"></div> 80</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-wpvip);width:10px;height:10px;"></div> 35</div>
+    </div>
+  </div>
+
+  <!-- Axis 3: Hedging ←→ Assertive -->
+  <div class="tone-spectrum">
+    <h4 style="font-size:15px;font-weight:700;color:var(--fg-heading);margin-bottom:16px;">Hedging &#x2194; Assertive</h4>
+    <div class="tone-row">
+      <span class="tone-label-left">Hedging</span>
+      <div class="tone-track">
+        <div class="tone-marker" style="left:85%;background:var(--c-aem);" title="aem.live: 85"></div>
+        <div class="tone-marker" style="left:80%;background:var(--c-contentful);" title="Contentful: 80"></div>
+        <div class="tone-marker" style="left:75%;background:var(--c-sanity);" title="Sanity: 75"></div>
+        <div class="tone-marker" style="left:65%;background:var(--c-netlify);" title="Netlify: 65"></div>
+        <div class="tone-marker" style="left:82%;background:var(--c-vercel);" title="Vercel: 82"></div>
+        <div class="tone-marker" style="left:72%;background:var(--c-wpvip);" title="WordPress VIP: 72"></div>
+      </div>
+      <span class="tone-label-right">Assertive</span>
+    </div>
+    <div class="legend" style="margin-top:8px;justify-content:center;">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-aem);width:10px;height:10px;"></div> 85</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-contentful);width:10px;height:10px;"></div> 80</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-sanity);width:10px;height:10px;"></div> 75</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-netlify);width:10px;height:10px;"></div> 65</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-vercel);width:10px;height:10px;"></div> 82</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-wpvip);width:10px;height:10px;"></div> 72</div>
+    </div>
+  </div>
+
+  <!-- Axis 4: Product-centric ←→ User-centric -->
+  <div class="tone-spectrum">
+    <h4 style="font-size:15px;font-weight:700;color:var(--fg-heading);margin-bottom:16px;">Product-centric &#x2194; User-centric</h4>
+    <div class="tone-row">
+      <span class="tone-label-left">Product</span>
+      <div class="tone-track">
+        <div class="tone-marker" style="left:60%;background:var(--c-aem);" title="aem.live: 60"></div>
+        <div class="tone-marker" style="left:65%;background:var(--c-contentful);" title="Contentful: 65"></div>
+        <div class="tone-marker" style="left:40%;background:var(--c-sanity);" title="Sanity: 40"></div>
+        <div class="tone-marker" style="left:70%;background:var(--c-netlify);" title="Netlify: 70"></div>
+        <div class="tone-marker" style="left:35%;background:var(--c-vercel);" title="Vercel: 35"></div>
+        <div class="tone-marker" style="left:72%;background:var(--c-wpvip);" title="WordPress VIP: 72"></div>
+      </div>
+      <span class="tone-label-right">User</span>
+    </div>
+    <div class="legend" style="margin-top:8px;justify-content:center;">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-aem);width:10px;height:10px;"></div> 60</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-contentful);width:10px;height:10px;"></div> 65</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-sanity);width:10px;height:10px;"></div> 40</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-netlify);width:10px;height:10px;"></div> 70</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-vercel);width:10px;height:10px;"></div> 35</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-wpvip);width:10px;height:10px;"></div> 72</div>
+    </div>
+  </div>
+
+  <!-- Axis 5: Abstract ←→ Concrete -->
+  <div class="tone-spectrum">
+    <h4 style="font-size:15px;font-weight:700;color:var(--fg-heading);margin-bottom:16px;">Abstract &#x2194; Concrete</h4>
+    <div class="tone-row">
+      <span class="tone-label-left">Abstract</span>
+      <div class="tone-track">
+        <div class="tone-marker" style="left:78%;background:var(--c-aem);" title="aem.live: 78"></div>
+        <div class="tone-marker" style="left:55%;background:var(--c-contentful);" title="Contentful: 55"></div>
+        <div class="tone-marker" style="left:68%;background:var(--c-sanity);" title="Sanity: 68"></div>
+        <div class="tone-marker" style="left:62%;background:var(--c-netlify);" title="Netlify: 62"></div>
+        <div class="tone-marker" style="left:58%;background:var(--c-vercel);" title="Vercel: 58"></div>
+        <div class="tone-marker" style="left:45%;background:var(--c-wpvip);" title="WordPress VIP: 45"></div>
+      </div>
+      <span class="tone-label-right">Concrete</span>
+    </div>
+    <div class="legend" style="margin-top:8px;justify-content:center;">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-aem);width:10px;height:10px;"></div> 78</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-contentful);width:10px;height:10px;"></div> 55</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-sanity);width:10px;height:10px;"></div> 68</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-netlify);width:10px;height:10px;"></div> 62</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-vercel);width:10px;height:10px;"></div> 58</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-wpvip);width:10px;height:10px;"></div> 45</div>
+    </div>
+  </div>
+
+  <!-- Axis 6: Reserved ←→ Opinionated -->
+  <div class="tone-spectrum">
+    <h4 style="font-size:15px;font-weight:700;color:var(--fg-heading);margin-bottom:16px;">Reserved &#x2194; Opinionated</h4>
+    <div class="tone-row">
+      <span class="tone-label-left">Reserved</span>
+      <div class="tone-track">
+        <div class="tone-marker" style="left:55%;background:var(--c-aem);" title="aem.live: 55"></div>
+        <div class="tone-marker" style="left:68%;background:var(--c-contentful);" title="Contentful: 68"></div>
+        <div class="tone-marker" style="left:72%;background:var(--c-sanity);" title="Sanity: 72"></div>
+        <div class="tone-marker" style="left:50%;background:var(--c-netlify);" title="Netlify: 50"></div>
+        <div class="tone-marker" style="left:78%;background:var(--c-vercel);" title="Vercel: 78"></div>
+        <div class="tone-marker" style="left:40%;background:var(--c-wpvip);" title="WordPress VIP: 40"></div>
+      </div>
+      <span class="tone-label-right">Opinionated</span>
+    </div>
+    <div class="legend" style="margin-top:8px;justify-content:center;">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-aem);width:10px;height:10px;"></div> 55</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-contentful);width:10px;height:10px;"></div> 68</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-sanity);width:10px;height:10px;"></div> 72</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-netlify);width:10px;height:10px;"></div> 50</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-vercel);width:10px;height:10px;"></div> 78</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-wpvip);width:10px;height:10px;"></div> 40</div>
+    </div>
+  </div>
+
+  <!-- Axis 7: Salesy ←→ Educational -->
+  <div class="tone-spectrum">
+    <h4 style="font-size:15px;font-weight:700;color:var(--fg-heading);margin-bottom:16px;">Salesy &#x2194; Educational</h4>
+    <div class="tone-row">
+      <span class="tone-label-left">Salesy</span>
+      <div class="tone-track">
+        <div class="tone-marker" style="left:82%;background:var(--c-aem);" title="aem.live: 82"></div>
+        <div class="tone-marker" style="left:28%;background:var(--c-contentful);" title="Contentful: 28"></div>
+        <div class="tone-marker" style="left:58%;background:var(--c-sanity);" title="Sanity: 58"></div>
+        <div class="tone-marker" style="left:55%;background:var(--c-netlify);" title="Netlify: 55"></div>
+        <div class="tone-marker" style="left:35%;background:var(--c-vercel);" title="Vercel: 35"></div>
+        <div class="tone-marker" style="left:30%;background:var(--c-wpvip);" title="WordPress VIP: 30"></div>
+      </div>
+      <span class="tone-label-right">Educational</span>
+    </div>
+    <div class="legend" style="margin-top:8px;justify-content:center;">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-aem);width:10px;height:10px;"></div> 82</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-contentful);width:10px;height:10px;"></div> 28</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-sanity);width:10px;height:10px;"></div> 58</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-netlify);width:10px;height:10px;"></div> 55</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-vercel);width:10px;height:10px;"></div> 35</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-wpvip);width:10px;height:10px;"></div> 30</div>
+    </div>
+  </div>
+
+  <!-- Full scores table -->
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Axis</th>
+        <th><span class="brand-dot" style="background:var(--c-aem)"></span>aem.live</th>
+        <th><span class="brand-dot" style="background:var(--c-contentful)"></span>Contentful</th>
+        <th><span class="brand-dot" style="background:var(--c-sanity)"></span>Sanity</th>
+        <th><span class="brand-dot" style="background:var(--c-netlify)"></span>Netlify</th>
+        <th><span class="brand-dot" style="background:var(--c-vercel)"></span>Vercel</th>
+        <th><span class="brand-dot" style="background:var(--c-wpvip)"></span>WP VIP</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Casual / Formal</td><td class="highlight">65</td><td>70</td><td>45</td><td>38</td><td>55</td><td>78</td></tr>
+      <tr><td>Simple / Technical</td><td class="highlight">72</td><td>42</td><td>78</td><td>60</td><td>80</td><td>35</td></tr>
+      <tr><td>Hedging / Assertive</td><td class="highlight">85</td><td>80</td><td>75</td><td>65</td><td>82</td><td>72</td></tr>
+      <tr><td>Product / User-centric</td><td class="highlight">60</td><td>65</td><td>40</td><td>70</td><td>35</td><td>72</td></tr>
+      <tr><td>Abstract / Concrete</td><td class="highlight">78</td><td>55</td><td>68</td><td>62</td><td>58</td><td>45</td></tr>
+      <tr><td>Reserved / Opinionated</td><td class="highlight">55</td><td>68</td><td>72</td><td>50</td><td>78</td><td>40</td></tr>
+      <tr><td>Salesy / Educational</td><td class="highlight">82</td><td>28</td><td>58</td><td>55</td><td>35</td><td>30</td></tr>
+    </tbody>
+  </table>
+
+  <div class="card">
+    <h3>Tone Analysis Highlights</h3>
+    <ul>
+      <li><strong>aem.live is the most educational</strong> (82) by a wide margin. Sanity (58) and Netlify (55) are moderate; Contentful (28), WordPress VIP (30), and Vercel (35) are heavily salesy.</li>
+      <li><strong>Vercel and Sanity are the most opinionated</strong> (78, 72). They stake strong technical positions. aem.live is moderate (55), and WordPress VIP is the most reserved (40).</li>
+      <li><strong>Netlify is the most casual</strong> (38). "Push your ideas to the web" reads like a friend's advice, not enterprise software. WordPress VIP (78) is the most formal.</li>
+      <li><strong>Vercel is the most technical</strong> (80) with terms like "framework-defined infrastructure" and "fluid compute." Contentful (42) and WordPress VIP (35) keep it accessible.</li>
+      <li><strong>aem.live is the most assertive</strong> (85). "Seriously fast" leaves no room for doubt. Netlify (65) is the most hedging.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SECTION: CTA Strategy                           -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="section" id="cta-strategy">
+  <h2 class="section-title">CTA Strategy</h2>
+  <p class="section-desc">Primary call-to-action text, placement style, and free tier messaging from each homepage.</p>
+
+  <div class="cta-grid">
+    <div class="cta-card">
+      <div class="brand-name" style="color:var(--c-aem);">aem.live</div>
+      <div class="cta-button" style="background:var(--c-aem);">Create your site</div>
+      <div class="cta-secondary">Secondary: none visible</div>
+      <div class="free-tier free-hidden">No free tier shown</div>
+    </div>
+    <div class="cta-card">
+      <div class="brand-name" style="color:var(--c-contentful);">Contentful</div>
+      <div class="cta-button" style="background:var(--c-contentful);">Explore Personalization</div>
+      <div class="cta-secondary">Secondary: "Start for free"</div>
+      <div class="free-tier free-yes">Free: $0 forever, 10 users</div>
+    </div>
+    <div class="cta-card">
+      <div class="brand-name" style="color:var(--c-sanity);">Sanity</div>
+      <div class="cta-button" style="background:var(--c-sanity);">Start Building</div>
+      <div class="cta-secondary">Secondary: "Watch demo" + npm CLI</div>
+      <div class="free-tier free-yes">Free: $0, 20 seats</div>
+    </div>
+    <div class="cta-card">
+      <div class="brand-name" style="color:var(--c-netlify);">Netlify</div>
+      <div class="cta-button" style="background:var(--c-netlify);color:#000;">Get started</div>
+      <div class="cta-secondary">Secondary: "Contact Sales"</div>
+      <div class="free-tier free-yes">Free: $0, 300 credits/mo</div>
+    </div>
+    <div class="cta-card">
+      <div class="brand-name" style="color:var(--c-vercel);">Vercel</div>
+      <div class="cta-button" style="background:var(--c-vercel);">Start Deploying</div>
+      <div class="cta-secondary">Secondary: "Get a Demo"</div>
+      <div class="free-tier free-yes">Free: Hobby tier</div>
+    </div>
+    <div class="cta-card">
+      <div class="brand-name" style="color:var(--c-wpvip);">WordPress VIP</div>
+      <div class="cta-button" style="background:var(--c-wpvip);">Get a demo</div>
+      <div class="cta-secondary">Secondary: contact@wpvip.com</div>
+      <div class="free-tier free-no">No free tier</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>CTA Pattern Analysis</h3>
+    <ul>
+      <li><strong>Action-oriented CTAs dominate.</strong> "Create," "Start Building," "Start Deploying," "Get started" all use active verbs suggesting immediate value.</li>
+      <li><strong>Contentful is the outlier.</strong> "Explore Personalization" is feature-focused rather than action-focused &mdash; promoting a specific capability rather than inviting the user to build.</li>
+      <li><strong>aem.live's "Create your site" is strong</strong> but lacks a secondary path. Every competitor offers at least two entry points (self-serve + sales contact).</li>
+      <li><strong>Sanity is unique</strong> in offering an npm CLI command directly in the hero &mdash; the strongest developer-first signal of any competitor.</li>
+      <li><strong>Enterprise gatekeeping:</strong> Only aem.live and WordPress VIP have no visible self-serve path. This limits organic developer adoption.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SECTION: Audience Focus                         -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="section" id="audience-focus">
+  <h2 class="section-title">Audience Focus</h2>
+  <p class="section-desc">Which audience gets priority on each homepage &mdash; developers, business users, or balanced.</p>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Brand</th>
+        <th>Primary Audience</th>
+        <th>Evidence</th>
+        <th>Tag</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="brand-dot" style="background:var(--c-aem)"></span><strong>aem.live</strong></td>
+        <td>Balanced (slight developer lean)</td>
+        <td>Nav: Build / Publish / Launch. Hero speaks to site owners; docs are deeply technical. Sidekick is for content editors.</td>
+        <td><span class="badge badge-both">Both</span></td>
+      </tr>
+      <tr>
+        <td><span class="brand-dot" style="background:var(--c-contentful)"></span><strong>Contentful</strong></td>
+        <td>Business-first (marketing teams)</td>
+        <td>Hero about personalization and engagement. Segments: Growth Marketing, Product, Content teams. Developer docs exist but are secondary.</td>
+        <td><span class="badge badge-biz">Business</span></td>
+      </tr>
+      <tr>
+        <td><span class="brand-dot" style="background:var(--c-sanity)"></span><strong>Sanity</strong></td>
+        <td>Developer-first</td>
+        <td>npm CLI in hero. "All-code backend" messaging. TypeScript-first, GROQ query language. Segments: Developers, Content Editors, Product Owners.</td>
+        <td><span class="badge badge-dev">Developer</span></td>
+      </tr>
+      <tr>
+        <td><span class="brand-dot" style="background:var(--c-netlify)"></span><strong>Netlify</strong></td>
+        <td>Developer-first</td>
+        <td>"Build with AI or code." "No DevOps required." Framework-specific nav (Astro, Next.js, React). "10 million developers" stat.</td>
+        <td><span class="badge badge-dev">Developer</span></td>
+      </tr>
+      <tr>
+        <td><span class="brand-dot" style="background:var(--c-vercel)"></span><strong>Vercel</strong></td>
+        <td>Developer-first</td>
+        <td>"Developer tools and cloud infrastructure." SDK-heavy messaging (AI SDK, Flags SDK). Framework ecosystem (Next.js, Nuxt, Svelte).</td>
+        <td><span class="badge badge-dev">Developer</span></td>
+      </tr>
+      <tr>
+        <td><span class="brand-dot" style="background:var(--c-wpvip)"></span><strong>WordPress VIP</strong></td>
+        <td>Business-first (enterprise)</td>
+        <td>"Enterprise content platform." Segments: Enterprise brands, Government, Media. IT/Developers listed last. FedRAMP compliance messaging.</td>
+        <td><span class="badge badge-biz">Business</span></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SECTION: Pricing Transparency                   -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="section" id="pricing">
+  <h2 class="section-title">Pricing Transparency</h2>
+  <p class="section-desc">Visibility of pricing information and free tier availability across all 6 brands.</p>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Brand</th>
+        <th>Pricing Page?</th>
+        <th>Free Tier</th>
+        <th>Paid Starting At</th>
+        <th>Enterprise</th>
+        <th>Transparency Score</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="brand-dot" style="background:var(--c-aem)"></span><strong>aem.live</strong></td>
+        <td style="color:var(--red);font-weight:700;">No</td>
+        <td style="color:var(--red);">None visible</td>
+        <td>N/A &mdash; enterprise sales only</td>
+        <td>Contact sales</td>
+        <td style="font-weight:900;color:var(--red);">1 / 5</td>
+      </tr>
+      <tr>
+        <td><span class="brand-dot" style="background:var(--c-contentful)"></span><strong>Contentful</strong></td>
+        <td style="color:var(--green);font-weight:700;">Yes</td>
+        <td style="color:var(--green);">$0 / 10 users</td>
+        <td>$300/mo (Lite)</td>
+        <td>Custom (Premium)</td>
+        <td style="font-weight:900;color:var(--green);">4 / 5</td>
+      </tr>
+      <tr>
+        <td><span class="brand-dot" style="background:var(--c-sanity)"></span><strong>Sanity</strong></td>
+        <td style="color:var(--green);font-weight:700;">Yes</td>
+        <td style="color:var(--green);">$0 / 20 seats</td>
+        <td>$15/seat/mo (Growth)</td>
+        <td>Custom</td>
+        <td style="font-weight:900;color:var(--green);">5 / 5</td>
+      </tr>
+      <tr>
+        <td><span class="brand-dot" style="background:var(--c-netlify)"></span><strong>Netlify</strong></td>
+        <td style="color:var(--green);font-weight:700;">Yes</td>
+        <td style="color:var(--green);">$0 / 300 credits</td>
+        <td>$9/mo (Personal)</td>
+        <td>Custom</td>
+        <td style="font-weight:900;color:var(--green);">5 / 5</td>
+      </tr>
+      <tr>
+        <td><span class="brand-dot" style="background:var(--c-vercel)"></span><strong>Vercel</strong></td>
+        <td style="color:var(--green);font-weight:700;">Yes</td>
+        <td style="color:var(--green);">Hobby (free)</td>
+        <td>$20/user/mo (Pro)</td>
+        <td>Custom</td>
+        <td style="font-weight:900;color:var(--green);">5 / 5</td>
+      </tr>
+      <tr>
+        <td><span class="brand-dot" style="background:var(--c-wpvip)"></span><strong>WordPress VIP</strong></td>
+        <td style="color:var(--amber);font-weight:700;">Exists but hidden</td>
+        <td style="color:var(--red);">None</td>
+        <td>Not disclosed (annual contracts)</td>
+        <td>Contact sales</td>
+        <td style="font-weight:900;color:var(--red);">2 / 5</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="card">
+    <h3>Pricing Insight</h3>
+    <p>aem.live and WordPress VIP are the only two brands without transparent pricing. Both target enterprise buyers through sales-led motions. However, every developer-first brand (Sanity, Netlify, Vercel) leads with generous free tiers as the primary acquisition funnel. Contentful bridges both worlds with a free tier that feeds into enterprise upsell. <strong>The absence of a free tier on aem.live is its single biggest barrier to organic developer adoption.</strong></p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SECTION: Social Proof                           -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="section" id="social-proof">
+  <h2 class="section-title">Social Proof Strategies</h2>
+  <p class="section-desc">How each brand uses customer logos, testimonials, case studies, and metrics to build credibility.</p>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Brand</th>
+        <th>Logo Wall</th>
+        <th>Testimonials</th>
+        <th>Metrics / Stats</th>
+        <th>Case Studies</th>
+        <th>Strategy</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="brand-dot" style="background:var(--c-aem)"></span><strong>aem.live</strong></td>
+        <td>Partner logos (ThinkingBox, Cognizant, etc.)</td>
+        <td>PGA Tour, Airlessco, Thinkingbox</td>
+        <td>"Lighthouse 100" repeated, "50x Peak Traffic"</td>
+        <td>Inline case studies on homepage</td>
+        <td><strong>Performance proof</strong> &mdash; every testimonial reinforces Lighthouse 100</td>
+      </tr>
+      <tr>
+        <td><span class="brand-dot" style="background:var(--c-contentful)"></span><strong>Contentful</strong></td>
+        <td>15+ major brands (Kraft Heinz, Microsoft, AWS, Atlassian)</td>
+        <td>Embedded in case studies</td>
+        <td>"4.6B delivery requests," "50% cost reduction," "10x GTM speed," "99.99% SLA"</td>
+        <td>Rich case studies with conversion metrics</td>
+        <td><strong>Enterprise authority</strong> &mdash; household names + quantified ROI</td>
+      </tr>
+      <tr>
+        <td><span class="brand-dot" style="background:var(--c-sanity)"></span><strong>Sanity</strong></td>
+        <td>20+ logos (Spotify, Anthropic, Shopify, Nordstrom, PUMA)</td>
+        <td>Named quotes (PUMA, Linear, Morning Brew)</td>
+        <td>G2 award badges (Momentum Leader, Grid Leader)</td>
+        <td>Quote-based with named roles</td>
+        <td><strong>Cool factor</strong> &mdash; trendy brands + analyst recognition</td>
+      </tr>
+      <tr>
+        <td><span class="brand-dot" style="background:var(--c-netlify)"></span><strong>Netlify</strong></td>
+        <td>13 logos (Meta, Figma, Riot Games, Autodesk)</td>
+        <td>None visible on homepage</td>
+        <td>"10 million developers"</td>
+        <td>None visible on homepage</td>
+        <td><strong>Developer crowd</strong> &mdash; community size is the proof</td>
+      </tr>
+      <tr>
+        <td><span class="brand-dot" style="background:var(--c-vercel)"></span><strong>Vercel</strong></td>
+        <td>Not prominent on homepage</td>
+        <td>Runway, Leonardo AI, Zapier with metrics</td>
+        <td>"7m to 40s builds," "95% faster loads," "24x faster builds"</td>
+        <td>Performance-metric focused</td>
+        <td><strong>Speed proof</strong> &mdash; before/after performance numbers</td>
+      </tr>
+      <tr>
+        <td><span class="brand-dot" style="background:var(--c-wpvip)"></span><strong>WordPress VIP</strong></td>
+        <td>Minimal</td>
+        <td>ADWEEK case study</td>
+        <td>"100% uptime during Super Bowl," "82% traffic surge"</td>
+        <td>Event-based (Super Bowl 2025)</td>
+        <td><strong>Reliability drama</strong> &mdash; survive the biggest moments</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SECTION: Key Differentiators                    -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="section" id="differentiators">
+  <h2 class="section-title">Key Differentiators</h2>
+  <p class="section-desc">Each brand's unique positioning claim &mdash; the one thing they say no one else offers.</p>
+
+  <div class="competitor-grid">
+    <div class="competitor-card">
+      <div class="competitor-header">
+        <div class="competitor-logo" style="background:var(--c-aem);">A</div>
+        <div>
+          <div class="competitor-name">aem.live</div>
+          <div class="competitor-claim">Performance-first CMS</div>
+        </div>
+      </div>
+      <div class="competitor-body">
+        <dt>Differentiator</dt>
+        <dd><strong>Lighthouse 100 guarantee</strong> with familiar tools (Word/Google Docs + GitHub). Not headless, not SSG &mdash; a CMS that delivers perfect scores out of the box.</dd>
+        <dt>Why it works</dt>
+        <dd>Quantifiable, verifiable, and unique. No competitor can make this claim. Combines enterprise authoring (Word/Docs) with developer workflows (GitHub).</dd>
+        <dt>Vulnerability</dt>
+        <dd>Performance alone is table-stakes as tooling improves. No AI story. No personalization narrative. No free tier for organic growth.</dd>
+      </div>
+    </div>
+
+    <div class="competitor-card">
+      <div class="competitor-header">
+        <div class="competitor-logo" style="background:var(--c-contentful);">C</div>
+        <div>
+          <div class="competitor-name">Contentful</div>
+          <div class="competitor-claim">Dynamic content platform</div>
+        </div>
+      </div>
+      <div class="competitor-body">
+        <dt>Differentiator</dt>
+        <dd><strong>No-code personalization powered by AI.</strong> Component-level performance measurement. "Modular content, max impact."</dd>
+        <dt>Why it works</dt>
+        <dd>Marketers can personalize without engineering. AI is on-brand. Content reuse across channels/brands/regions reduces duplicate work.</dd>
+        <dt>Vulnerability</dt>
+        <dd>Increasingly crowded AI+personalization space. $300/mo Lite tier is expensive. "Dynamic content platform" is vague.</dd>
+      </div>
+    </div>
+
+    <div class="competitor-card">
+      <div class="competitor-header">
+        <div class="competitor-logo" style="background:var(--c-sanity);">S</div>
+        <div>
+          <div class="competitor-name">Sanity</div>
+          <div class="competitor-claim">Content operating system</div>
+        </div>
+      </div>
+      <div class="competitor-body">
+        <dt>Differentiator</dt>
+        <dd><strong>Fully customizable all-code backend.</strong> Content Lake (content-optimized database), real-time collaboration, GROQ query language. Framework-agnostic with 40+ integrations.</dd>
+        <dt>Why it works</dt>
+        <dd>"Content Operating System" is a bold category creation play. Developers get full control; editors get real-time visual editing. $0 for 20 seats is the most generous free tier.</dd>
+        <dt>Vulnerability</dt>
+        <dd>"All-code" alienates non-technical teams. "Content Operating System" may be too abstract for buyers. Heavy reliance on developer evangelism.</dd>
+      </div>
+    </div>
+
+    <div class="competitor-card">
+      <div class="competitor-header">
+        <div class="competitor-logo" style="background:var(--c-netlify);">N</div>
+        <div>
+          <div class="competitor-name">Netlify</div>
+          <div class="competitor-claim">Web platform</div>
+        </div>
+      </div>
+      <div class="competitor-body">
+        <dt>Differentiator</dt>
+        <dd><strong>Everything-in-one-place deployment.</strong> Deploy from AI tools (Bolt, Cursor), Git, or API. Functions, storage, forms, image CDN all included. "No DevOps required."</dd>
+        <dt>Why it works</dt>
+        <dd>Lowest barrier to deployment on the web. "Vibe coding" and AI-first deployment is genuinely novel. 10M developer community provides flywheel.</dd>
+        <dt>Vulnerability</dt>
+        <dd>"Everything platform" risks being nothing special. Caught between infrastructure (Vercel) and content (Contentful) without owning either fully.</dd>
+      </div>
+    </div>
+
+    <div class="competitor-card">
+      <div class="competitor-header">
+        <div class="competitor-logo" style="background:var(--c-vercel);">V</div>
+        <div>
+          <div class="competitor-name">Vercel</div>
+          <div class="competitor-claim">The AI cloud</div>
+        </div>
+      </div>
+      <div class="competitor-body">
+        <dt>Differentiator</dt>
+        <dd><strong>Framework-defined infrastructure + AI cloud.</strong> Code defines what infrastructure gets provisioned. Active CPU pricing (Fluid Compute). Integrated AI gateway for hundreds of models.</dd>
+        <dt>Why it works</dt>
+        <dd>"AI Cloud" is a massive category claim. Owns Next.js (dominant React framework). v0 for AI-generated UI. Developer tools ecosystem is the deepest.</dd>
+        <dt>Vulnerability</dt>
+        <dd>Next.js dependency is both strength and risk. "AI Cloud" competes with AWS/GCP/Azure positioning. Opinionated approach limits flexibility.</dd>
+      </div>
+    </div>
+
+    <div class="competitor-card">
+      <div class="competitor-header">
+        <div class="competitor-logo" style="background:var(--c-wpvip);">W</div>
+        <div>
+          <div class="competitor-name">WordPress VIP</div>
+          <div class="competitor-claim">Enterprise content platform</div>
+        </div>
+      </div>
+      <div class="competitor-body">
+        <dt>Differentiator</dt>
+        <dd><strong>Only FedRAMP-authorized WordPress platform.</strong> Managed infrastructure for the world's biggest brands. 100% uptime during peak events (Super Bowl). No overage charges.</dd>
+        <dt>Why it works</dt>
+        <dd>Government compliance is a genuine moat. WordPress familiarity reduces training costs. "No overage charges" is a direct shot at Vercel/Netlify billing surprises.</dd>
+        <dt>Vulnerability</dt>
+        <dd>WordPress brand carries legacy baggage in developer circles. Innovation perception lags. No visible developer community play.</dd>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SECTION: Full Profiles                          -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="section" id="profiles">
+  <h2 class="section-title">Full Brand Profiles</h2>
+  <p class="section-desc">Complete 10-dimension profile for each brand, with exact quotes and scores.</p>
+
+  <!-- PROFILE: aem.live -->
+  <div class="card" style="border-top: 3px solid var(--c-aem);">
+    <h3><span class="brand-dot" style="background:var(--c-aem)"></span> aem.live &mdash; Full Profile</h3>
+    <table class="data-table" style="box-shadow:none;margin-top:12px;">
+      <tbody>
+        <tr><td style="width:200px;font-weight:700;">Hero Headline</td><td>"Create a website, seriously fast."</td></tr>
+        <tr><td style="font-weight:700;">Tagline</td><td>"Adobe Experience Manager now integrates the tech you already own, know, and love."</td></tr>
+        <tr><td style="font-weight:700;">Category Claim</td><td>Performance-first CMS (not headless, not SSG)</td></tr>
+        <tr><td style="font-weight:700;">Primary Value Prop</td><td>Lighthouse 100 guaranteed website performance with familiar authoring tools</td></tr>
+        <tr><td style="font-weight:700;">Tone Scores</td><td>Formal 65 | Technical 72 | Assertive 85 | User-centric 60 | Concrete 78 | Opinionated 55 | Educational 82</td></tr>
+        <tr><td style="font-weight:700;">Visual Identity</td><td>Clean white + black. Red Adobe accent. Minimal imagery. Technical but approachable.</td></tr>
+        <tr><td style="font-weight:700;">Primary CTA</td><td>"Create your site"</td></tr>
+        <tr><td style="font-weight:700;">Social Proof</td><td>Partner logos + Lighthouse 100 testimonials (PGA Tour, Airlessco, Thinkingbox)</td></tr>
+        <tr><td style="font-weight:700;">Audience Priority</td><td>Balanced (developer + content author)</td></tr>
+        <tr><td style="font-weight:700;">Pricing</td><td>Not visible. Enterprise sales model.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- PROFILE: Contentful -->
+  <div class="card" style="border-top: 3px solid var(--c-contentful);">
+    <h3><span class="brand-dot" style="background:var(--c-contentful)"></span> Contentful &mdash; Full Profile</h3>
+    <table class="data-table" style="box-shadow:none;margin-top:12px;">
+      <tbody>
+        <tr><td style="width:200px;font-weight:700;">Hero Headline</td><td>"If you're not personalizing, your content is just filler."</td></tr>
+        <tr><td style="font-weight:700;">Tagline</td><td>"Break through with hyper-relevant engagement, powered by AI."</td></tr>
+        <tr><td style="font-weight:700;">Category Claim</td><td>Dynamic content platform / composable, modular architecture</td></tr>
+        <tr><td style="font-weight:700;">Primary Value Prop</td><td>AI-powered personalization that marketers can use without code</td></tr>
+        <tr><td style="font-weight:700;">Tone Scores</td><td>Formal 70 | Technical 42 | Assertive 80 | User-centric 65 | Concrete 55 | Opinionated 68 | Educational 28</td></tr>
+        <tr><td style="font-weight:700;">Visual Identity</td><td>Blue (#2478CC) + white. Orange/green accents. Diverse professional photography. Modern, corporate-friendly.</td></tr>
+        <tr><td style="font-weight:700;">Primary CTA</td><td>"Explore Contentful Personalization"</td></tr>
+        <tr><td style="font-weight:700;">Social Proof</td><td>15+ enterprise logos (Kraft Heinz, Microsoft, AWS). Rich ROI metrics: "78% increased CVR," "10x content production."</td></tr>
+        <tr><td style="font-weight:700;">Audience Priority</td><td>Business-first (Growth Marketing, Product, Content teams)</td></tr>
+        <tr><td style="font-weight:700;">Pricing</td><td>Free ($0/10 users) | Lite ($300/mo) | Premium (custom). Transparent.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- PROFILE: Sanity -->
+  <div class="card" style="border-top: 3px solid var(--c-sanity);">
+    <h3><span class="brand-dot" style="background:var(--c-sanity)"></span> Sanity &mdash; Full Profile</h3>
+    <table class="data-table" style="box-shadow:none;margin-top:12px;">
+      <tbody>
+        <tr><td style="width:200px;font-weight:700;">Hero Headline</td><td>"The Content Operating System"</td></tr>
+        <tr><td style="font-weight:700;">Tagline</td><td>"Unlock your business with a fully customizable all-code backend for content applications and AI workflows."</td></tr>
+        <tr><td style="font-weight:700;">Category Claim</td><td>Content operating system (explicit category creation)</td></tr>
+        <tr><td style="font-weight:700;">Primary Value Prop</td><td>Fully customizable, all-code content backend with real-time collaboration and AI</td></tr>
+        <tr><td style="font-weight:700;">Tone Scores</td><td>Formal 45 | Technical 78 | Assertive 75 | User-centric 40 | Concrete 68 | Opinionated 72 | Educational 58</td></tr>
+        <tr><td style="font-weight:700;">Visual Identity</td><td>Dark backgrounds (black/navy). Neon accents (lime #CDEA19, electric blue, orange). Bold sans-serif. Minimalist, tech-forward.</td></tr>
+        <tr><td style="font-weight:700;">Primary CTA</td><td>"Start Building" + <code>npm create sanity@latest</code></td></tr>
+        <tr><td style="font-weight:700;">Social Proof</td><td>20+ logos (Spotify, Anthropic, Shopify). Named quotes from PUMA, Linear, Morning Brew. G2 award badges.</td></tr>
+        <tr><td style="font-weight:700;">Audience Priority</td><td>Developer-first (TypeScript, GROQ, CLI onboarding)</td></tr>
+        <tr><td style="font-weight:700;">Pricing</td><td>Free ($0/20 seats) | Growth ($15/seat/mo) | Enterprise (custom). Most transparent.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- PROFILE: Netlify -->
+  <div class="card" style="border-top: 3px solid var(--c-netlify);">
+    <h3><span class="brand-dot" style="background:var(--c-netlify)"></span> Netlify &mdash; Full Profile</h3>
+    <table class="data-table" style="box-shadow:none;margin-top:12px;">
+      <tbody>
+        <tr><td style="width:200px;font-weight:700;">Hero Headline</td><td>"Push your ideas to the web"</td></tr>
+        <tr><td style="font-weight:700;">Tagline</td><td>"Build with AI or code, deploy instantly. One platform with everything you need."</td></tr>
+        <tr><td style="font-weight:700;">Category Claim</td><td>Deployment and fullstack platform</td></tr>
+        <tr><td style="font-weight:700;">Primary Value Prop</td><td>Zero-config deployment from AI tools or Git. Infrastructure handled. No DevOps required.</td></tr>
+        <tr><td style="font-weight:700;">Tone Scores</td><td>Formal 38 | Technical 60 | Assertive 65 | User-centric 70 | Concrete 62 | Opinionated 50 | Educational 55</td></tr>
+        <tr><td style="font-weight:700;">Visual Identity</td><td>Dark teal (#0D1818) gradients. White text. Teal accents. Minimalist line illustrations. Geometric patterns.</td></tr>
+        <tr><td style="font-weight:700;">Primary CTA</td><td>"Get started"</td></tr>
+        <tr><td style="font-weight:700;">Social Proof</td><td>13 logos (Meta, Figma, Riot Games). "10 million developers" stat. No homepage testimonials.</td></tr>
+        <tr><td style="font-weight:700;">Audience Priority</td><td>Developer-first (framework nav, CLI emphasis, "no DevOps")</td></tr>
+        <tr><td style="font-weight:700;">Pricing</td><td>Free ($0/300 credits) | Personal ($9/mo) | Pro ($20/member/mo) | Enterprise (custom). Fully transparent.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- PROFILE: Vercel -->
+  <div class="card" style="border-top: 3px solid var(--c-vercel);">
+    <h3><span class="brand-dot" style="background:var(--c-vercel)"></span> Vercel &mdash; Full Profile</h3>
+    <table class="data-table" style="box-shadow:none;margin-top:12px;">
+      <tbody>
+        <tr><td style="width:200px;font-weight:700;">Hero Headline</td><td>"Build and deploy on the AI Cloud."</td></tr>
+        <tr><td style="font-weight:700;">Tagline</td><td>"Vercel provides the developer tools and cloud infrastructure to build, scale, and secure a faster, more personalized web."</td></tr>
+        <tr><td style="font-weight:700;">Category Claim</td><td>The AI Cloud (explicit category creation)</td></tr>
+        <tr><td style="font-weight:700;">Primary Value Prop</td><td>Framework-defined infrastructure that provisions automatically from code + integrated AI gateway</td></tr>
+        <tr><td style="font-weight:700;">Tone Scores</td><td>Formal 55 | Technical 80 | Assertive 82 | User-centric 35 | Concrete 58 | Opinionated 78 | Educational 35</td></tr>
+        <tr><td style="font-weight:700;">Visual Identity</td><td>Black + white. Minimal. Geist design system. SVG globe animations. Ultra-clean, monochrome.</td></tr>
+        <tr><td style="font-weight:700;">Primary CTA</td><td>"Start Deploying" / "Deploy"</td></tr>
+        <tr><td style="font-weight:700;">Social Proof</td><td>Performance metrics from Runway (7m to 40s), Leonardo AI (95% faster), Zapier (24x faster). Speed-proof focused.</td></tr>
+        <tr><td style="font-weight:700;">Audience Priority</td><td>Developer-first (SDKs, framework ecosystem, git-based deploy)</td></tr>
+        <tr><td style="font-weight:700;">Pricing</td><td>Hobby (free) | Pro ($20/user/mo) | Enterprise (custom). Transparent.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- PROFILE: WordPress VIP -->
+  <div class="card" style="border-top: 3px solid var(--c-wpvip);">
+    <h3><span class="brand-dot" style="background:var(--c-wpvip)"></span> WordPress VIP &mdash; Full Profile</h3>
+    <table class="data-table" style="box-shadow:none;margin-top:12px;">
+      <tbody>
+        <tr><td style="width:200px;font-weight:700;">Hero Headline</td><td>"The Leading Enterprise Content Platform"</td></tr>
+        <tr><td style="font-weight:700;">Tagline</td><td>"Build, publish, and scale without limits. Speed, security, and flexibility enterprises need for measurable results."</td></tr>
+        <tr><td style="font-weight:700;">Category Claim</td><td>Enterprise content platform (WordPress-based)</td></tr>
+        <tr><td style="font-weight:700;">Primary Value Prop</td><td>Managed WordPress with enterprise-grade security, compliance (FedRAMP), and guaranteed uptime</td></tr>
+        <tr><td style="font-weight:700;">Tone Scores</td><td>Formal 78 | Technical 35 | Assertive 72 | User-centric 72 | Concrete 45 | Opinionated 40 | Educational 30</td></tr>
+        <tr><td style="font-weight:700;">Visual Identity</td><td>Warm neutrals (#F5F2F1). Gold accent (#D8A45F). Dark navy (#13191E). Aktiv Grotesk font. Professional, premium feel.</td></tr>
+        <tr><td style="font-weight:700;">Primary CTA</td><td>"Get a demo"</td></tr>
+        <tr><td style="font-weight:700;">Social Proof</td><td>ADWEEK case study (100% uptime, Super Bowl 2025). "Biggest brands" claims. Minimal logo wall.</td></tr>
+        <tr><td style="font-weight:700;">Audience Priority</td><td>Business-first (Enterprise, Government, Media segments)</td></tr>
+        <tr><td style="font-weight:700;">Pricing</td><td>Page exists but pricing hidden. Annual contracts. No setup/overage fees. Contact sales.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SECTION: Strategic Insights                     -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="section" id="strategic-insights">
+  <h2 class="section-title">Strategic Insights for aem.live</h2>
+  <p class="section-desc">Actionable opportunities identified from competitive positioning analysis.</p>
+
+  <div class="insight-grid">
+    <div class="insight-card" style="border-top:3px solid var(--red);">
+      <h4>1. The AI Messaging Gap</h4>
+      <p>4 of 5 competitors now lead with AI in their hero messaging. aem.live has no AI mention on its homepage. This is either a bold contrarian bet (the Apple "we don't do AI" play before they did) or a strategic blind spot. Given Adobe's investment in Firefly and Sensei, this seems like a missed connection.</p>
+    </div>
+    <div class="insight-card" style="border-top:3px solid var(--amber);">
+      <h4>2. Free Tier Absence</h4>
+      <p>Every developer-first competitor offers a generous free tier. Sanity gives 20 free seats. Even enterprise-focused Contentful offers $0 forever. The lack of a self-serve path means aem.live relies entirely on Adobe's sales motion for acquisition, missing the bottom-up developer adoption that drives Vercel and Netlify.</p>
+    </div>
+    <div class="insight-card" style="border-top:3px solid var(--green);">
+      <h4>3. Performance Moat Is Real</h4>
+      <p>No competitor leads with a performance guarantee. Vercel talks about speed but positions it as infrastructure, not content management. aem.live's "Lighthouse 100" claim is unique, verifiable, and resonant. This is the strongest positioning in the entire landscape.</p>
+    </div>
+    <div class="insight-card" style="border-top:3px solid var(--green);">
+      <h4>4. Educational Tone Is a Differentiator</h4>
+      <p>At 82 on the educational axis, aem.live's documentation-first approach stands apart from Contentful's hard sell (28) and Vercel's product showcase (35). Developer trust is built through teaching, not selling. This tone should be protected and amplified.</p>
+    </div>
+    <div class="insight-card" style="border-top:3px solid var(--amber);">
+      <h4>5. Category Naming Risk</h4>
+      <p>aem.live doesn't clearly name its category. Sanity owns "Content Operating System." Vercel owns "AI Cloud." WordPress VIP owns "Enterprise Content Platform." aem.live says "CMS" in secondary copy but doesn't have a memorable category claim. "Performance-first CMS" is descriptive but not ownable.</p>
+    </div>
+    <div class="insight-card" style="border-top:3px solid var(--purple);">
+      <h4>6. Visual Identity Gap</h4>
+      <p>Sanity (dark + neon), Vercel (black + white monochrome), and Netlify (dark teal) all have distinctive, immediately recognizable visual identities. aem.live's clean-but-generic white + red styling doesn't create the same instant recognition. The brand borrows from Adobe's identity rather than establishing its own.</p>
+    </div>
+    <div class="insight-card" style="border-top:3px solid var(--cyan);">
+      <h4>7. Familiar Tools Positioning Is Under-leveraged</h4>
+      <p>The "tech you already own" message (Word, Google Docs, GitHub) is unique in this landscape. No competitor offers content authoring in Microsoft Word or Google Docs. This should be a primary differentiator alongside Lighthouse 100, but it's buried in the tagline rather than the hero.</p>
+    </div>
+    <div class="insight-card" style="border-top:3px solid var(--cyan);">
+      <h4>8. Social Proof Strategy Could Be Stronger</h4>
+      <p>aem.live leads with partner/agency logos rather than end-customer brands. Contentful shows Microsoft, AWS, and Kraft Heinz. Sanity shows Spotify and Shopify. aem.live's PGA Tour reference is strong but needs more household-name enterprise logos to compete at the same credibility tier.</p>
+    </div>
+  </div>
+
+  <!-- Competitive positioning summary table -->
+  <div class="card">
+    <h3>Competitive Positioning Summary</h3>
+    <table class="data-table" style="box-shadow:none;margin-top:12px;">
+      <thead>
+        <tr>
+          <th>Dimension</th>
+          <th>Leader</th>
+          <th>aem.live Rank</th>
+          <th>Gap</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Performance positioning</td><td style="color:var(--c-aem);font-weight:700;">aem.live</td><td style="color:var(--green);font-weight:700;">#1</td><td style="color:var(--green);">None &mdash; unique position</td></tr>
+        <tr><td>AI messaging</td><td style="font-weight:700;">Vercel</td><td style="color:var(--red);font-weight:700;">#6</td><td style="color:var(--red);">No AI mention at all</td></tr>
+        <tr><td>Educational tone</td><td style="color:var(--c-aem);font-weight:700;">aem.live</td><td style="color:var(--green);font-weight:700;">#1</td><td style="color:var(--green);">24 points ahead of nearest</td></tr>
+        <tr><td>Free tier generosity</td><td style="font-weight:700;">Sanity</td><td style="color:var(--red);font-weight:700;">#6</td><td style="color:var(--red);">No free tier exists</td></tr>
+        <tr><td>Pricing transparency</td><td style="font-weight:700;">Sanity / Netlify / Vercel</td><td style="color:var(--red);font-weight:700;">#6</td><td style="color:var(--red);">No pricing page</td></tr>
+        <tr><td>Enterprise logo wall</td><td style="font-weight:700;">Contentful</td><td style="color:var(--amber);font-weight:700;">#4</td><td style="color:var(--amber);">Uses partner logos, not customer brands</td></tr>
+        <tr><td>Developer experience</td><td style="font-weight:700;">Vercel / Sanity</td><td style="color:var(--amber);font-weight:700;">#3</td><td style="color:var(--amber);">Good docs, lacks CLI/SDK ecosystem</td></tr>
+        <tr><td>Category ownership</td><td style="font-weight:700;">Sanity / Vercel</td><td style="color:var(--amber);font-weight:700;">#4</td><td style="color:var(--amber);">No memorable category name</td></tr>
+        <tr><td>Visual distinctiveness</td><td style="font-weight:700;">Vercel</td><td style="color:var(--amber);font-weight:700;">#5</td><td style="color:var(--amber);">Generic Adobe-inherited styling</td></tr>
+        <tr><td>Hero assertiveness</td><td style="color:var(--c-aem);font-weight:700;">aem.live</td><td style="color:var(--green);font-weight:700;">#1</td><td style="color:var(--green);">"Seriously fast" is the boldest claim</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ── Validation Stamp ── -->
+<div class="validation-stamp">
+  <h3>Cross-Validation Stamp</h3>
+  <ul>
+    <li><strong>Homepage fetches:</strong> All 6 homepages fetched live on 2026-02-24. Exact headline text verified against rendered page content.</li>
+    <li><strong>Pricing verification:</strong> Pricing pages for all 5 competitors fetched independently. Contentful Free/Lite/Premium tiers confirmed. Sanity Free/Growth/Enterprise confirmed. Netlify 4-tier model confirmed. Vercel Hobby/Pro/Enterprise confirmed. WordPress VIP annual contracts with no visible pricing confirmed.</li>
+    <li><strong>Tone scoring methodology:</strong> Each brand scored on the same 7-axis scale used in the aem.live brand guidelines report. Scores are based on homepage copy analysis only (not full site). aem.live baseline scores taken from the existing brand guidelines extraction.</li>
+    <li><strong>Quote accuracy:</strong> All hero headlines and taglines are direct extracts from rendered homepage content. Sub-headlines and secondary messaging paraphrased where content was too long for exact quotation.</li>
+    <li><strong>Limitations:</strong> Homepage content changes frequently. Scores represent a snapshot. Tone scoring is subjective and based on homepage copy only, not the full content experience. Social proof elements may vary by A/B testing.</li>
+  </ul>
+  <div class="stamp-date">Validated: 2026-02-24 | Method: Live homepage + pricing page fetches, independent cross-referencing</div>
+</div>
+
+</div><!-- /container -->
+
+</body>
+</html>

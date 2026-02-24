@@ -60,6 +60,28 @@ a { color: var(--blue); text-decoration: none; }
 a:hover { text-decoration: underline; }
 img { max-width: 100%; display: block; }
 
+/* ── Report Nav ── */
+.report-nav {
+  position: sticky; top: 0; z-index: 200;
+  background: var(--bg-white);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 24px;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 600;
+}
+.report-nav a {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 12px; border-radius: 9999px;
+  color: var(--fg-muted); transition: all 0.15s;
+  text-decoration: none;
+}
+.report-nav a:hover { background: var(--blue-light); color: var(--blue); text-decoration: none; }
+.report-nav .nav-hub { font-weight: 700; color: var(--fg-heading); }
+.report-nav .nav-hub:hover { color: var(--blue); }
+.report-nav .nav-sep { color: var(--border); margin: 0 2px; user-select: none; }
+.report-nav .nav-related { background: var(--bg); border: 1px solid var(--border); }
+.report-nav .nav-related:hover { background: var(--blue-light); border-color: var(--blue); color: var(--blue); }
+
 /* ── Layout ── */
 .container { max-width: 1200px; margin: 0 auto; padding: 0 24px 80px; }
 @media (max-width: 640px) { .container { padding: 0 16px 60px; } }
@@ -625,6 +647,16 @@ img { max-width: 100%; display: block; }
 </style>
 </head>
 <body>
+
+<!-- ===== NAV BAR ===== -->
+<nav class="report-nav" aria-label="Report navigation">
+  <a href="hub.html" class="nav-hub">&#x25C0; Hub</a>
+  <span class="nav-sep">|</span>
+  <span style="color:var(--fg-muted);font-weight:400;">Related:</span>
+  <a href="aem-live-action-plan.html" class="nav-related">Action Plan</a>
+  <a href="aem-live-rum-analysis.html" class="nav-related">RUM Analysis</a>
+  <a href="aem-live-image-quality.html" class="nav-related">Image Quality & AI</a>
+</nav>
 
 <!-- ===== HEADER ===== -->
 <header class="report-header">
@@ -1626,6 +1658,6 @@ backBtn.addEventListener('click', function() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 </script>
-
+<script src="chat.js"></script>
 </body>
 </html>

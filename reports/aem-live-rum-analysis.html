@@ -1,0 +1,1735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Traffic-Weighted Content Intelligence — www.aem.live</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700;900&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue: #3B63FB;
+  --blue-light: #EBF0FF;
+  --blue-dark: #2A4AD4;
+  --bg: #F8F8F8;
+  --bg-white: #FFFFFF;
+  --fg: #292929;
+  --fg-heading: #131313;
+  --fg-muted: #717171;
+  --border: #E1E1E1;
+  --red: #D7373F;
+  --red-bg: #FFF0F0;
+  --amber: #CB6F10;
+  --amber-bg: #FFF5EB;
+  --green: #12805C;
+  --green-bg: #EDFCF2;
+  --purple: #7A6AFD;
+  --purple-bg: #F3F0FF;
+  --cyan: #0D7899;
+  --cyan-bg: #E8F8FF;
+  --shadow-card: 0 2px 8px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04), 0 0 1px rgba(0,0,0,0.08);
+  --shadow-elevated: 0 8px 24px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08);
+  --radius-sm: 4px;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 9999px;
+  --font: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'Source Code Pro', Monaco, 'Cascadia Code', monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+body { font-family: var(--font); color: var(--fg); background: var(--bg); line-height: 1.5; -webkit-font-smoothing: antialiased; }
+:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; border-radius: 2px; }
+a { color: var(--blue); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── Report Nav ── */
+.report-nav {
+  position: sticky; top: 0; z-index: 200;
+  background: var(--bg-white);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 24px;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 600;
+}
+.report-nav a {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 12px; border-radius: 9999px;
+  color: var(--fg-muted); transition: all 0.15s;
+  text-decoration: none;
+}
+.report-nav a:hover { background: var(--blue-light); color: var(--blue); text-decoration: none; }
+.report-nav .nav-hub { font-weight: 700; color: var(--fg-heading); }
+.report-nav .nav-hub:hover { color: var(--blue); }
+.report-nav .nav-sep { color: var(--border); margin: 0 2px; user-select: none; }
+.report-nav .nav-related { background: var(--bg); border: 1px solid var(--border); }
+.report-nav .nav-related:hover { background: var(--blue-light); border-color: var(--blue); color: var(--blue); }
+
+/* ── Layout ── */
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px 80px; }
+@media (max-width: 640px) { .container { padding: 0 16px 60px; } }
+
+/* ── Header ── */
+.report-header {
+  background: var(--bg-white);
+  border-bottom: 1px solid var(--border);
+  padding: 32px 24px;
+  margin-bottom: 32px;
+}
+.report-header-inner {
+  max-width: 1200px; margin: 0 auto;
+  display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+}
+.report-header h1 { font-size: 42px; font-weight: 900; color: var(--fg-heading); line-height: 1.15; letter-spacing: -0.02em; }
+.report-header .subtitle { font-size: 16px; color: var(--fg-muted); margin-top: 4px; }
+.report-branding { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: var(--blue); }
+.report-branding .logo-mark {
+  width: 28px; height: 28px; background: var(--blue); border-radius: 6px;
+  display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 900;
+}
+.report-date { font-size: 13px; color: var(--fg-muted); background: var(--bg); padding: 4px 12px; border-radius: var(--radius-pill); font-weight: 600; }
+
+/* ── Jump Nav ── */
+.jump-nav { background: var(--bg-white); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 24px; margin-bottom: 32px; box-shadow: var(--shadow-card); }
+.jump-nav-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--fg-muted); margin-bottom: 12px; }
+.jump-nav-links { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; }
+.jump-nav-links a { display: inline-block; padding: 6px 14px; border-radius: var(--radius-pill); font-size: 14px; font-weight: 600; color: var(--blue); background: var(--blue-light); transition: background 0.15s, color 0.15s; }
+.jump-nav-links a:hover { background: var(--blue); color: #fff; text-decoration: none; }
+
+/* ── Section ── */
+.section { margin-bottom: 48px; }
+.section-title { font-size: 22px; font-weight: 900; color: var(--fg-heading); margin-bottom: 8px; padding-bottom: 8px; border-bottom: 2px solid var(--red); display: inline-block; }
+.section-desc { font-size: 15px; color: var(--fg-muted); margin-bottom: 20px; max-width: 720px; }
+
+/* ── Summary Cards ── */
+.summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+@media (max-width: 900px) { .summary-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 500px) { .summary-grid { grid-template-columns: 1fr; } }
+.stat-card { background: var(--bg-white); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow-card); text-align: center; border-top: 3px solid var(--border); }
+.stat-card.critical { border-top-color: var(--red); }
+.stat-card.warning { border-top-color: var(--amber); }
+.stat-card.accent { border-top-color: var(--blue); }
+.stat-card.positive { border-top-color: var(--green); }
+.stat-card.info { border-top-color: var(--purple); }
+.stat-value { font-size: 36px; font-weight: 900; color: var(--fg-heading); line-height: 1; margin-bottom: 4px; }
+.stat-label { font-size: 13px; font-weight: 600; color: var(--fg-muted); text-transform: uppercase; letter-spacing: 0.03em; }
+
+/* ── Card ── */
+.card { background: var(--bg-white); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 16px; box-shadow: var(--shadow-card); }
+.card h3 { font-size: 17px; font-weight: 700; color: var(--fg-heading); margin-bottom: 8px; }
+.card p, .card li { font-size: 15px; color: var(--fg); line-height: 1.6; }
+.card ul { padding-left: 20px; margin-top: 8px; }
+.card li { margin-bottom: 6px; }
+
+/* ── Validation ── */
+.validation { border-left: 4px solid var(--green); }
+
+/* ── Bar Chart ── */
+.bar-chart { margin-bottom: 24px; }
+.bar-row { display: flex; align-items: center; margin-bottom: 8px; gap: 12px; }
+.bar-label { width: 200px; font-size: 13px; font-weight: 600; text-align: right; flex-shrink: 0; color: var(--fg); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bar-track { flex: 1; height: 28px; background: var(--bg); border-radius: var(--radius-sm); overflow: hidden; position: relative; }
+.bar-fill { height: 100%; border-radius: var(--radius-sm); display: flex; align-items: center; padding-left: 10px; font-size: 13px; font-weight: 700; color: #fff; min-width: 36px; transition: width 0.5s ease-out; }
+.bar-count { font-size: 13px; font-weight: 600; color: var(--fg-muted); min-width: 60px; text-align: right; }
+@media (max-width: 640px) { .bar-label { width: 120px; font-size: 12px; } }
+
+/* ── Data Table ── */
+.table-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); background: var(--bg-white); box-shadow: var(--shadow-card); margin-bottom: 20px; }
+.data-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.data-table thead th {
+  background: var(--bg); padding: 10px 14px; text-align: left; font-weight: 700; font-size: 12px;
+  text-transform: uppercase; letter-spacing: 0.04em; color: var(--fg-muted); border-bottom: 1px solid var(--border);
+  white-space: nowrap; cursor: pointer; user-select: none; position: sticky; top: 0; z-index: 2;
+}
+.data-table thead th:hover { color: var(--blue); }
+.data-table thead th .sort-arrow { display: inline-block; margin-left: 4px; font-size: 10px; opacity: 0.4; }
+.data-table thead th.sorted .sort-arrow { opacity: 1; color: var(--blue); }
+.data-table tbody tr { border-bottom: 1px solid var(--border); }
+.data-table tbody tr:last-child { border-bottom: none; }
+.data-table tbody tr:hover { background: #FAFBFF; }
+.data-table tbody td { padding: 10px 14px; vertical-align: top; color: var(--fg); }
+.data-table .col-path { font-family: var(--font-mono); font-size: 12px; color: var(--fg-muted); max-width: 280px; word-break: break-all; }
+.data-table .col-title { font-weight: 600; max-width: 300px; }
+.data-table .col-num { text-align: right; font-family: var(--font-mono); font-size: 13px; }
+.data-table .col-date { white-space: nowrap; font-size: 13px; font-family: var(--font-mono); color: var(--fg-muted); }
+
+/* ── Severity / Priority Badges ── */
+.badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: var(--radius-pill); font-size: 11px; font-weight: 700; letter-spacing: 0.3px; text-transform: uppercase; white-space: nowrap; }
+.badge-p1 { background: var(--red); color: white; }
+.badge-p2 { background: var(--amber); color: white; }
+.badge-p3 { background: var(--blue); color: white; }
+.badge-p4 { background: var(--purple); color: white; }
+.badge-new { background: var(--green); color: white; }
+.badge-impact { background: var(--fg-heading); color: white; }
+.badge-effort-low { background: var(--green-bg); color: var(--green); border: 1px solid var(--green); }
+.badge-effort-med { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber); }
+.badge-effort-high { background: var(--red-bg); color: var(--red); border: 1px solid var(--red); }
+
+/* ── Priority Shift ── */
+.shift-arrow { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 700; }
+.shift-arrow.up { color: var(--red); }
+.shift-arrow.down { color: var(--green); }
+.shift-arrow.same { color: var(--fg-muted); }
+.shift-arrow.new { color: var(--cyan); }
+.old-badge { opacity: 0.5; text-decoration: line-through; }
+
+/* ── Traffic Heat ── */
+.heat-high { background: rgba(215, 55, 63, 0.08); }
+.heat-med { background: rgba(203, 111, 16, 0.06); }
+.heat-low { background: rgba(0, 0, 0, 0.02); }
+
+/* ── Tabs ── */
+.tab-bar { display: flex; gap: 4px; margin-bottom: 16px; }
+.tab-btn { padding: 8px 20px; border: 1px solid var(--border); border-radius: var(--radius-pill); background: var(--bg-white); font-family: var(--font); font-size: 14px; font-weight: 600; color: var(--fg-muted); cursor: pointer; transition: all 0.15s; }
+.tab-btn:hover { border-color: var(--blue); color: var(--blue); }
+.tab-btn.active { background: var(--blue); color: white; border-color: var(--blue); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ── Collapsible List ── */
+.collapse-toggle { cursor: pointer; font-size: 14px; font-weight: 600; color: var(--fg-muted); padding: 8px 0; user-select: none; }
+.collapse-toggle:hover { color: var(--blue); }
+.collapse-body { display: none; }
+.collapse-body.open { display: block; }
+.compact-list { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 4px 16px; }
+.compact-list li { font-size: 13px; padding: 4px 0; color: var(--fg); font-family: var(--font-mono); }
+
+/* ── Action Items ── */
+.action { background: var(--bg-white); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-card); padding: 0; margin-bottom: 16px; overflow: hidden; }
+.action-header { display: flex; align-items: flex-start; gap: 14px; padding: 20px 24px; cursor: pointer; user-select: none; }
+.action-header:hover { background: rgba(0,0,0,0.015); }
+.action-num { font-size: 13px; font-weight: 700; font-family: var(--font-mono); color: var(--fg-muted); min-width: 28px; padding-top: 2px; }
+.action-title-block { flex: 1; }
+.action-title { font-size: 16px; font-weight: 700; color: var(--fg-heading); line-height: 1.3; margin-bottom: 6px; }
+.action-subtitle { font-size: 13px; color: var(--fg-muted); line-height: 1.4; }
+.action-badges { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; flex-shrink: 0; padding-top: 2px; }
+.toggle-icon { font-size: 18px; color: var(--fg-muted); transition: transform 0.2s; flex-shrink: 0; padding-top: 2px; }
+.action.open .toggle-icon { transform: rotate(90deg); }
+.action-body { padding: 0 24px 20px 66px; display: none; }
+.action.open .action-body { display: block; }
+.action-body h4 { font-size: 13px; font-weight: 700; color: var(--fg-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; margin-top: 16px; }
+.action-body h4:first-child { margin-top: 0; }
+.action-body p { font-size: 14px; line-height: 1.6; color: var(--fg); margin-bottom: 8px; }
+.action-body ul { padding-left: 18px; margin-bottom: 8px; }
+.action-body li { font-size: 14px; line-height: 1.6; color: var(--fg); margin-bottom: 4px; }
+.action-body code { font-family: var(--font-mono); font-size: 13px; background: var(--bg); padding: 1px 6px; border-radius: var(--radius-sm); color: var(--blue-dark); }
+.impact-bar { display: flex; align-items: center; gap: 10px; margin: 8px 0; }
+.impact-track { flex: 1; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+.impact-fill { height: 100%; border-radius: 4px; }
+.impact-fill.high { background: var(--red); width: 90%; }
+.impact-fill.med-high { background: var(--amber); width: 70%; }
+.impact-fill.med { background: var(--blue); width: 50%; }
+.impact-fill.low { background: var(--fg-muted); width: 30%; }
+.impact-label { font-size: 12px; font-weight: 600; min-width: 80px; text-align: right; }
+.impact-label.high { color: var(--red); }
+.impact-label.med-high { color: var(--amber); }
+.impact-label.med { color: var(--blue); }
+.impact-label.low { color: var(--fg-muted); }
+
+/* ── Matrix ── */
+.matrix { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+@media (max-width: 640px) { .matrix { grid-template-columns: 1fr; } }
+.matrix-cell { border-radius: var(--radius); padding: 20px; border: 1px solid var(--border); background: var(--bg-white); box-shadow: var(--shadow-card); border-top: 3px solid; }
+.matrix-cell h3 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+.matrix-cell .cell-desc { font-size: 14px; margin-bottom: 0; line-height: 1.5; color: var(--fg-muted); }
+.mc-p1 { border-top-color: var(--red); }
+.mc-p1 h3 { color: var(--red); }
+.mc-p2 { border-top-color: var(--amber); }
+.mc-p2 h3 { color: var(--amber); }
+.mc-p3 { border-top-color: var(--blue); }
+.mc-p3 h3 { color: var(--blue); }
+.mc-p4 { border-top-color: var(--purple); }
+.mc-p4 h3 { color: var(--purple); }
+
+/* ── Affected Pages ── */
+.affected { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 16px; margin-top: 8px; max-height: 200px; overflow-y: auto; }
+.affected-item { font-size: 13px; font-family: var(--font-mono); color: var(--fg); padding: 4px 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; gap: 12px; }
+.affected-item:last-child { border-bottom: none; }
+.affected-item .af-path { color: var(--blue-dark); }
+.affected-item .af-views { color: var(--fg-muted); font-family: var(--font); font-weight: 600; text-align: right; }
+
+/* ── Finding Cards ── */
+.findings-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 24px; }
+@media (max-width: 700px) { .findings-grid { grid-template-columns: 1fr; } }
+.finding-card { background: var(--bg-white); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow-card); border-left: 4px solid var(--border); }
+.finding-card.sev-critical { border-left-color: var(--red); }
+.finding-card.sev-warning { border-left-color: var(--amber); }
+.finding-card.sev-info { border-left-color: var(--blue); }
+.finding-card h4 { font-size: 15px; font-weight: 700; color: var(--fg-heading); margin-bottom: 6px; }
+.finding-card .finding-value { font-size: 28px; font-weight: 900; line-height: 1.1; margin-bottom: 4px; }
+.finding-card p { font-size: 13px; color: var(--fg-muted); line-height: 1.5; }
+
+/* ── Callout ── */
+.callout { background: var(--blue-light); border: 1px solid rgba(59,99,251,0.2); border-radius: var(--radius); padding: 16px 20px; margin-bottom: 20px; font-size: 14px; color: var(--fg); }
+.callout strong { color: var(--blue-dark); }
+
+/* ── Footer ── */
+.report-footer { text-align: center; padding: 32px 0; color: var(--fg-muted); font-size: 13px; border-top: 1px solid var(--border); margin-top: 48px; }
+
+/* ── Back to Top ── */
+.back-to-top { position: fixed; bottom: 24px; right: 24px; width: 40px; height: 40px; border-radius: 50%; background: var(--red); color: white; border: none; cursor: pointer; box-shadow: var(--shadow-elevated); display: flex; align-items: center; justify-content: center; font-size: 18px; opacity: 0; transition: opacity 0.2s; z-index: 100; }
+.back-to-top.visible { opacity: 1; }
+.back-to-top:hover { background: #B5202A; }
+
+/* ── BOLDER ENHANCEMENTS ── */
+
+/* Section-specific accent colors on title underlines */
+#summary .section-title { border-bottom-color: var(--blue); }
+#devices .section-title { border-bottom-color: var(--purple); }
+#priority-shift .section-title { border-bottom-color: var(--red); font-size: 26px; }
+#stale .section-title { border-bottom-color: var(--amber); }
+#og-gaps .section-title { border-bottom-color: var(--amber); }
+#telemetry .section-title { border-bottom-color: var(--cyan); }
+#revised-plan .section-title { border-bottom-color: var(--green); }
+#methodology .section-title { border-bottom-color: var(--fg-muted); border-bottom-width: 1px; }
+
+/* Stat card hierarchy — executive summary top row bigger */
+#summary .summary-grid:first-of-type .stat-value { font-size: 48px; }
+#summary .summary-grid:first-of-type .stat-card { padding: 28px 24px; }
+
+/* Priority shift summary cards — colored backgrounds */
+#priority-shift .stat-card.critical { background: var(--red-bg); border-color: rgba(215,55,63,0.2); }
+#priority-shift .stat-card.positive { background: var(--green-bg); border-color: rgba(18,128,92,0.2); }
+#priority-shift .stat-card.accent { background: var(--blue-light); border-color: rgba(59,99,251,0.2); }
+#priority-shift .stat-card.info { background: var(--purple-bg); border-color: rgba(122,106,253,0.2); }
+
+/* Hero callout — dramatic treatment for key insights */
+.callout-hero {
+  background: linear-gradient(135deg, var(--red-bg) 0%, #FFF8F0 100%);
+  border: 2px solid rgba(215, 55, 63, 0.25);
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  font-size: 16px;
+  line-height: 1.65;
+  margin-bottom: 24px;
+}
+.callout-hero strong {
+  color: var(--red);
+  font-size: 17px;
+  display: block;
+  margin-bottom: 6px;
+}
+
+/* Section hero treatment — priority shift stands out */
+.section-hero {
+  background: var(--red-bg);
+  border-top: 3px solid var(--red);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+}
+
+/* Section tint — telemetry findings as visual landmark */
+.section-tint {
+  background: var(--cyan-bg);
+  border-top: 3px solid var(--cyan);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+}
+
+/* Priority shift table — color-coded left borders */
+#shift-table tbody tr { border-left: 4px solid transparent; }
+#shift-table tbody tr.shift-upgraded { border-left-color: var(--red); }
+#shift-table tbody tr.shift-downgraded { border-left-color: var(--green); }
+#shift-table tbody tr.shift-unchanged { border-left-color: var(--border); }
+#shift-table tbody tr.shift-new { border-left-color: var(--cyan); }
+#shift-table .shift-arrow { font-size: 16px; font-weight: 900; }
+
+/* Devices grid — responsive breakpoint */
+.devices-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+@media (max-width: 768px) { .devices-grid { grid-template-columns: 1fr; } }
+
+/* Finding card values — more dramatic scale */
+.finding-card .finding-value { font-size: 36px; }
+
+/* Entrance animations */
+.fade-up { opacity: 0; transform: translateY(16px); transition: opacity 0.45s ease-out, transform 0.45s ease-out; }
+.fade-up.visible { opacity: 1; transform: translateY(0); }
+@media (prefers-reduced-motion: reduce) { .fade-up { opacity: 1; transform: none; transition: none; } }
+</style>
+</head>
+<body>
+
+<!-- ===== NAV BAR ===== -->
+<nav class="report-nav" aria-label="Report navigation">
+  <a href="hub.html" class="nav-hub">&#x25C0; Hub</a>
+  <span class="nav-sep">|</span>
+  <span style="color:var(--fg-muted);font-weight:400;">Related:</span>
+  <a href="aem-live-content-gaps.html" class="nav-related">Content Gaps</a>
+  <a href="aem-live-action-plan.html" class="nav-related">Action Plan</a>
+  <a href="aem-live-brand-guidelines.html" class="nav-related">Brand Guidelines</a>
+</nav>
+
+<header class="report-header">
+  <div class="report-header-inner">
+    <div>
+      <h1>Traffic-Weighted Content Intelligence</h1>
+      <p class="subtitle">www.aem.live &mdash; RUM telemetry cross-referenced with static content analysis</p>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+      <span class="report-date">Feb 24, 2026</span>
+      <div class="report-branding"><span class="logo-mark">B</span> Blazar</div>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+<nav class="jump-nav" aria-label="Section navigation">
+  <div class="jump-nav-title">In this report</div>
+  <div class="jump-nav-links">
+    <a href="#validation">Validation</a>
+    <a href="#summary">Executive Summary</a>
+    <a href="#traffic">Traffic Distribution</a>
+    <a href="#devices">Devices &amp; Referrers</a>
+    <a href="#priority-shift">Priority Shift Matrix</a>
+    <a href="#stale">Stale Content Triage</a>
+    <a href="#og-gaps">OG Image Gaps</a>
+    <a href="#telemetry">Telemetry Findings</a>
+    <a href="#revised-plan">Revised Action Plan</a>
+    <a href="#methodology">Methodology</a>
+  </div>
+</nav>
+
+<!-- ===== 1. VALIDATION STAMP ===== -->
+<div class="card validation" id="validation">
+  <p style="font-size:14px;font-weight:600;color:var(--green);margin-bottom:4px;">Data Source Verification</p>
+  <p style="font-size:13px;color:var(--fg-muted);line-height:1.5;">
+    <strong>RUM source:</strong> AEM RUM bundles from <code>bundles.aem.page</code> for <code>www.aem.live</code>, Feb 15&ndash;24 2026.
+    <strong>Sampling:</strong> 1:100 for production traffic (weight=100), 1:10 for preview/sidekick (weight=10). Weights pre-applied to all counts.
+    <strong>Static analysis:</strong> Cross-referenced with <a href="aem-live-content-gaps.html">Content Gaps Analysis</a> data (197 indexed pages, run Feb 24).
+    <strong>Limitations:</strong> 10-day window (not full month), bot traffic included at ~1% (1,700 weighted views), sampling noise on low-traffic pages (&lt;300 views = single observation).
+    <strong>Validation:</strong> Spot-checked top-5 page counts against individual daily bundles. Total weighted views (157,771) consistent with domain-level RUM dashboard.
+  </p>
+</div>
+
+<!-- ===== 2. EXECUTIVE SUMMARY ===== -->
+<section class="section" id="summary">
+  <h2 class="section-title">Executive Summary</h2>
+  <p class="section-desc">10 days of real user monitoring data fundamentally reshuffles content priorities. Traffic is heavily concentrated, and many flagged issues affect pages nobody visits.</p>
+
+  <div class="summary-grid">
+    <div class="stat-card accent"><div class="stat-value">157.8K</div><div class="stat-label">Estimated Views</div></div>
+    <div class="stat-card accent"><div class="stat-value">152</div><div class="stat-label">Unique URLs</div></div>
+    <div class="stat-card positive"><div class="stat-value">94.5K</div><div class="stat-label">Click Events</div></div>
+    <div class="stat-card info"><div class="stat-value">94%</div><div class="stat-label">Desktop Traffic</div></div>
+  </div>
+  <div class="summary-grid">
+    <div class="stat-card warning"><div class="stat-value">31</div><div class="stat-label">Stale Pages with Traffic</div></div>
+    <div class="stat-card positive"><div class="stat-value">41</div><div class="stat-label">Stale Pages &mdash; Safe to Archive</div></div>
+    <div class="stat-card critical"><div class="stat-value">13.9K</div><div class="stat-label">JS Errors / Period</div></div>
+    <div class="stat-card warning"><div class="stat-value">28</div><div class="stat-label">Pages with CWV Issues</div></div>
+  </div>
+
+  <div class="callout-hero">
+    <strong>The top 10 pages account for 42.6% of all traffic.</strong>
+    The top 20 account for 63.7%. Content optimization efforts should focus here first &mdash; fixing a single high-traffic page has more impact than fixing 20 low-traffic pages.
+  </div>
+</section>
+
+<!-- ===== 3. TRAFFIC DISTRIBUTION ===== -->
+<section class="section" id="traffic">
+  <h2 class="section-title">Traffic Distribution</h2>
+  <p class="section-desc">Top 20 pages by estimated views. Traffic is heavily concentrated in developer tutorials and documentation hubs.</p>
+
+  <div class="bar-chart" id="traffic-chart"></div>
+
+  <div class="callout">
+    <strong>Traffic concentration:</strong> Top 10 pages = 42.6% of all traffic (67,171 views). The homepage alone accounts for 8% (12,581 views). 45 pages (30% of tracked URLs) received zero traffic during this period &mdash; they exist in the index but attract no visitors.
+  </div>
+</section>
+
+<!-- ===== 4. DEVICE & REFERRERS ===== -->
+<section class="section" id="devices">
+  <h2 class="section-title">Device Split &amp; Referrers</h2>
+  <p class="section-desc">How visitors reach and view the site. The near-total desktop dominance confirms this is a developer documentation site.</p>
+
+  <div class="devices-grid">
+    <div class="card">
+      <h3>Device Split</h3>
+      <div class="bar-chart" style="margin-top:16px;">
+        <div class="bar-row">
+          <span class="bar-label">Desktop</span>
+          <div class="bar-track"><div class="bar-fill" style="width:93.9%;background:var(--blue);">93.9%</div></div>
+          <span class="bar-count">148,171</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">Mobile</span>
+          <div class="bar-track"><div class="bar-fill" style="width:2.7%;background:var(--amber);">2.7%</div></div>
+          <span class="bar-count">4,300</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">Other/Unknown</span>
+          <div class="bar-track"><div class="bar-fill" style="width:2.3%;background:var(--fg-muted);">2.3%</div></div>
+          <span class="bar-count">3,600</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">Bot</span>
+          <div class="bar-track"><div class="bar-fill" style="width:1.1%;background:var(--purple);">1.1%</div></div>
+          <span class="bar-count">1,700</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Top Referrers (Internal Navigation)</h3>
+      <div class="bar-chart" style="margin-top:16px;" id="referrer-chart"></div>
+      <p style="font-size:13px;color:var(--fg-muted);margin-top:8px;">Internal navigation dominates. The homepage, /docs/ hub, and /developer/block-collection are the main starting points. External referrers are below the sampling threshold for this period.</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>Implication:</strong> 94% desktop means mobile-first optimization is low priority for this site. However, the 34 pages missing OG images still matter &mdash; LinkedIn and social sharing drives developer discovery, and those links are previewed on mobile-heavy platforms.
+  </div>
+</section>
+
+<!-- ===== 5. PRIORITY SHIFT MATRIX ===== -->
+<section class="section section-hero" id="priority-shift">
+  <h2 class="section-title">Priority Shift Matrix</h2>
+  <p class="section-desc">How RUM telemetry changes the priority of the original 18 actions from the static analysis. Traffic data upgrades some items, downgrades others, and reveals new issues invisible to static analysis.</p>
+
+  <div class="summary-grid">
+    <div class="stat-card critical"><div class="stat-value">5</div><div class="stat-label">Upgraded</div></div>
+    <div class="stat-card positive"><div class="stat-value">4</div><div class="stat-label">Downgraded</div></div>
+    <div class="stat-card accent"><div class="stat-value">9</div><div class="stat-label">Unchanged</div></div>
+    <div class="stat-card info"><div class="stat-value">4</div><div class="stat-label">New from Telemetry</div></div>
+  </div>
+
+  <div class="table-wrap" style="max-height:600px;overflow-y:auto;">
+    <table class="data-table" id="shift-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Action</th>
+          <th>Static</th>
+          <th>Traffic Signal</th>
+          <th>New</th>
+          <th>Shift</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="col-num">1</td>
+          <td>Remove dead page /mwp-demo</td>
+          <td><span class="badge badge-p1">P1</span></td>
+          <td>0 views &mdash; no user impact</td>
+          <td><span class="badge badge-p4">P4</span></td>
+          <td><span class="shift-arrow down">&#x2193; -3</span></td>
+        </tr>
+        <tr>
+          <td class="col-num">2</td>
+          <td>Add 5 sitemap-only pages to index</td>
+          <td><span class="badge badge-p1">P1</span></td>
+          <td>Low/no traffic on affected pages</td>
+          <td><span class="badge badge-p3">P3</span></td>
+          <td><span class="shift-arrow down">&#x2193; -2</span></td>
+        </tr>
+        <tr>
+          <td class="col-num">3</td>
+          <td>Add 9 indexed pages to sitemap</td>
+          <td><span class="badge badge-p1">P1</span></td>
+          <td>Some get traffic already &mdash; SEO still matters</td>
+          <td><span class="badge badge-p2">P2</span></td>
+          <td><span class="shift-arrow down">&#x2193; -1</span></td>
+        </tr>
+        <tr>
+          <td class="col-num">4</td>
+          <td>Fix stale nav link to renamed page</td>
+          <td><span class="badge badge-p1">P1</span></td>
+          <td>/developer/anatomy-of-a-project gets 4,610 views</td>
+          <td><span class="badge badge-p1">P1</span></td>
+          <td><span class="shift-arrow same">&mdash;</span></td>
+        </tr>
+        <tr class="heat-high">
+          <td class="col-num">5</td>
+          <td>Rebrand pages using Franklin/Helix names</td>
+          <td><span class="badge badge-p2">P2</span></td>
+          <td>Only 3 of 17 old-branding pages have traffic (2,500 total)</td>
+          <td><span class="badge badge-p3">P3</span></td>
+          <td><span class="shift-arrow down">&#x2193; -1</span></td>
+        </tr>
+        <tr class="heat-high">
+          <td class="col-num">6</td>
+          <td>Review 72 stale pages</td>
+          <td><span class="badge badge-p2">P2</span></td>
+          <td>31 have traffic (some high: block-collection 5,910)</td>
+          <td><span class="badge badge-p1">P1</span></td>
+          <td><span class="shift-arrow up">&#x2191; +1</span></td>
+        </tr>
+        <tr>
+          <td class="col-num">7</td>
+          <td>Update old branding in 6 docs pages</td>
+          <td><span class="badge badge-p2">P2</span></td>
+          <td>Only /docs/faq has traffic (2,000 views)</td>
+          <td><span class="badge badge-p3">P3</span></td>
+          <td><span class="shift-arrow down">&#x2193; -1</span></td>
+        </tr>
+        <tr>
+          <td class="col-num">8</td>
+          <td>Add descriptions to 6 pages</td>
+          <td><span class="badge badge-p2">P2</span></td>
+          <td>Most affected pages have low traffic</td>
+          <td><span class="badge badge-p2">P2</span></td>
+          <td><span class="shift-arrow same">&mdash;</span></td>
+        </tr>
+        <tr class="heat-high">
+          <td class="col-num">9</td>
+          <td>Add custom OG images to high-traffic pages</td>
+          <td><span class="badge badge-p2">P2</span></td>
+          <td>Top 3 OG-missing pages = 26,691 views (/, /docs/, /developer/block-collection)</td>
+          <td><span class="badge badge-p1">P1</span></td>
+          <td><span class="shift-arrow up">&#x2191; +1</span></td>
+        </tr>
+        <tr>
+          <td class="col-num">10</td>
+          <td>Decide future of /previous/ pages</td>
+          <td><span class="badge badge-p3">P3</span></td>
+          <td>Minimal traffic (only /previous/byo-cdn-akamai-setup: 100 views)</td>
+          <td><span class="badge badge-p4">P4</span></td>
+          <td><span class="shift-arrow down">&#x2193; -1</span></td>
+        </tr>
+        <tr>
+          <td class="col-num">11</td>
+          <td>Review 14 labs/experimental pages</td>
+          <td><span class="badge badge-p3">P3</span></td>
+          <td>Low traffic across labs pages</td>
+          <td><span class="badge badge-p3">P3</span></td>
+          <td><span class="shift-arrow same">&mdash;</span></td>
+        </tr>
+        <tr>
+          <td class="col-num">12</td>
+          <td>Add deprecation banners to 2 pages</td>
+          <td><span class="badge badge-p3">P3</span></td>
+          <td>Low traffic on deprecated pages</td>
+          <td><span class="badge badge-p3">P3</span></td>
+          <td><span class="shift-arrow same">&mdash;</span></td>
+        </tr>
+        <tr>
+          <td class="col-num">13</td>
+          <td>Resolve /home navigation reference</td>
+          <td><span class="badge badge-p3">P3</span></td>
+          <td>Homepage gets 12,581 views &mdash; redirect works but wastes a redirect</td>
+          <td><span class="badge badge-p3">P3</span></td>
+          <td><span class="shift-arrow same">&mdash;</span></td>
+        </tr>
+        <tr>
+          <td class="col-num">14</td>
+          <td>Add OG images to remaining 44 pages</td>
+          <td><span class="badge badge-p3">P3</span></td>
+          <td>34 of those 44 have traffic; but top 3 are addressed in #9</td>
+          <td><span class="badge badge-p3">P3</span></td>
+          <td><span class="shift-arrow same">&mdash;</span></td>
+        </tr>
+        <tr>
+          <td class="col-num">15</td>
+          <td>Remove 8 utility pages from index</td>
+          <td><span class="badge badge-p4">P4</span></td>
+          <td>Zero traffic on utility/fragment pages</td>
+          <td><span class="badge badge-p4">P4</span></td>
+          <td><span class="shift-arrow same">&mdash;</span></td>
+        </tr>
+        <tr>
+          <td class="col-num">16</td>
+          <td>Resolve 2 duplicate page titles</td>
+          <td><span class="badge badge-p4">P4</span></td>
+          <td>Zero traffic on affected pages</td>
+          <td><span class="badge badge-p4">P4</span></td>
+          <td><span class="shift-arrow same">&mdash;</span></td>
+        </tr>
+        <tr>
+          <td class="col-num">17</td>
+          <td>Update copyright year in footer</td>
+          <td><span class="badge badge-p4">P4</span></td>
+          <td>Shows on every page &mdash; 157K impressions</td>
+          <td><span class="badge badge-p3">P3</span></td>
+          <td><span class="shift-arrow up">&#x2191; +1</span></td>
+        </tr>
+        <tr>
+          <td class="col-num">18</td>
+          <td>Set up automated content monitoring</td>
+          <td><span class="badge badge-p4">P4</span></td>
+          <td>RUM data proves monitoring value &mdash; this should run continuously</td>
+          <td><span class="badge badge-p2">P2</span></td>
+          <td><span class="shift-arrow up">&#x2191; +2</span></td>
+        </tr>
+        <tr style="background:var(--cyan-bg);">
+          <td class="col-num">19</td>
+          <td><strong>NEW:</strong> Fix JS errors (13.9K/period)</td>
+          <td>&mdash;</td>
+          <td>rum-distiller script error dominates (12,400 weighted)</td>
+          <td><span class="badge badge-p2">P2</span></td>
+          <td><span class="shift-arrow new">NEW</span></td>
+        </tr>
+        <tr style="background:var(--cyan-bg);">
+          <td class="col-num">20</td>
+          <td><strong>NEW:</strong> Fix CWV issues on high-traffic pages</td>
+          <td>&mdash;</td>
+          <td>Homepage TTFB 2,767ms, /developer/ue-tutorial LCP 3,054ms</td>
+          <td><span class="badge badge-p1">P1</span></td>
+          <td><span class="shift-arrow new">NEW</span></td>
+        </tr>
+        <tr style="background:var(--cyan-bg);">
+          <td class="col-num">21</td>
+          <td><strong>NEW:</strong> Resolve missing _ogimage resource</td>
+          <td>&mdash;</td>
+          <td>8,700 weighted missingresource events for /tools/rum/_ogimage</td>
+          <td><span class="badge badge-p3">P3</span></td>
+          <td><span class="shift-arrow new">NEW</span></td>
+        </tr>
+        <tr style="background:var(--cyan-bg);">
+          <td class="col-num">22</td>
+          <td><strong>NEW:</strong> Investigate 2 real 404 pages</td>
+          <td>&mdash;</td>
+          <td>/previous/sidekick-2 and /tools/rum-explorer both 404</td>
+          <td><span class="badge badge-p3">P3</span></td>
+          <td><span class="shift-arrow new">NEW</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ===== 6. STALE CONTENT TRIAGE ===== -->
+<section class="section" id="stale">
+  <h2 class="section-title">Stale Content Triage</h2>
+  <p class="section-desc">72 pages haven't been updated in 12+ months. RUM data splits them into two clear groups: pages people actually visit (update these) and pages nobody visits (safe to archive).</p>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('stale', 'with-traffic', this)">With Traffic (31)</button>
+    <button class="tab-btn" onclick="switchTab('stale', 'no-traffic', this)">Without Traffic (41)</button>
+  </div>
+
+  <div class="tab-panel active" id="stale-with-traffic">
+    <div class="table-wrap" style="max-height:500px;overflow-y:auto;">
+      <table class="data-table" id="stale-traffic-table">
+        <thead>
+          <tr>
+            <th onclick="sortTable('stale-traffic-table', 0, 'text')">Path <span class="sort-arrow">&#x25B2;</span></th>
+            <th onclick="sortTable('stale-traffic-table', 1, 'text')">Title <span class="sort-arrow">&#x25B2;</span></th>
+            <th onclick="sortTable('stale-traffic-table', 2, 'text')">Last Modified <span class="sort-arrow">&#x25B2;</span></th>
+            <th onclick="sortTable('stale-traffic-table', 3, 'num')" class="sorted">Views <span class="sort-arrow">&#x25BC;</span></th>
+          </tr>
+        </thead>
+        <tbody id="stale-traffic-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="stale-no-traffic">
+    <div class="callout" style="margin-bottom:12px;">
+      <strong>Safe to archive:</strong> These 41 stale pages received zero visits in the monitoring period. They can be archived, redirected, or removed without affecting any active users.
+    </div>
+    <div class="collapse-toggle" onclick="toggleCollapse(this)">&#x25B6; Show 41 pages with zero traffic</div>
+    <div class="collapse-body">
+      <ul class="compact-list" id="stale-no-traffic-list"></ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 7. OG IMAGE GAPS ===== -->
+<section class="section" id="og-gaps">
+  <h2 class="section-title">OG Image Gaps</h2>
+  <p class="section-desc">65 pages use the default social sharing image. Traffic data reveals which ones matter most for social visibility.</p>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('og', 'with-traffic-og', this)">With Traffic (34)</button>
+    <button class="tab-btn" onclick="switchTab('og', 'no-traffic-og', this)">Without Traffic (31)</button>
+  </div>
+
+  <div class="tab-panel active" id="og-with-traffic-og">
+    <div class="callout" style="margin-bottom:12px;">
+      <strong>High-impact finding:</strong> The top 3 OG-missing pages (/, /docs/, /developer/block-collection) receive a combined 26,591 views. Creating custom OG images for just these 3 pages covers 17% of all site traffic.
+    </div>
+    <div class="table-wrap" style="max-height:500px;overflow-y:auto;">
+      <table class="data-table" id="og-traffic-table">
+        <thead>
+          <tr>
+            <th onclick="sortTable('og-traffic-table', 0, 'text')">Path <span class="sort-arrow">&#x25B2;</span></th>
+            <th onclick="sortTable('og-traffic-table', 1, 'text')">Title <span class="sort-arrow">&#x25B2;</span></th>
+            <th onclick="sortTable('og-traffic-table', 2, 'num')" class="sorted">Views <span class="sort-arrow">&#x25BC;</span></th>
+          </tr>
+        </thead>
+        <tbody id="og-traffic-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="og-no-traffic-og">
+    <div class="callout" style="margin-bottom:12px;">
+      <strong>Low priority:</strong> These 31 pages without OG images also have zero traffic. Creating custom images for them has no measurable user impact.
+    </div>
+    <div class="collapse-toggle" onclick="toggleCollapse(this)">&#x25B6; Show 31 pages with zero traffic</div>
+    <div class="collapse-body">
+      <ul class="compact-list" id="og-no-traffic-list"></ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 8. TELEMETRY-ONLY FINDINGS ===== -->
+<section class="section section-tint" id="telemetry">
+  <h2 class="section-title">Telemetry-Only Findings</h2>
+  <p class="section-desc">Issues invisible to static content analysis &mdash; discovered only through real user monitoring.</p>
+
+  <div class="findings-grid">
+    <div class="finding-card sev-critical">
+      <h4>JavaScript Errors</h4>
+      <div class="finding-value" style="color:var(--red);">13,900</div>
+      <p>Weighted error events in 10 days. The <code>rum-distiller</code> script accounts for 89% (12,400). Chart.js errors add 900. These are infrastructure errors, not content errors, but they pollute error monitoring.</p>
+    </div>
+    <div class="finding-card sev-warning">
+      <h4>Core Web Vitals Issues</h4>
+      <div class="finding-value" style="color:var(--amber);">28 pages</div>
+      <p>Pages failing at least one CWV threshold. Top concerns: homepage TTFB 2,767ms (84 samples), /developer/ue-tutorial LCP 3,054ms (18 samples), /developer/block-collection INP 4,597ms (18 samples). These are the highest-traffic pages with CWV problems.</p>
+    </div>
+    <div class="finding-card sev-warning">
+      <h4>Missing Resource: _ogimage</h4>
+      <div class="finding-value" style="color:var(--amber);">8,700</div>
+      <p>Weighted missingresource events for <code>/tools/rum/_ogimage</code>. This resource is requested on every RUM explorer page load but doesn't exist. Not user-facing but generates console errors and unnecessary network requests.</p>
+    </div>
+    <div class="finding-card sev-info">
+      <h4>Real 404 Pages</h4>
+      <div class="finding-value" style="color:var(--blue);">2</div>
+      <p><code>/previous/sidekick-2</code> and <code>/tools/rum-explorer</code> return 404. Each observed once (100 weighted views). Low volume but indicates stale internal or external links.</p>
+    </div>
+  </div>
+
+  <h3 style="font-size:17px;font-weight:700;margin:24px 0 16px;">Pages with Poor Core Web Vitals (High Traffic)</h3>
+  <div class="table-wrap" style="max-height:400px;overflow-y:auto;">
+    <table class="data-table" id="cwv-table">
+      <thead>
+        <tr>
+          <th>Page</th>
+          <th>Views</th>
+          <th>Issues</th>
+        </tr>
+      </thead>
+      <tbody id="cwv-body"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ===== 9. REVISED ACTION PLAN ===== -->
+<section class="section" id="revised-plan">
+  <h2 class="section-title">Revised Action Plan</h2>
+  <p class="section-desc">22 actions in 4 tiers, rewritten to incorporate traffic data. Original action numbers preserved for traceability.</p>
+
+  <div class="summary-grid">
+    <div class="stat-card critical"><div class="stat-value">4</div><div class="stat-label">P1 Critical</div></div>
+    <div class="stat-card warning"><div class="stat-value">5</div><div class="stat-label">P2 High</div></div>
+    <div class="stat-card accent"><div class="stat-value">8</div><div class="stat-label">P3 Medium</div></div>
+    <div class="stat-card info"><div class="stat-value">5</div><div class="stat-label">P4 Low</div></div>
+  </div>
+
+  <div class="matrix">
+    <div class="matrix-cell mc-p1">
+      <h3>P1 &mdash; Critical (Traffic-Validated)</h3>
+      <p class="cell-desc">High-traffic pages with broken experiences or major gaps. Every P1 is backed by thousands of real user impressions.</p>
+    </div>
+    <div class="matrix-cell mc-p2">
+      <h3>P2 &mdash; High</h3>
+      <p class="cell-desc">Significant issues on visited pages, or infrastructure problems affecting the whole site.</p>
+    </div>
+    <div class="matrix-cell mc-p3">
+      <h3>P3 &mdash; Medium</h3>
+      <p class="cell-desc">Real issues but lower traffic or less user-facing impact. Fix when touching nearby content.</p>
+    </div>
+    <div class="matrix-cell mc-p4">
+      <h3>P4 &mdash; Low</h3>
+      <p class="cell-desc">Zero-traffic pages or cosmetic issues. Batch these for quarterly cleanup.</p>
+    </div>
+  </div>
+
+  <!-- P1 Critical -->
+  <h3 style="font-size:18px;font-weight:900;color:var(--red);margin:24px 0 16px;padding-bottom:6px;border-bottom:2px solid var(--red);display:inline-block;">P1 &mdash; Critical</h3>
+
+  <!-- Action 4 (unchanged P1) -->
+  <div class="action" id="r4">
+    <div class="action-header" onclick="toggleAction(this)">
+      <span class="action-num">04</span>
+      <div class="action-title-block">
+        <div class="action-title">Fix stale navigation link to renamed page</div>
+        <div class="action-subtitle">/developer/anatomy-of-a-helix-project &rarr; /developer/anatomy-of-a-project (4,610 views)</div>
+      </div>
+      <div class="action-badges">
+        <span class="badge badge-p1">P1</span>
+        <span class="badge badge-p1" style="opacity:0.4;">was P1</span>
+        <span class="badge badge-effort-low">Low effort</span>
+      </div>
+      <span class="toggle-icon">&#x25B6;</span>
+    </div>
+    <div class="action-body">
+      <h4>Traffic Justification</h4>
+      <p>The target page <code>/developer/anatomy-of-a-project</code> receives 4,610 views/period. The broken nav link forces users through a redirect. Confirmed P1 by traffic.</p>
+      <h4>Impact</h4>
+      <div class="impact-bar"><div class="impact-track"><div class="impact-fill high"></div></div><span class="impact-label high">Navigation &amp; UX</span></div>
+      <h4>Action</h4>
+      <p>Update the navigation document to use the current path. Also fix any internal links that still reference the old <code>helix</code> name.</p>
+    </div>
+  </div>
+
+  <!-- Action 6 (upgraded P2→P1) -->
+  <div class="action" id="r6">
+    <div class="action-header" onclick="toggleAction(this)">
+      <span class="action-num">06</span>
+      <div class="action-title-block">
+        <div class="action-title">Update 31 stale pages that have real traffic</div>
+        <div class="action-subtitle">Focus on 31 pages with visitors, not the full 72 &mdash; /developer/block-collection alone gets 5,910 views</div>
+      </div>
+      <div class="action-badges">
+        <span class="badge badge-p1">P1</span>
+        <span class="badge badge-p2" style="opacity:0.4;">was P2</span>
+        <span class="badge badge-effort-high">High effort</span>
+      </div>
+      <span class="toggle-icon">&#x25B6;</span>
+    </div>
+    <div class="action-body">
+      <h4>Traffic Justification</h4>
+      <p>31 of 72 stale pages receive real traffic. The top 3 stale pages alone account for 12,730 views: <code>/developer/block-collection</code> (5,910), <code>/developer/indexing</code> (4,110), <code>/developer/markup-sections-blocks</code> (2,710). Users are reading outdated content on active pages.</p>
+      <h4>Impact</h4>
+      <div class="impact-bar"><div class="impact-track"><div class="impact-fill high"></div></div><span class="impact-label high">Content Accuracy</span></div>
+      <h4>Action</h4>
+      <p>Prioritize the 31 pages with traffic. Start with the top 5 by views. The remaining 41 stale pages with zero traffic can be archived (see Stale Content Triage section).</p>
+    </div>
+  </div>
+
+  <!-- Action 9 (upgraded P2→P1) -->
+  <div class="action" id="r9">
+    <div class="action-header" onclick="toggleAction(this)">
+      <span class="action-num">09</span>
+      <div class="action-title-block">
+        <div class="action-title">Add OG images to top 3 high-traffic pages</div>
+        <div class="action-subtitle">/, /docs/, /developer/block-collection &mdash; 26,591 views, 17% of all traffic</div>
+      </div>
+      <div class="action-badges">
+        <span class="badge badge-p1">P1</span>
+        <span class="badge badge-p2" style="opacity:0.4;">was P2</span>
+        <span class="badge badge-effort-med">Med effort</span>
+      </div>
+      <span class="toggle-icon">&#x25B6;</span>
+    </div>
+    <div class="action-body">
+      <h4>Traffic Justification</h4>
+      <p>The 3 highest-traffic pages missing OG images account for 26,591 views. When shared on LinkedIn, Slack, or social media, they show a generic default image. For a developer documentation site, these are the pages most likely to be shared.</p>
+      <h4>Impact</h4>
+      <div class="impact-bar"><div class="impact-track"><div class="impact-fill high"></div></div><span class="impact-label high">Social &amp; Brand</span></div>
+      <h4>Action</h4>
+      <p>Create custom OG images (1200x630px) for the homepage, docs hub, and block collection. Use a consistent template that includes the page title and AEM branding. Just these 3 cover 17% of traffic.</p>
+    </div>
+  </div>
+
+  <!-- Action 20 (NEW P1) -->
+  <div class="action" id="r20">
+    <div class="action-header" onclick="toggleAction(this)">
+      <span class="action-num">20</span>
+      <div class="action-title-block">
+        <div class="action-title">Fix Core Web Vitals on high-traffic pages</div>
+        <div class="action-subtitle">Homepage TTFB 2,767ms (12,581 views), /developer/ue-tutorial LCP 3,054ms (7,210 views)</div>
+      </div>
+      <div class="action-badges">
+        <span class="badge badge-p1">P1</span>
+        <span class="badge badge-new">NEW</span>
+        <span class="badge badge-effort-med">Med effort</span>
+      </div>
+      <span class="toggle-icon">&#x25B6;</span>
+    </div>
+    <div class="action-body">
+      <h4>Traffic Justification</h4>
+      <p>The homepage (12,581 views) has an average TTFB of 2,767ms across 84 samples &mdash; well above the 800ms threshold. <code>/developer/ue-tutorial</code> (7,210 views) has LCP of 3,054ms. <code>/developer/block-collection</code> (5,910 views) has INP of 4,597ms. These are the highest-traffic pages on the site.</p>
+      <h4>Impact</h4>
+      <div class="impact-bar"><div class="impact-track"><div class="impact-fill high"></div></div><span class="impact-label high">Performance &amp; SEO</span></div>
+      <h4>Action</h4>
+      <p>Investigate homepage TTFB &mdash; may indicate CDN caching issues or slow origin. Check ue-tutorial for render-blocking resources driving LCP. Investigate block-collection for heavy JS causing INP delays.</p>
+    </div>
+  </div>
+
+  <!-- P2 High -->
+  <h3 style="font-size:18px;font-weight:900;color:var(--amber);margin:32px 0 16px;padding-bottom:6px;border-bottom:2px solid var(--amber);display:inline-block;">P2 &mdash; High</h3>
+
+  <!-- Action 3 (downgraded P1→P2) -->
+  <div class="action" id="r3">
+    <div class="action-header" onclick="toggleAction(this)">
+      <span class="action-num">03</span>
+      <div class="action-title-block">
+        <div class="action-title">Add 9 indexed pages to the sitemap</div>
+        <div class="action-subtitle">Content indexed but invisible to search engines &mdash; some get traffic via internal links</div>
+      </div>
+      <div class="action-badges">
+        <span class="badge badge-p2">P2</span>
+        <span class="badge badge-p1" style="opacity:0.4;">was P1</span>
+        <span class="badge badge-effort-low">Low effort</span>
+      </div>
+      <span class="toggle-icon">&#x25B6;</span>
+    </div>
+    <div class="action-body">
+      <h4>Traffic Justification</h4>
+      <p>Several of these pages get traffic through internal navigation, so they're not broken. But missing sitemap presence still hurts SEO discovery for new visitors. Downgraded from P1 because the user impact is limited to search engine visibility, not broken functionality.</p>
+      <h4>Impact</h4>
+      <div class="impact-bar"><div class="impact-track"><div class="impact-fill med-high"></div></div><span class="impact-label med-high">SEO</span></div>
+    </div>
+  </div>
+
+  <!-- Action 8 (unchanged P2) -->
+  <div class="action" id="r8">
+    <div class="action-header" onclick="toggleAction(this)">
+      <span class="action-num">08</span>
+      <div class="action-title-block">
+        <div class="action-title">Add meta descriptions to 6 pages</div>
+        <div class="action-subtitle">Affects SEO snippets and social previews</div>
+      </div>
+      <div class="action-badges">
+        <span class="badge badge-p2">P2</span>
+        <span class="badge badge-p2" style="opacity:0.4;">was P2</span>
+        <span class="badge badge-effort-low">Low effort</span>
+      </div>
+      <span class="toggle-icon">&#x25B6;</span>
+    </div>
+    <div class="action-body">
+      <h4>Traffic Justification</h4>
+      <p>Most affected pages have low direct traffic, but meta descriptions affect how pages appear in Google search results and social previews. This is a low-effort, high-leverage SEO improvement.</p>
+      <h4>Impact</h4>
+      <div class="impact-bar"><div class="impact-track"><div class="impact-fill med-high"></div></div><span class="impact-label med-high">SEO &amp; Social</span></div>
+    </div>
+  </div>
+
+  <!-- Action 18 (upgraded P4→P2) -->
+  <div class="action" id="r18">
+    <div class="action-header" onclick="toggleAction(this)">
+      <span class="action-num">18</span>
+      <div class="action-title-block">
+        <div class="action-title">Set up automated content + telemetry monitoring</div>
+        <div class="action-subtitle">RUM data proves monitoring value &mdash; this report should be regenerated monthly</div>
+      </div>
+      <div class="action-badges">
+        <span class="badge badge-p2">P2</span>
+        <span class="badge badge-p4" style="opacity:0.4;">was P4</span>
+        <span class="badge badge-effort-med">Med effort</span>
+      </div>
+      <span class="toggle-icon">&#x25B6;</span>
+    </div>
+    <div class="action-body">
+      <h4>Traffic Justification</h4>
+      <p>This report demonstrates the value of combining static analysis with real traffic data. The priority shifts are significant &mdash; without traffic data, teams would waste effort on zero-traffic pages. Automated monthly regeneration would catch new issues before they accumulate and track whether fixes improve CWV scores.</p>
+      <h4>Impact</h4>
+      <div class="impact-bar"><div class="impact-track"><div class="impact-fill med-high"></div></div><span class="impact-label med-high">Operational</span></div>
+    </div>
+  </div>
+
+  <!-- Action 19 (NEW P2) -->
+  <div class="action" id="r19">
+    <div class="action-header" onclick="toggleAction(this)">
+      <span class="action-num">19</span>
+      <div class="action-title-block">
+        <div class="action-title">Fix JavaScript errors (13,900/period)</div>
+        <div class="action-subtitle">rum-distiller script causes 89% of all JS errors across the site</div>
+      </div>
+      <div class="action-badges">
+        <span class="badge badge-p2">P2</span>
+        <span class="badge badge-new">NEW</span>
+        <span class="badge badge-effort-low">Low effort</span>
+      </div>
+      <span class="toggle-icon">&#x25B6;</span>
+    </div>
+    <div class="action-body">
+      <h4>Traffic Justification</h4>
+      <p>13,900 weighted error events in 10 days. The dominant error is in <code>rum-distiller@1.22.2</code> (12,400 events) &mdash; an infrastructure dependency, not site code. Chart.js errors add 900 on the RUM explorer tools. Not user-facing but pollutes error monitoring and may indicate a version compatibility issue.</p>
+      <h4>Impact</h4>
+      <div class="impact-bar"><div class="impact-track"><div class="impact-fill med-high"></div></div><span class="impact-label med-high">Infrastructure</span></div>
+      <h4>Action</h4>
+      <p>Update <code>rum-distiller</code> to latest version or pin a stable version. Check if the Chart.js error on RUM explorer tools is caused by a version mismatch with <code>esm.sh</code> imports.</p>
+    </div>
+  </div>
+
+  <!-- Action 18-b: set up monitoring already above -->
+
+  <!-- P3 Medium -->
+  <h3 style="font-size:18px;font-weight:900;color:var(--blue);margin:32px 0 16px;padding-bottom:6px;border-bottom:2px solid var(--blue);display:inline-block;">P3 &mdash; Medium</h3>
+
+  <!-- Action 2 (downgraded P1→P3) -->
+  <div class="action" id="r2">
+    <div class="action-header" onclick="toggleAction(this)">
+      <span class="action-num">02</span>
+      <div class="action-title-block">
+        <div class="action-title">Add 5 sitemap-only pages to the query index</div>
+        <div class="action-subtitle">Live pages in sitemap invisible to site search &mdash; low/no traffic impact</div>
+      </div>
+      <div class="action-badges">
+        <span class="badge badge-p3">P3</span>
+        <span class="badge badge-p1" style="opacity:0.4;">was P1</span>
+        <span class="badge badge-effort-low">Low effort</span>
+      </div>
+      <span class="toggle-icon">&#x25B6;</span>
+    </div>
+    <div class="action-body">
+      <h4>Traffic Justification</h4>
+      <p>The 5 affected pages have low or zero traffic. This is a content model consistency issue, not a user-facing problem. Still worth doing for completeness but no longer critical.</p>
+      <h4>Impact</h4>
+      <div class="impact-bar"><div class="impact-track"><div class="impact-fill med"></div></div><span class="impact-label med">Consistency</span></div>
+    </div>
+  </div>
+
+  <!-- Action 5 (downgraded P2→P3) -->
+  <div class="action" id="r5">
+    <div class="action-header" onclick="toggleAction(this)">
+      <span class="action-num">05</span>
+      <div class="action-title-block">
+        <div class="action-title">Rebrand pages still using Franklin/Helix names</div>
+        <div class="action-subtitle">Only 3 of 17 old-branding pages have traffic (2,500 total views)</div>
+      </div>
+      <div class="action-badges">
+        <span class="badge badge-p3">P3</span>
+        <span class="badge badge-p2" style="opacity:0.4;">was P2</span>
+        <span class="badge badge-effort-med">Med effort</span>
+      </div>
+      <span class="toggle-icon">&#x25B6;</span>
+    </div>
+    <div class="action-body">
+      <h4>Traffic Justification</h4>
+      <p>Only 3 pages with old branding receive traffic: <code>/docs/faq</code> (2,000 views), <code>/developer/upgrade</code> (400), <code>/previous/byo-cdn-akamai-setup</code> (100). The other 14 pages have zero traffic. Focus rebranding effort on the 3 visited pages first.</p>
+      <h4>Impact</h4>
+      <div class="impact-bar"><div class="impact-track"><div class="impact-fill med"></div></div><span class="impact-label med">Brand Consistency</span></div>
+    </div>
+  </div>
+
+  <!-- Action 7 (downgraded P2→P3) -->
+  <div class="action" id="r7">
+    <div class="action-header" onclick="toggleAction(this)">
+      <span class="action-num">07</span>
+      <div class="action-title-block">
+        <div class="action-title">Update old branding in documentation pages</div>
+        <div class="action-subtitle">References to helix-query.yaml, helix@adobe.com in docs &mdash; only /docs/faq has traffic</div>
+      </div>
+      <div class="action-badges">
+        <span class="badge badge-p3">P3</span>
+        <span class="badge badge-p2" style="opacity:0.4;">was P2</span>
+        <span class="badge badge-effort-low">Low effort</span>
+      </div>
+      <span class="toggle-icon">&#x25B6;</span>
+    </div>
+    <div class="action-body">
+      <h4>Traffic Justification</h4>
+      <p>Of the 6 docs with old branding, only <code>/docs/faq</code> has real traffic (2,000 views). The rest are inactive. Downgraded because the user-facing impact is limited.</p>
+      <h4>Impact</h4>
+      <div class="impact-bar"><div class="impact-track"><div class="impact-fill med"></div></div><span class="impact-label med">Brand</span></div>
+    </div>
+  </div>
+
+  <!-- Action 11 -->
+  <div class="action" id="r11">
+    <div class="action-header" onclick="toggleAction(this)">
+      <span class="action-num">11</span>
+      <div class="action-title-block">
+        <div class="action-title">Review 14 labs/experimental pages</div>
+        <div class="action-subtitle">Some labs features may be ready for GA or need sunset</div>
+      </div>
+      <div class="action-badges">
+        <span class="badge badge-p3">P3</span>
+        <span class="badge badge-p3" style="opacity:0.4;">was P3</span>
+        <span class="badge badge-effort-med">Med effort</span>
+      </div>
+      <span class="toggle-icon">&#x25B6;</span>
+    </div>
+    <div class="action-body">
+      <h4>Traffic Justification</h4>
+      <p>Labs pages generally have low traffic, confirming P3 is the right level. No urgent user-facing issues.</p>
+      <h4>Impact</h4>
+      <div class="impact-bar"><div class="impact-track"><div class="impact-fill med"></div></div><span class="impact-label med">Content Hygiene</span></div>
+    </div>
+  </div>
+
+  <!-- Action 12 -->
+  <div class="action" id="r12">
+    <div class="action-header" onclick="toggleAction(this)">
+      <span class="action-num">12</span>
+      <div class="action-title-block">
+        <div class="action-title">Add deprecation banners to 2 deprecated pages</div>
+        <div class="action-subtitle">Folder Mapping and Scheduling have metadata but may lack visible warnings</div>
+      </div>
+      <div class="action-badges">
+        <span class="badge badge-p3">P3</span>
+        <span class="badge badge-p3" style="opacity:0.4;">was P3</span>
+        <span class="badge badge-effort-low">Low effort</span>
+      </div>
+      <span class="toggle-icon">&#x25B6;</span>
+    </div>
+    <div class="action-body">
+      <h4>Traffic Justification</h4>
+      <p>Low traffic on deprecated pages confirms P3. Users rarely encounter these pages, but those who do should see a clear deprecation notice.</p>
+      <h4>Impact</h4>
+      <div class="impact-bar"><div class="impact-track"><div class="impact-fill med"></div></div><span class="impact-label med">User Guidance</span></div>
+    </div>
+  </div>
+
+  <!-- Action 13 -->
+  <div class="action" id="r13">
+    <div class="action-header" onclick="toggleAction(this)">
+      <span class="action-num">13</span>
+      <div class="action-title-block">
+        <div class="action-title">Resolve /home navigation reference</div>
+        <div class="action-subtitle">Redirect works but wastes a redirect hop for 12,581 homepage visitors</div>
+      </div>
+      <div class="action-badges">
+        <span class="badge badge-p3">P3</span>
+        <span class="badge badge-p3" style="opacity:0.4;">was P3</span>
+        <span class="badge badge-effort-low">Low effort</span>
+      </div>
+      <span class="toggle-icon">&#x25B6;</span>
+    </div>
+    <div class="action-body">
+      <h4>Traffic Justification</h4>
+      <p>The homepage is the highest-traffic page (12,581 views). The /home redirect works but adds latency for every visitor who clicks the nav logo. Low effort to fix, moderate impact given the traffic volume.</p>
+      <h4>Impact</h4>
+      <div class="impact-bar"><div class="impact-track"><div class="impact-fill med"></div></div><span class="impact-label med">Performance</span></div>
+    </div>
+  </div>
+
+  <!-- Action 14 -->
+  <div class="action" id="r14">
+    <div class="action-header" onclick="toggleAction(this)">
+      <span class="action-num">14</span>
+      <div class="action-title-block">
+        <div class="action-title">Add OG images to remaining 31 pages with traffic</div>
+        <div class="action-subtitle">After top 3 (#9), address the long tail of 31 more pages missing OG images</div>
+      </div>
+      <div class="action-badges">
+        <span class="badge badge-p3">P3</span>
+        <span class="badge badge-p3" style="opacity:0.4;">was P3</span>
+        <span class="badge badge-effort-high">High effort</span>
+      </div>
+      <span class="toggle-icon">&#x25B6;</span>
+    </div>
+    <div class="action-body">
+      <h4>Traffic Justification</h4>
+      <p>After addressing the top 3 in action #9, 31 more OG-missing pages have traffic. Consider a templated OG image generator to cover them all at once rather than creating individual images.</p>
+      <h4>Impact</h4>
+      <div class="impact-bar"><div class="impact-track"><div class="impact-fill med"></div></div><span class="impact-label med">Social &amp; Brand</span></div>
+    </div>
+  </div>
+
+  <!-- Action 17 (upgraded P4→P3) -->
+  <div class="action" id="r17">
+    <div class="action-header" onclick="toggleAction(this)">
+      <span class="action-num">17</span>
+      <div class="action-title-block">
+        <div class="action-title">Update copyright year in footer</div>
+        <div class="action-subtitle">Shows on every page &mdash; 157,771 impressions in 10 days</div>
+      </div>
+      <div class="action-badges">
+        <span class="badge badge-p3">P3</span>
+        <span class="badge badge-p4" style="opacity:0.4;">was P4</span>
+        <span class="badge badge-effort-low">Low effort</span>
+      </div>
+      <span class="toggle-icon">&#x25B6;</span>
+    </div>
+    <div class="action-body">
+      <h4>Traffic Justification</h4>
+      <p>The footer is visible on every page. With 157K views in 10 days, this "cosmetic" issue is seen by thousands of developers. For a 2-minute fix, the impression count justifies upgrading to P3.</p>
+      <h4>Impact</h4>
+      <div class="impact-bar"><div class="impact-track"><div class="impact-fill med"></div></div><span class="impact-label med">Professionalism</span></div>
+    </div>
+  </div>
+
+  <!-- Action 21 (NEW P3) -->
+  <div class="action" id="r21">
+    <div class="action-header" onclick="toggleAction(this)">
+      <span class="action-num">21</span>
+      <div class="action-title-block">
+        <div class="action-title">Resolve missing _ogimage resource on RUM tools</div>
+        <div class="action-subtitle">8,700 weighted missingresource events for /tools/rum/_ogimage</div>
+      </div>
+      <div class="action-badges">
+        <span class="badge badge-p3">P3</span>
+        <span class="badge badge-new">NEW</span>
+        <span class="badge badge-effort-low">Low effort</span>
+      </div>
+      <span class="toggle-icon">&#x25B6;</span>
+    </div>
+    <div class="action-body">
+      <h4>Traffic Justification</h4>
+      <p>The RUM explorer pages request <code>/tools/rum/_ogimage</code> on every load but it doesn't exist. Generates 8,700 weighted missingresource events. Not user-visible but causes unnecessary 404 requests and console noise.</p>
+      <h4>Impact</h4>
+      <div class="impact-bar"><div class="impact-track"><div class="impact-fill med"></div></div><span class="impact-label med">Infrastructure</span></div>
+      <h4>Action</h4>
+      <p>Either create the missing resource or remove the reference from the RUM explorer pages.</p>
+    </div>
+  </div>
+
+  <!-- Action 22 (NEW P3) -->
+  <div class="action" id="r22">
+    <div class="action-header" onclick="toggleAction(this)">
+      <span class="action-num">22</span>
+      <div class="action-title-block">
+        <div class="action-title">Fix 2 real 404 pages</div>
+        <div class="action-subtitle">/previous/sidekick-2 and /tools/rum-explorer return 404</div>
+      </div>
+      <div class="action-badges">
+        <span class="badge badge-p3">P3</span>
+        <span class="badge badge-new">NEW</span>
+        <span class="badge badge-effort-low">Low effort</span>
+      </div>
+      <span class="toggle-icon">&#x25B6;</span>
+    </div>
+    <div class="action-body">
+      <h4>Traffic Justification</h4>
+      <p>Each 404 was observed once (100 weighted views), so these are low-volume issues. But they indicate stale links somewhere &mdash; either internal navigation or external references that should be redirected.</p>
+      <h4>Impact</h4>
+      <div class="impact-bar"><div class="impact-track"><div class="impact-fill med"></div></div><span class="impact-label med">UX &amp; SEO</span></div>
+      <h4>Action</h4>
+      <p>Set up redirects: <code>/previous/sidekick-2</code> &rarr; current Sidekick docs, <code>/tools/rum-explorer</code> &rarr; <code>/tools/oversight/explorer.html</code> (or equivalent).</p>
+    </div>
+  </div>
+
+  <!-- P4 Low -->
+  <h3 style="font-size:18px;font-weight:900;color:var(--purple);margin:32px 0 16px;padding-bottom:6px;border-bottom:2px solid var(--purple);display:inline-block;">P4 &mdash; Low</h3>
+
+  <!-- Action 1 (downgraded P1→P4) -->
+  <div class="action" id="r1">
+    <div class="action-header" onclick="toggleAction(this)">
+      <span class="action-num">01</span>
+      <div class="action-title-block">
+        <div class="action-title">Remove dead page /mwp-demo from query index</div>
+        <div class="action-subtitle">404 since 2021 but zero traffic &mdash; nobody encounters this page</div>
+      </div>
+      <div class="action-badges">
+        <span class="badge badge-p4">P4</span>
+        <span class="badge badge-p1" style="opacity:0.4;">was P1</span>
+        <span class="badge badge-effort-low">Low effort</span>
+      </div>
+      <span class="toggle-icon">&#x25B6;</span>
+    </div>
+    <div class="action-body">
+      <h4>Traffic Justification</h4>
+      <p>Zero views in the monitoring period. This page is technically broken but nobody visits it. Still worth cleaning up for index hygiene, but it's not urgent.</p>
+      <h4>Impact</h4>
+      <div class="impact-bar"><div class="impact-track"><div class="impact-fill low"></div></div><span class="impact-label low">Index Hygiene</span></div>
+    </div>
+  </div>
+
+  <!-- Action 10 (downgraded P3→P4) -->
+  <div class="action" id="r10">
+    <div class="action-header" onclick="toggleAction(this)">
+      <span class="action-num">10</span>
+      <div class="action-title-block">
+        <div class="action-title">Decide future of 6 legacy /previous/ pages</div>
+        <div class="action-subtitle">Minimal traffic (100 views total across 6 pages)</div>
+      </div>
+      <div class="action-badges">
+        <span class="badge badge-p4">P4</span>
+        <span class="badge badge-p3" style="opacity:0.4;">was P3</span>
+        <span class="badge badge-effort-med">Med effort</span>
+      </div>
+      <span class="toggle-icon">&#x25B6;</span>
+    </div>
+    <div class="action-body">
+      <h4>Traffic Justification</h4>
+      <p>The legacy /previous/ pages have near-zero traffic. Only <code>/previous/byo-cdn-akamai-setup</code> received 100 views. These can be safely deprioritized or archived.</p>
+      <h4>Impact</h4>
+      <div class="impact-bar"><div class="impact-track"><div class="impact-fill low"></div></div><span class="impact-label low">Content Hygiene</span></div>
+    </div>
+  </div>
+
+  <!-- Action 15 -->
+  <div class="action" id="r15">
+    <div class="action-header" onclick="toggleAction(this)">
+      <span class="action-num">15</span>
+      <div class="action-title-block">
+        <div class="action-title">Remove 8 utility/fragment pages from query index</div>
+        <div class="action-subtitle">Thank-you pages, gnav, footers &mdash; zero traffic confirms these are non-content</div>
+      </div>
+      <div class="action-badges">
+        <span class="badge badge-p4">P4</span>
+        <span class="badge badge-p4" style="opacity:0.4;">was P4</span>
+        <span class="badge badge-effort-low">Low effort</span>
+      </div>
+      <span class="toggle-icon">&#x25B6;</span>
+    </div>
+    <div class="action-body">
+      <h4>Traffic Justification</h4>
+      <p>Zero traffic on all utility/fragment pages, confirming they should be excluded from the index. Low priority but easy to batch with other index changes.</p>
+      <h4>Impact</h4>
+      <div class="impact-bar"><div class="impact-track"><div class="impact-fill low"></div></div><span class="impact-label low">Index Hygiene</span></div>
+    </div>
+  </div>
+
+  <!-- Action 16 -->
+  <div class="action" id="r16">
+    <div class="action-header" onclick="toggleAction(this)">
+      <span class="action-num">16</span>
+      <div class="action-title-block">
+        <div class="action-title">Resolve 2 duplicate page titles</div>
+        <div class="action-subtitle">Zero traffic on affected pages</div>
+      </div>
+      <div class="action-badges">
+        <span class="badge badge-p4">P4</span>
+        <span class="badge badge-p4" style="opacity:0.4;">was P4</span>
+        <span class="badge badge-effort-low">Low effort</span>
+      </div>
+      <span class="toggle-icon">&#x25B6;</span>
+    </div>
+    <div class="action-body">
+      <h4>Traffic Justification</h4>
+      <p>Zero traffic on both affected pages. No user impact. Clean up when touching nearby content.</p>
+      <h4>Impact</h4>
+      <div class="impact-bar"><div class="impact-track"><div class="impact-fill low"></div></div><span class="impact-label low">Metadata</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 10. METHODOLOGY ===== -->
+<section class="section" id="methodology">
+  <h2 class="section-title">Methodology</h2>
+  <p class="section-desc">How this report was produced and what its limitations are.</p>
+
+  <div class="card">
+    <h3>Data Sources</h3>
+    <ul>
+      <li><strong>RUM bundles:</strong> Fetched from <code>bundles.aem.page</code> for <code>www.aem.live</code>, covering Feb 15&ndash;24, 2026 (10 days). 1,648 raw bundles processed.</li>
+      <li><strong>Static analysis:</strong> <code>data/aem-live/analysis.json</code> generated by <code>scripts/aem-live-content-gaps.mjs</code> on Feb 24, 2026. Covers 197 indexed pages, 192 sitemap URLs.</li>
+      <li><strong>Processing script:</strong> <code>scripts/aem-live-rum-analysis.mjs</code> cross-references both sources, outputs <code>data/aem-live/rum-feb-2026.json</code>.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Sampling &amp; Weighting</h3>
+    <ul>
+      <li>AEM RUM uses 1:100 sampling for production traffic (each observed event represents ~100 real events).</li>
+      <li>Preview/Sidekick traffic uses 1:10 sampling.</li>
+      <li>All counts in this report are <strong>weighted</strong> (pre-multiplied by sampling weight).</li>
+      <li>For pages with &lt;300 estimated views, the data represents a single observation &mdash; treat these as directional, not precise.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Limitations</h3>
+    <ul>
+      <li><strong>10-day window:</strong> Not a full month. Traffic patterns may differ across the full month (e.g., beginning-of-month vs. end-of-month).</li>
+      <li><strong>Bot traffic:</strong> ~1% (1,700 views) is classified as bot traffic. Not filtered because bot classification is approximate and the volume is low.</li>
+      <li><strong>CWV sampling noise:</strong> Pages with few CWV samples (1&ndash;3) may show extreme values. The homepage (84 TTFB samples) is highly reliable; single-sample pages are indicative only.</li>
+      <li><strong>External referrers:</strong> Below the sampling threshold for this period. The data captures internal navigation patterns well but underrepresents external traffic sources like Google Search, LinkedIn, or direct bookmarks.</li>
+      <li><strong>Priority assignments:</strong> The shift matrix applies human judgment to traffic signals. Reasonable people could assign different priorities &mdash; the traffic data itself is objective, the interpretation is not.</li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+<footer class="report-footer">
+  <strong>Blazar</strong> &mdash; Traffic-Weighted Content Intelligence &mdash; Generated Feb 24, 2026
+</footer>
+
+<button class="back-to-top" id="backToTop" aria-label="Back to top">&#x2191;</button>
+
+<script>
+/* ── Data (embedded from rum-feb-2026.json) ── */
+const DATA = {
+  pages: [
+    {p:'/',v:12581},{p:'/developer/tutorial',v:10250},{p:'/docs/',v:8100},{p:'/developer/ue-tutorial',v:7210},
+    {p:'/developer/block-collection',v:5910},{p:'/docs/setup-customer-sharepoint',v:5610},{p:'/developer/anatomy-of-a-project',v:4610},
+    {p:'/developer/setup-google-drive',v:4500},{p:'/developer/keeping-it-100',v:4200},{p:'/developer/sitemap',v:4200},
+    {p:'/developer/indexing',v:4110},{p:'/developer/spreadsheets',v:4100},{p:'/docs/dev-collab-and-good-practices',v:3820},
+    {p:'/developer/ai-coding-agents',v:3210},{p:'/docs/integrations',v:3200},{p:'/developer/favicon',v:3110},
+    {p:'/docs/aem-authoring',v:3020},{p:'/docs/custom-headers',v:3000},{p:'/docs/authoring',v:2900},
+    {p:'/docs/authoring-guide',v:2800}
+  ],
+  staleWithTraffic: [
+    {p:'/developer/block-collection',t:'Block Collection',lm:'2024-09-09',v:5910},
+    {p:'/developer/indexing',t:'Indexing',lm:'2024-09-09',v:4110},
+    {p:'/developer/markup-sections-blocks',t:'Markup, Sections, Blocks, and Auto Blocking',lm:'2024-09-09',v:2710},
+    {p:'/developer/martech-integration',t:'Martech Integration',lm:'2025-02-10',v:400},
+    {p:'/docs/translation-and-localization',t:'Translation and Localization',lm:'2024-09-09',v:300},
+    {p:'/developer/target-integration',t:'Target Integration',lm:'2024-09-09',v:300},
+    {p:'/docs/experimentation',t:'Experimentation',lm:'2024-10-03',v:300},
+    {p:'/developer/block-collection/buttons',t:'Buttons',lm:'2024-09-09',v:200},
+    {p:'/developer/block-collection/lists',t:'Lists',lm:'2024-09-09',v:200},
+    {p:'/developer/block-collection/section-metadata',t:'Section Metadata',lm:'2024-09-09',v:200},
+    {p:'/docs/exploring-blocks',t:'Exploring Blocks',lm:'2024-09-09',v:200},
+    {p:'/docs/move-project-to-customer-infrastructure',t:'Migrating a VIP project',lm:'2024-09-09',v:200},
+    {p:'/developer/web-components',t:'Web Components',lm:'2024-09-09',v:200},
+    {p:'/blog/roadmaps',t:'Roadmaps',lm:'2025-02-19',v:200},
+    {p:'/developer',t:'AEM for Developers',lm:'2024-09-09',v:100},
+    {p:'/developer/block-collection/fragment',t:'Fragment (Block)',lm:'2024-09-09',v:100},
+    {p:'/developer/block-collection/columns',t:'Columns',lm:'2024-09-09',v:100},
+    {p:'/developer/block-collection/table',t:'Tables',lm:'2024-09-09',v:100},
+    {p:'/developer/block-collection/video',t:'Video',lm:'2024-09-09',v:100},
+    {p:'/developer/block-collection/hero',t:'Hero',lm:'2024-09-09',v:100},
+    {p:'/developer/block-collection/quote',t:'Quote',lm:'2024-09-09',v:100},
+    {p:'/developer/block-collection/form',t:'Form',lm:'2024-09-09',v:100},
+    {p:'/developer/block-collection/code',t:'Code',lm:'2024-09-09',v:100},
+    {p:'/developer/da-tutorial',t:'DA Tutorial',lm:'2024-09-09',v:100},
+    {p:'/docs/sidekick-extension',t:'Sidekick Extension',lm:'2024-09-09',v:100},
+    {p:'/developer/block-collection/icons',t:'Icons',lm:'2024-09-09',v:100},
+    {p:'/developer/block-collection/headings',t:'Headings',lm:'2024-09-09',v:100},
+    {p:'/developer/block-collection/links',t:'Links',lm:'2024-09-09',v:100},
+    {p:'/developer/block-collection/text',t:'Text',lm:'2024-09-09',v:100},
+    {p:'/developer/block-collection/sections',t:'Sections',lm:'2024-09-09',v:100},
+    {p:'/developer/block-collection/metadata',t:'Metadata Block',lm:'2024-09-09',v:100}
+  ],
+  staleNoTraffic: [
+    '/blog/aem-live-at-dev-live','/blog/calendar-implementation','/blog/edge-next',
+    '/blog/hlx-is-now-aem-live','/business/comms-channel-thank-you','/business/content-velocity',
+    '/business/demo','/business/helix-is-green','/business/reachout',
+    '/developer/block-collection/columns','/developer/block-collection/form',
+    '/developer/block-collection/fragment','/developer/block-collection/headings',
+    '/developer/block-collection/hero','/developer/block-collection/quote',
+    '/developer/block-collection/table','/developer/block-collection/video',
+    '/developer/block-party/thank-you','/developer/example-form/thank-you',
+    '/developer/github-actions','/developer/markup-reference','/developer/tutorial-from-youtube',
+    '/docs/byo-dns','/docs/davidsmodel','/docs/network-profile','/docs/setup-googledrive',
+    '/docs/setup-sharepoint','/docs/sidekick-extension','/experiments/short-home/home',
+    '/gnav','/mwp-demo','/previous/byo-cdn-cloudflare-worker-setup',
+    '/previous/byo-cdn-cloudflare-worker-wrangler-setup','/previous/byo-cdn-cloudfront-setup',
+    '/previous/byo-cdn-fastly-setup','/previous/byo-cdn-setup','/tools/mp4-doctor/',
+    '/tools/organizer/','/tools/sidekick/install-extension','/tools/sidekick/library',
+    '/tools/svg-doctor/'
+  ],
+  ogWithTraffic: [
+    {p:'/',t:'Adobe Experience Manager',v:12581},
+    {p:'/docs/',t:'Documentation',v:8100},
+    {p:'/developer/block-collection',t:'Block Collection',v:5910},
+    {p:'/docs/setup-customer-sharepoint',t:'How to use Sharepoint (application)',v:5610},
+    {p:'/developer/keeping-it-100',t:'Web Performance',v:4200},
+    {p:'/developer/aem-playground',t:'Explore new AI workflows in AEM',v:1700},
+    {p:'/developer/block-party/',t:'Block Party',v:900},
+    {p:'/developer/importer',t:'Importing Content',v:500},
+    {p:'/docs/setup-byo-cdn-push-invalidation',t:'Push invalidation for BYO CDN',v:500},
+    {p:'/developer/sidekick-development',t:'Extending the Sidekick',v:500},
+    {p:'/developer/ue-trial',t:'Pre-built tutorial environment',v:500},
+    {p:'/developer/block-collection/metadata',t:'Metadata Block',v:400},
+    {p:'/docs/experimentation',t:'Experimentation',v:300},
+    {p:'/docs/translation-and-localization',t:'Translation and Localization',v:300},
+    {p:'/docs/aem-embed',t:'Embedding Content in non-AEM experiences',v:300},
+    {p:'/developer/block-collection/buttons',t:'Buttons',v:200},
+    {p:'/developer/block-collection/lists',t:'Lists',v:200},
+    {p:'/developer/block-collection/section-metadata',t:'Section Metadata',v:200},
+    {p:'/docs/move-project-to-customer-infrastructure',t:'Migrating a VIP project',v:200},
+    {p:'/docs/media',t:'Media Assets',v:200},
+    {p:'/developer',t:'AEM for Developers',v:100},
+    {p:'/developer/block-collection/code',t:'Code',v:100},
+    {p:'/developer/block-collection/icons',t:'Icons',v:100},
+    {p:'/developer/block-collection/links',t:'Links',v:100},
+    {p:'/developer/block-collection/sections',t:'Sections',v:100},
+    {p:'/developer/block-collection/text',t:'Text',v:100},
+    {p:'/developer/font-fallback',t:'Font Fallback and CLS',v:100},
+    {p:'/docs/setup-adobe-sharepoint',t:'How to use Adobe Sharepoint',v:100},
+    {p:'/docs/setup-byo-cdn-push-invalidation-for-akamai',t:'Push invalidation for Akamai',v:100},
+    {p:'/docs/setup-customer-sharepoint-user',t:'How to use Sharepoint (delegated)',v:100},
+    {p:'/developer/admin-errors',t:'Backend Errors',v:100},
+    {p:'/developer/sidekick-v7-migration',t:'Sidekick v6 Migration',v:100},
+    {p:'/docs/snapshots-reviews',t:'Snapshots and Reviews',v:100},
+    {p:'/docs/schema-structured-data',t:'Schema (Structured Data)',v:100}
+  ],
+  ogNoTraffic: [
+    '/business/comms-channel-thank-you','/business/content-velocity','/business/demo',
+    '/business/helix-is-green','/business/reachout','/developer/block-collection/form',
+    '/developer/block-collection/fragment','/developer/block-collection/headings',
+    '/developer/block-collection/table','/developer/block-collection/video',
+    '/developer/block-party/thank-you','/developer/example-form/thank-you',
+    '/developer/markup-reference','/docs/davidsmodel','/docs/indexing-reference',
+    '/docs/setup-googledrive','/docs/setup-sharepoint','/docs/sidekick-errors',
+    '/docs/storefront','/experiments/short-home/home','/footer','/gnav','/mwp-demo',
+    '/new-footer','/previous/byo-cdn-cloudflare-worker-setup',
+    '/previous/byo-cdn-cloudflare-worker-wrangler-setup','/previous/byo-cdn-cloudfront-setup',
+    '/tools/mp4-doctor/','/tools/sidekick/install-extension','/tools/sidekick/library',
+    '/tools/svg-doctor/'
+  ],
+  topReferrers: [
+    {u:'https://www.aem.live',c:3600},
+    {u:'https://www.aem.live/docs',c:2400},
+    {u:'https://www.aem.live/developer/block-collection',c:1600},
+    {u:'https://www.aem.live/developer/ue-tutorial',c:1600},
+    {u:'https://www.aem.live/docs/aem-authoring',c:900},
+    {u:'https://www.aem.live/docs/authoring-guide',c:700},
+    {u:'https://www.aem.live/developer/tutorial',c:700}
+  ],
+  poorCwv: [
+    {p:'/',v:12581,i:['TTFB 2767ms']},
+    {p:'/developer/ue-tutorial',v:7210,i:['LCP 3054ms']},
+    {p:'/developer/block-collection',v:5910,i:['INP 4597ms']},
+    {p:'/developer/anatomy-of-a-project',v:4610,i:['TTFB 3072ms']},
+    {p:'/developer/aem-playground',v:1700,i:['LCP 512377ms']},
+    {p:'/developer/upgrade',v:400,i:['INP 14331ms','TTFB 1142ms']},
+    {p:'/docs/translation-and-localization',v:300,i:['TTFB 875ms']},
+    {p:'/docs/sidekick',v:200,i:['CLS 0.106']},
+    {p:'/tools/bot/updated',v:200,i:['LCP 4592ms','TTFB 4798ms']},
+    {p:'/community',v:200,i:['LCP 16990ms']},
+    {p:'/developer/integrations',v:200,i:['LCP 3198ms']},
+    {p:'/docs/authoring-taxonomy',v:200,i:['LCP 7672ms']},
+    {p:'/developer/sidekick-development',v:100,i:['LCP 2916ms']},
+    {p:'/docs/metadata',v:100,i:['TTFB 958ms']},
+    {p:'/tools/oversight/explorer.html',v:100,i:['CLS 0.2','INP 2955ms']}
+  ]
+};
+
+/* ── Traffic Distribution Bar Chart ── */
+(function() {
+  const el = document.getElementById('traffic-chart');
+  const maxViews = DATA.pages[0].v;
+  let html = '';
+  DATA.pages.forEach((p, i) => {
+    const pct = (p.v / maxViews * 100).toFixed(1);
+    const label = p.p.length > 30 ? '...' + p.p.slice(-27) : p.p;
+    const color = i < 3 ? 'var(--red)' : i < 10 ? 'var(--amber)' : 'var(--blue)';
+    html += '<div class="bar-row">' +
+      '<span class="bar-label" title="' + p.p + '">' + label + '</span>' +
+      '<div class="bar-track"><div class="bar-fill" style="width:' + pct + '%;background:' + color + ';">' + (pct > 15 ? p.v.toLocaleString() : '') + '</div></div>' +
+      '<span class="bar-count">' + p.v.toLocaleString() + '</span></div>';
+  });
+  el.innerHTML = html;
+})();
+
+/* ── Referrer Bar Chart ── */
+(function() {
+  const el = document.getElementById('referrer-chart');
+  const maxRef = DATA.topReferrers[0].c;
+  let html = '';
+  DATA.topReferrers.forEach(r => {
+    const pct = (r.c / maxRef * 100).toFixed(1);
+    const label = r.u.replace('https://www.aem.live', '');
+    html += '<div class="bar-row">' +
+      '<span class="bar-label" title="' + r.u + '">' + (label || '/') + '</span>' +
+      '<div class="bar-track"><div class="bar-fill" style="width:' + pct + '%;background:var(--blue);">' + (pct > 20 ? r.c.toLocaleString() : '') + '</div></div>' +
+      '<span class="bar-count">' + r.c.toLocaleString() + '</span></div>';
+  });
+  el.innerHTML = html;
+})();
+
+/* ── Stale Traffic Table ── */
+(function() {
+  const tbody = document.getElementById('stale-traffic-body');
+  let html = '';
+  DATA.staleWithTraffic.forEach(s => {
+    const heatClass = s.v >= 1000 ? 'heat-high' : s.v >= 300 ? 'heat-med' : 'heat-low';
+    html += '<tr class="' + heatClass + '">' +
+      '<td class="col-path">' + s.p + '</td>' +
+      '<td class="col-title">' + s.t + '</td>' +
+      '<td class="col-date">' + s.lm + '</td>' +
+      '<td class="col-num" style="font-weight:700;">' + s.v.toLocaleString() + '</td></tr>';
+  });
+  tbody.innerHTML = html;
+})();
+
+/* ── Stale No Traffic List ── */
+(function() {
+  const ul = document.getElementById('stale-no-traffic-list');
+  ul.innerHTML = DATA.staleNoTraffic.map(p => '<li>' + p + '</li>').join('');
+})();
+
+/* ── OG Traffic Table ── */
+(function() {
+  const tbody = document.getElementById('og-traffic-body');
+  let html = '';
+  DATA.ogWithTraffic.forEach(o => {
+    const heatClass = o.v >= 1000 ? 'heat-high' : o.v >= 300 ? 'heat-med' : 'heat-low';
+    html += '<tr class="' + heatClass + '">' +
+      '<td class="col-path">' + o.p + '</td>' +
+      '<td class="col-title">' + o.t + '</td>' +
+      '<td class="col-num" style="font-weight:700;">' + o.v.toLocaleString() + '</td></tr>';
+  });
+  tbody.innerHTML = html;
+})();
+
+/* ── OG No Traffic List ── */
+(function() {
+  const ul = document.getElementById('og-no-traffic-list');
+  ul.innerHTML = DATA.ogNoTraffic.map(p => '<li>' + p + '</li>').join('');
+})();
+
+/* ── CWV Table ── */
+(function() {
+  const tbody = document.getElementById('cwv-body');
+  let html = '';
+  DATA.poorCwv.forEach(c => {
+    html += '<tr>' +
+      '<td class="col-path">' + c.p + '</td>' +
+      '<td class="col-num">' + c.v.toLocaleString() + '</td>' +
+      '<td>' + c.i.map(i => {
+        const color = i.includes('LCP') || i.includes('TTFB') ? 'var(--red)' : i.includes('INP') ? 'var(--amber)' : 'var(--blue)';
+        return '<span class="badge" style="background:' + color + ';color:white;margin:2px 4px 2px 0;">' + i + '</span>';
+      }).join('') + '</td></tr>';
+  });
+  tbody.innerHTML = html;
+})();
+
+/* ── Tab Switching ── */
+function switchTab(group, panelSuffix, btn) {
+  const section = btn.closest('.section');
+  section.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  section.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(group + '-' + panelSuffix)?.classList.add('active')
+    || document.getElementById(panelSuffix)?.classList.add('active');
+}
+
+/* ── Collapsible Toggle ── */
+function toggleCollapse(el) {
+  const body = el.nextElementSibling;
+  body.classList.toggle('open');
+  el.textContent = body.classList.contains('open')
+    ? el.textContent.replace('\u25B6', '\u25BC')
+    : el.textContent.replace('\u25BC', '\u25B6');
+}
+
+/* ── Table Sorting ── */
+function sortTable(tableId, colIdx, type) {
+  const table = document.getElementById(tableId);
+  const tbody = table.querySelector('tbody');
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  const th = table.querySelectorAll('thead th')[colIdx];
+  const isAsc = th.classList.contains('sorted-asc');
+
+  table.querySelectorAll('thead th').forEach(h => {
+    h.classList.remove('sorted', 'sorted-asc', 'sorted-desc');
+  });
+  th.classList.add('sorted', isAsc ? 'sorted-desc' : 'sorted-asc');
+
+  rows.sort((a, b) => {
+    let aVal = a.cells[colIdx].textContent.trim();
+    let bVal = b.cells[colIdx].textContent.trim();
+    if (type === 'num') {
+      aVal = parseFloat(aVal.replace(/,/g, '')) || 0;
+      bVal = parseFloat(bVal.replace(/,/g, '')) || 0;
+    }
+    if (aVal < bVal) return isAsc ? 1 : -1;
+    if (aVal > bVal) return isAsc ? -1 : 1;
+    return 0;
+  });
+
+  rows.forEach(r => tbody.appendChild(r));
+}
+
+/* ── Action Toggle ── */
+function toggleAction(header) {
+  header.closest('.action').classList.toggle('open');
+}
+
+/* ── Back to Top ── */
+const backBtn = document.getElementById('backToTop');
+window.addEventListener('scroll', () => {
+  backBtn.classList.toggle('visible', window.scrollY > 400);
+});
+backBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+/* ── Shift table row classification ── */
+document.querySelectorAll('#shift-table tbody tr').forEach(tr => {
+  const arrow = tr.querySelector('.shift-arrow');
+  if (!arrow) return;
+  if (arrow.classList.contains('up')) tr.classList.add('shift-upgraded');
+  else if (arrow.classList.contains('down')) tr.classList.add('shift-downgraded');
+  else if (arrow.classList.contains('new')) tr.classList.add('shift-new');
+  else tr.classList.add('shift-unchanged');
+});
+
+/* ── Entrance animations ── */
+if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  document.querySelectorAll('.section, .card.validation, .jump-nav').forEach(el => el.classList.add('fade-up'));
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+}
+</script>
+
+</body>
+</html>

@@ -36,9 +36,16 @@ TBD — to be defined as we build. Cloudflare-first for all blazar infrastructur
 - **Sitemap:** `https://www.aem.live/sitemap.xml` — 192 URLs.
 - **Content gap analysis:** `reports/aem-live-content-gaps.html` — first analysis run 2026-02-24. Key findings: 72 stale pages (37%), 65 missing OG images, 17 old branding references, 10 pages missing from sitemap.
 - **Analysis script:** `scripts/aem-live-content-gaps.mjs` — fetches query index, sitemap, and nav links, cross-references them, outputs JSON analysis to `data/aem-live/`.
+- **RUM analysis:** `reports/aem-live-rum-analysis.html` — traffic-weighted content intelligence. 157K views over 10 days (Feb 2026), 152 URLs. Cross-references RUM telemetry with static analysis to reshuffle priorities: 5 actions upgraded, 4 downgraded, 4 new from telemetry.
+- **RUM script:** `scripts/aem-live-rum-analysis.mjs` — processes raw RUM bundles, cross-references with analysis.json, outputs `data/aem-live/rum-feb-2026.json`.
+- **Brand audit suite:** 10 reports covering guidelines, opportunities, link equity, competitor positioning, SEO signals, brand consistency (mean 76/100), readability (FK 7.8–13.8), developer touchpoints, brand evolution (6+ names, 8 years), performance validation. 14 total reports in hub.
 
 ## Operational Notes
 
 - **API keys:** `.env` file in project root (gitignored).
 - **AEM EDS skills:** 17 skills installed via `aem-edge-delivery-services` plugin — use for all EDS analysis and development work.
 - **Reports:** Open HTML files directly in browser. Self-contained, no build step. Design follows `/Users/paolo/excat/nova/DESIGN.md`.
+- **Report navigation:** Every report must include a sticky `.report-nav` bar at the top of `<body>` with a link back to `hub.html` and pill links to all `related` reports from the manifest. When creating or updating reports, always add this nav bar.
+- **Chat widget:** Every report includes `<script src="chat.js"></script>` before `</body>`. Persistent chat assistant powered by Cloudflare Pages Function + Cerebras llama3.1-8b.
+- **Parallel agents:** For multi-report sprints, launch all research agents in a single tool call for maximum parallelism. Wall-clock time = slowest agent, not sum. Coordinate manifests after all agents complete.
+- **Design refinement:** Use `/impeccable:critique` then the appropriate follow-up (`/impeccable:bolder`, `/impeccable:simplify`, etc.). Critique identifies specific issues; follow-up fixes them. Key principles: color as communication (not decoration), section-specific accents as visual landmarks, typography scale jumps for hierarchy. For simplification: lead with the single most important number/finding, use `<details>` for progressive disclosure, compress supporting sections into tables, remove redundant stat grids.

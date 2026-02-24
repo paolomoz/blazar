@@ -7,88 +7,28 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700;900&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="blazar-reports.css">
 <style>
-:root {
-  --blue: #3B63FB;
-  --blue-light: #EBF0FF;
-  --blue-dark: #2A4AD4;
-  --bg: #F8F8F8;
-  --bg-white: #FFFFFF;
-  --fg: #292929;
-  --fg-heading: #131313;
-  --fg-muted: #717171;
-  --border: #E1E1E1;
-  --red: #D7373F;
-  --red-bg: #FFF0F0;
-  --amber: #CB6F10;
-  --amber-bg: #FFF5EB;
-  --green: #12805C;
-  --green-bg: #EDFCF2;
-  --purple: #7A6AFD;
-  --purple-bg: #F3F0FF;
-  --shadow-card: 0 2px 8px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04), 0 0 1px rgba(0,0,0,0.08);
-  --shadow-elevated: 0 8px 24px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08);
-  --radius: 8px;
-  --radius-sm: 4px;
-  --radius-lg: 12px;
-  --radius-pill: 9999px;
-  --font: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: 'Source Code Pro', Monaco, monospace;
-}
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; font-size: 16px; }
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
-}
-body { font-family: var(--font); color: var(--fg); background: var(--bg); line-height: 1.6; }
-a { color: var(--blue); text-decoration: none; }
-a:hover { text-decoration: underline; }
-:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; border-radius: 2px; }
+/* ── Card Overrides ── */
+.card p, .card li { font-size: 15px; color: var(--fg); line-height: 1.6; }
 
-/* Layout */
-.container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
-.header { background: var(--bg-white); border-bottom: 1px solid var(--border); padding: 32px 0; margin-bottom: 32px; }
-.header-inner { display: flex; align-items: center; gap: 16px; }
-.logo { width: 40px; height: 40px; background: linear-gradient(135deg, var(--blue), var(--purple)); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 18px; flex-shrink: 0; }
-.header h1 { font-size: 28px; font-weight: 900; color: var(--fg-heading); line-height: 1.2; }
-.header-meta { font-size: 14px; color: var(--fg-muted); margin-top: 2px; }
-.connected { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--blue); background: var(--blue-light); padding: 4px 12px; border-radius: var(--radius-pill); margin-left: 12px; }
-
-/* Navigation */
-.jump-nav { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 32px; }
-.jump-nav a { display: inline-block; padding: 6px 14px; border-radius: var(--radius-pill); background: var(--bg-white); border: 1px solid var(--border); font-size: 13px; font-weight: 600; color: var(--fg); transition: all 0.15s; }
-.jump-nav a:hover { background: var(--blue-light); border-color: var(--blue); color: var(--blue); text-decoration: none; }
-
-/* Cards */
-.card { background: var(--bg-white); border-radius: var(--radius-lg); box-shadow: var(--shadow-card); padding: 24px; margin-bottom: 16px; }
-
-/* Sections */
-.section { margin-bottom: 40px; }
-.section-title { font-size: 22px; font-weight: 900; color: var(--fg-heading); margin-bottom: 8px; }
-.section-desc { font-size: 14px; color: var(--fg-muted); margin-bottom: 20px; line-height: 1.5; }
-
-/* Priority matrix */
+/* ── Priority Matrix ── */
 .matrix { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
 @media (max-width: 640px) { .matrix { grid-template-columns: 1fr; } }
-.matrix-cell { border-radius: var(--radius-lg); padding: 20px; border: 2px solid; }
+.matrix-cell { border-radius: var(--radius); padding: 20px; border: 1px solid var(--border); background: var(--bg-white); box-shadow: var(--shadow-card); border-top: 3px solid; }
 .matrix-cell h3 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
-.matrix-cell .cell-desc { font-size: 13px; margin-bottom: 0; line-height: 1.4; }
-.mc-p1 { background: var(--red-bg); border-color: var(--red); }
+.matrix-cell .cell-desc { font-size: 14px; margin-bottom: 0; line-height: 1.5; color: var(--fg-muted); }
+.mc-p1 { border-top-color: var(--red); }
 .mc-p1 h3 { color: var(--red); }
-.mc-p1 .cell-desc { color: #9B2C33; }
-.mc-p2 { background: var(--amber-bg); border-color: var(--amber); }
+.mc-p2 { border-top-color: var(--amber); }
 .mc-p2 h3 { color: var(--amber); }
-.mc-p2 .cell-desc { color: #8A5A0D; }
-.mc-p3 { background: var(--blue-light); border-color: var(--blue); }
+.mc-p3 { border-top-color: var(--blue); }
 .mc-p3 h3 { color: var(--blue); }
-.mc-p3 .cell-desc { color: #2A4AD4; }
-.mc-p4 { background: var(--purple-bg); border-color: var(--purple); }
+.mc-p4 { border-top-color: var(--purple); }
 .mc-p4 h3 { color: var(--purple); }
-.mc-p4 .cell-desc { color: #5B4DC7; }
 
-/* Action items */
-.action { background: var(--bg-white); border-radius: var(--radius-lg); box-shadow: var(--shadow-card); padding: 0; margin-bottom: 16px; overflow: hidden; }
+/* ── Action Items ── */
+.action { background: var(--bg-white); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-card); padding: 0; margin-bottom: 16px; overflow: hidden; }
 .action-header { display: flex; align-items: flex-start; gap: 14px; padding: 20px 24px; cursor: pointer; user-select: none; }
 .action-header:hover { background: rgba(0,0,0,0.015); }
 .action-num { font-size: 13px; font-weight: 700; font-family: var(--font-mono); color: var(--fg-muted); min-width: 28px; padding-top: 2px; }
@@ -96,7 +36,7 @@ a:hover { text-decoration: underline; }
 .action-title { font-size: 16px; font-weight: 700; color: var(--fg-heading); line-height: 1.3; margin-bottom: 6px; }
 .action-subtitle { font-size: 13px; color: var(--fg-muted); line-height: 1.4; }
 .action-badges { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; flex-shrink: 0; padding-top: 2px; }
-.badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: var(--radius-pill); font-size: 11px; font-weight: 700; letter-spacing: 0.3px; text-transform: uppercase; white-space: nowrap; }
+.badge { padding: 3px 10px; letter-spacing: 0.3px; }
 .badge-p1 { background: var(--red); color: white; }
 .badge-p2 { background: var(--amber); color: white; }
 .badge-p3 { background: var(--blue); color: white; }
@@ -129,31 +69,29 @@ a:hover { text-decoration: underline; }
 .impact-label.med { color: var(--blue); }
 .impact-label.low { color: var(--fg-muted); }
 
-/* Affected pages list */
-.affected { background: var(--bg); border-radius: var(--radius); padding: 12px 16px; margin-top: 8px; max-height: 200px; overflow-y: auto; }
-.affected-item { font-size: 13px; font-family: var(--font-mono); color: var(--fg); padding: 3px 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; gap: 12px; }
+/* ── Affected Pages List ── */
+.affected { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 16px; margin-top: 8px; max-height: 200px; overflow-y: auto; }
+.affected-item { font-size: 13px; font-family: var(--font-mono); color: var(--fg); padding: 4px 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; gap: 12px; }
 .affected-item:last-child { border-bottom: none; }
 .affected-item .af-path { color: var(--blue-dark); }
 .affected-item .af-title { color: var(--fg-muted); font-family: var(--font); text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 300px; }
 
-/* Summary stats */
-.plan-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 32px; }
-@media (max-width: 640px) { .plan-stats { grid-template-columns: repeat(2, 1fr); } }
-.plan-stat { text-align: center; padding: 16px; background: var(--bg-white); border-radius: var(--radius); box-shadow: var(--shadow-card); }
-.plan-stat .ps-num { font-size: 32px; font-weight: 900; line-height: 1; }
-.plan-stat .ps-label { font-size: 12px; color: var(--fg-muted); font-weight: 600; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.3px; }
-.ps-p1 .ps-num { color: var(--red); }
-.ps-p2 .ps-num { color: var(--amber); }
-.ps-p3 .ps-num { color: var(--blue); }
-.ps-p4 .ps-num { color: var(--purple); }
+/* ── Stat Card Override ── */
+.stat-card { border: 1px solid var(--border); }
 
-/* Validation stamp */
+/* ── Validation ── */
 .validation { border-left: 4px solid var(--green); margin-bottom: 32px; }
 
-/* Footer */
+/* ── Peer Review ── */
+.review-card { border-left: 4px solid; }
+.review-card h4 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; }
+.review-card ul, .review-card ol { font-size: 14px; line-height: 1.7; padding-left: 18px; }
+.review-card li { margin-bottom: 4px; }
+
+/* ── Footer ── */
 .report-footer { text-align: center; padding: 32px 0; color: var(--fg-muted); font-size: 13px; border-top: 1px solid var(--border); margin-top: 48px; }
 
-/* Back to top */
+/* ── Back to Top ── */
 .back-to-top { position: fixed; bottom: 24px; right: 24px; width: 40px; height: 40px; border-radius: 50%; background: var(--blue); color: white; border: none; cursor: pointer; box-shadow: var(--shadow-elevated); display: flex; align-items: center; justify-content: center; font-size: 18px; opacity: 0; transition: opacity 0.2s; z-index: 100; }
 .back-to-top.visible { opacity: 1; }
 .back-to-top:hover { background: var(--blue-dark); }
@@ -161,17 +99,26 @@ a:hover { text-decoration: underline; }
 </head>
 <body>
 
-<header class="header">
-  <div class="container">
-    <div class="header-inner">
-      <div class="logo">B</div>
-      <div>
-        <h1>Action Plan: www.aem.live</h1>
-        <div class="header-meta">
-          Generated February 24, 2026 &mdash; 18 actions derived from content gaps analysis
-          <span class="connected">&#x1f517; Connected to Content Gaps Report</span>
-        </div>
-      </div>
+<!-- ===== NAV BAR ===== -->
+<nav class="report-nav" aria-label="Report navigation">
+  <a href="hub.html" class="nav-hub">&#x25C0; Hub</a>
+  <span class="nav-sep">|</span>
+  <span style="color:var(--fg-muted);font-weight:400;">Related:</span>
+  <a href="aem-live-content-gaps.html" class="nav-related">Content Gaps</a>
+  <a href="aem-live-rum-analysis.html" class="nav-related">RUM Analysis</a>
+  <a href="aem-live-brand-guidelines.html" class="nav-related">Brand Guidelines</a>
+  <a href="aem-live-brand-opportunities.html" class="nav-related">Brand Opportunities</a>
+</nav>
+
+<header class="report-header">
+  <div class="report-header-inner">
+    <div>
+      <h1>Action Plan: www.aem.live</h1>
+      <p class="subtitle">18 prioritized actions derived from content gaps analysis</p>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+      <span class="report-date">Feb 24, 2026</span>
+      <div class="report-branding"><span class="logo-mark">B</span> Blazar</div>
     </div>
   </div>
 </header>
@@ -179,11 +126,15 @@ a:hover { text-decoration: underline; }
 <main class="container">
 
 <nav class="jump-nav" aria-label="Section navigation">
-  <a href="#overview">Overview</a>
-  <a href="#p1">P1 &mdash; Critical</a>
-  <a href="#p2">P2 &mdash; High</a>
-  <a href="#p3">P3 &mdash; Medium</a>
-  <a href="#p4">P4 &mdash; Low</a>
+  <div class="jump-nav-title">In this report</div>
+  <div class="jump-nav-links">
+    <a href="#overview">Overview</a>
+    <a href="#p1">P1 &mdash; Critical</a>
+    <a href="#p2">P2 &mdash; High</a>
+    <a href="#p3">P3 &mdash; Medium</a>
+    <a href="#p4">P4 &mdash; Low</a>
+    <a href="#peer-review">Peer Review</a>
+  </div>
 </nav>
 
 <!-- Validation stamp -->
@@ -197,12 +148,11 @@ a:hover { text-decoration: underline; }
   <h2 class="section-title">Plan Overview</h2>
   <p class="section-desc">18 specific improvements prioritized by impact. No timelines &mdash; the site owner decides sequencing. Each action includes affected pages, expected impact, and effort level.</p>
 
-  <div class="plan-stats">
-    <div class="plan-stat ps-p1"><div class="ps-num">4</div><div class="ps-label">P1 Critical</div></div>
-    <div class="plan-stat ps-p2"><div class="ps-num">5</div><div class="ps-label">P2 High</div></div>
-    <div class="plan-stat ps-p3"><div class="ps-num">5</div><div class="ps-label">P3 Medium</div></div>
-    <div class="plan-stat ps-p4"><div class="ps-num">4</div><div class="ps-label">P4 Low</div></div>
-
+  <div class="summary-grid">
+    <div class="stat-card critical"><div class="stat-value">4</div><div class="stat-label">P1 Critical</div></div>
+    <div class="stat-card warning"><div class="stat-value">5</div><div class="stat-label">P2 High</div></div>
+    <div class="stat-card accent"><div class="stat-value">5</div><div class="stat-label">P3 Medium</div></div>
+    <div class="stat-card info"><div class="stat-value">4</div><div class="stat-label">P4 Low</div></div>
   </div>
 
   <div class="matrix">
@@ -227,7 +177,7 @@ a:hover { text-decoration: underline; }
 
 <!-- ===== P1 CRITICAL ===== -->
 <section class="section" id="p1">
-  <h2 class="section-title" style="color:var(--red);">P1 &mdash; Critical</h2>
+  <h2 class="section-title" style="border-bottom-color:var(--red);">P1 &mdash; Critical</h2>
 
   <!-- Action 1 -->
   <div class="action" id="a1">
@@ -360,7 +310,7 @@ a:hover { text-decoration: underline; }
 
 <!-- ===== P2 HIGH ===== -->
 <section class="section" id="p2">
-  <h2 class="section-title" style="color:var(--amber);">P2 &mdash; High</h2>
+  <h2 class="section-title" style="border-bottom-color:var(--amber);">P2 &mdash; High</h2>
 
   <!-- Action 5 -->
   <div class="action" id="a5">
@@ -537,7 +487,7 @@ a:hover { text-decoration: underline; }
 
 <!-- ===== P3 MEDIUM ===== -->
 <section class="section" id="p3">
-  <h2 class="section-title" style="color:var(--blue);">P3 &mdash; Medium</h2>
+  <h2 class="section-title" style="border-bottom-color:var(--blue);">P3 &mdash; Medium</h2>
 
   <!-- Action 10 -->
   <div class="action" id="a10">
@@ -703,7 +653,7 @@ a:hover { text-decoration: underline; }
 
 <!-- ===== P4 LOW ===== -->
 <section class="section" id="p4">
-  <h2 class="section-title" style="color:var(--purple);">P4 &mdash; Low</h2>
+  <h2 class="section-title" style="border-bottom-color:var(--purple);">P4 &mdash; Low</h2>
 
   <!-- Action 15 -->
   <div class="action" id="a15">
@@ -821,48 +771,48 @@ a:hover { text-decoration: underline; }
   </div>
 </section>
 
-</main>
-
 <!-- ===== PEER REVIEW ===== -->
 <section class="section" id="peer-review">
-  <h2 class="section-title">Peer Review (GPT-4o)</h2>
+  <h2 class="section-title" style="border-bottom-color:var(--cyan);">Peer Review (GPT-4o)</h2>
   <p class="section-desc">Independent review by a different model. Disagreements and suggestions are presented transparently for the site owner to consider.</p>
 
-  <div class="card" style="border-left:4px solid var(--amber);">
-    <h4 style="color:var(--amber);margin-bottom:12px;font-size:14px;">PRIORITY DISAGREEMENTS</h4>
-    <ul style="font-size:14px;line-height:1.7;padding-left:18px;">
+  <div class="card review-card" style="border-left-color:var(--amber);">
+    <h4 style="color:var(--amber);">Priority Disagreements</h4>
+    <ul>
       <li><strong>Action #8</strong> (empty descriptions): GPT-4o suggests <strong>P1</strong> instead of P2 &mdash; argues meta descriptions have outsized SEO/CTR impact.</li>
       <li><strong>Action #12</strong> (deprecation banners): GPT-4o suggests <strong>P2</strong> instead of P3 &mdash; argues it directly impacts developer guidance.</li>
       <li><strong>Action #18</strong> (monitoring): GPT-4o suggests <strong>P2</strong> instead of P4 &mdash; argues prevention outweighs the effort.</li>
     </ul>
   </div>
 
-  <div class="card" style="border-left:4px solid var(--blue);margin-top:12px;">
-    <h4 style="color:var(--blue);margin-bottom:12px;font-size:14px;">MISSING ACTIONS FLAGGED</h4>
-    <ul style="font-size:14px;line-height:1.7;padding-left:18px;">
+  <div class="card review-card" style="border-left-color:var(--blue);">
+    <h4 style="color:var(--blue);">Missing Actions Flagged</h4>
+    <ul>
       <li><strong>Accessibility audit:</strong> No actions address WCAG compliance. Relevant for a documentation site that serves a broad audience.</li>
       <li><strong>Performance check:</strong> No Lighthouse/CWV assessment included. Could reveal additional issues.</li>
     </ul>
     <p style="font-size:13px;color:var(--fg-muted);margin-top:8px;"><em>Note: These are valid suggestions for future blazar analysis runs &mdash; they require separate data collection beyond the content gaps scope.</em></p>
   </div>
 
-  <div class="card" style="border-left:4px solid var(--purple);margin-top:12px;">
-    <h4 style="color:var(--purple);margin-bottom:12px;font-size:14px;">EFFORT RECALIBRATIONS</h4>
-    <ul style="font-size:14px;line-height:1.7;padding-left:18px;">
+  <div class="card review-card" style="border-left-color:var(--purple);">
+    <h4 style="color:var(--purple);">Effort Recalibrations</h4>
+    <ul>
       <li><strong>Action #8</strong> (descriptions): GPT-4o notes Low effort may be optimistic if it requires research and writing. Possibly Medium.</li>
       <li><strong>Action #18</strong> (monitoring): Medium effort may be underestimated if it involves building dashboards or CI integration. Possibly High.</li>
     </ul>
   </div>
 
-  <div class="card" style="border-left:4px solid var(--green);margin-top:12px;">
-    <h4 style="color:var(--green);margin-bottom:12px;font-size:14px;">GPT-4o TOP 3 PICKS (by impact)</h4>
-    <ol style="font-size:14px;line-height:1.7;padding-left:18px;">
+  <div class="card review-card" style="border-left-color:var(--green);">
+    <h4 style="color:var(--green);">GPT-4o Top 3 Picks (by Impact)</h4>
+    <ol>
       <li><strong>Action #4</strong> (fix stale nav link) &mdash; direct user experience breakage</li>
       <li><strong>Action #6</strong> (triage 72 stale pages) &mdash; largest content quality impact</li>
       <li><strong>Action #8</strong> (add descriptions) &mdash; highest SEO leverage per effort</li>
     </ol>
   </div>
 </section>
+
+</main>
 
 <footer class="report-footer">
   <div class="container">
@@ -889,5 +839,6 @@ window.addEventListener('scroll', () => {
   btn.classList.toggle('visible', window.scrollY > 400);
 }, { passive: true });
 </script>
+<script src="chat.js"></script>
 </body>
 </html>

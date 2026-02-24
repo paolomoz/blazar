@@ -1,0 +1,261 @@
+{
+  "generatedAt": "2026-02-24T13:51:12.535Z",
+  "site": "https://www.aem.live",
+  "summary": {
+    "totalEntries": 197,
+    "customImages": 132,
+    "defaultFallback": 65,
+    "formatDistribution": {
+      "jpeg": 67,
+      "png": 64,
+      "html; charset=utf-8": 1
+    },
+    "sizeDistribution": {
+      "<50KB": 51,
+      "50-200KB": 58,
+      "200KB-1MB": 23,
+      ">1MB": 0
+    },
+    "headRequestsOk": 132,
+    "headRequestsFailed": 0
+  },
+  "candidates": [
+    {
+      "slug": "homepage-hero",
+      "category": "Homepage/Hero",
+      "type": "generation",
+      "reason": "High-traffic landing page using generic fallback — pure generation opportunity",
+      "page": {
+        "path": "/",
+        "title": "Adobe Experience Manager",
+        "description": "Frictionless experience management: Build blazing fast websites using tools content creators and developers already know.",
+        "imageUrl": "/default-social.png?width=1200&format=pjpg&optimize=medium"
+      },
+      "originalImage": {
+        "path": "reports/images/original-homepage-hero.png",
+        "size": 217573,
+        "mimeType": "image/png"
+      },
+      "analysis": {
+        "brandAlignmentScore": 3,
+        "weaknesses": [
+          "This is a generic fallback image, not specific to the page's content or messaging.",
+          "Does not visually convey the page's core themes such as 'frictionless experience management' or 'blazing fast websites'.",
+          "Prominent use of Adobe red (the logo itself), which conflicts with the brand guideline to use red 'sparingly' as an accent; the primary Spectrum blue is only a subtle background element.",
+          "Lacks specific technical precision, developer-focused visuals, or branded illustrations/diagrams, which are identified needs.",
+          "The background grid is too subtle to effectively communicate 'technical precision' for the specific page context."
+        ],
+        "strengths": [
+          "Clearly identifies the parent brand (Adobe) with its iconic logo.",
+          "Maintains a clean and minimal aesthetic.",
+          "Features a subtle grid pattern in the background, offering a slight hint of a technical style."
+        ],
+        "recommendations": [
+          "Replace this generic fallback with a custom image specifically designed for the 'Adobe Experience Manager' page.",
+          "The new image should visually represent the page's core themes: 'frictionless experience management' and 'blazing fast websites'.",
+          "Incorporate the primary Spectrum blue (#3B63FB) more prominently, utilizing Adobe red sparingly as an accent if needed.",
+          "Develop a branded illustration or conceptual diagram that explains the benefits and architecture of AEM Edge Delivery Services in a technical yet approachable manner.",
+          "Ensure the visual style is clean, minimal, and clearly communicates technical precision, aligning with modern web standards, speed, and simplicity."
+        ],
+        "idealDescription": "A modern, conceptual illustration that visually represents the 'frictionless experience management' and 'blazing fast websites' themes of Adobe Experience Manager. The illustration should feature prominent use of Spectrum blue (#3B63FB) and integrate elements that symbolize speed (e.g., stylized data flow, lightning bolt in a sophisticated, non-marketing style) and simplicity (e.g., clean interfaces, streamlined processes). It should depict the seamless journey from content creation/development to a high-performance web experience, using clean lines and a technical, yet approachable aesthetic, adhering to modern web standards.",
+        "suggestedAltText": "Adobe 'A' logo, white on a rounded red square, centered on a subtle gradient background with a fine grid pattern, representing Adobe Experience Manager."
+      },
+      "improvedImage": {
+        "path": "reports/images/improved-homepage-hero.jpg",
+        "size": 413470,
+        "mimeType": "image/jpeg"
+      },
+      "generationNotes": ""
+    },
+    {
+      "slug": "docs-authoring",
+      "category": "Documentation Screenshot",
+      "type": "improvement",
+      "reason": "Core authoring docs page with screenshot — edit/improve opportunity",
+      "page": {
+        "path": "/docs/authoring",
+        "title": "Authoring and Publishing Content",
+        "description": "How to author, preview and publish content using the AEM Sidekick.",
+        "imageUrl": "/docs/media_1cf7bb3a1af050eff35416bc16502895c1f5a166e.jpg?width=1200&format=pjpg&optimize=medium"
+      },
+      "originalImage": {
+        "path": "reports/images/original-docs-authoring.jpg",
+        "size": 41145,
+        "mimeType": "image/jpeg"
+      },
+      "analysis": {
+        "brandAlignmentScore": 5,
+        "weaknesses": [
+          "Uses an off-brand color palette, specifically the light green background.",
+          "Lack of specific AEM Sidekick UI details; the browser content is generic placeholder text.",
+          "No annotations (arrows, highlights, callouts) to guide the user's focus to key actions or UI elements, which is a common issue.",
+          "The profile picture adds a personal touch but doesn't contribute to technical precision or specific workflow explanation for a developer audience.",
+          "Does not explicitly convey 'blazing fast' or 'developer-focused' themes beyond a simple illustration of an action."
+        ],
+        "strengths": [
+          "It is a custom illustration, not a generic stock image or fallback.",
+          "The visual style is clean and minimal, aligning with desired brand aesthetics.",
+          "Clearly depicts the core concept of publishing a document, which matches the page's topic.",
+          "The streamlined appearance of the 'Publish Document' dialog implies simplicity and frictionless interaction."
+        ],
+        "recommendations": [
+          "Rebrand the illustration with AEM.live's primary Spectrum blue (#3B63FB) for key interactive elements, and use neutral greys/whites for backgrounds, avoiding the current light green.",
+          "Replace generic browser content and elements with recognizable, simplified AEM Sidekick UI components to improve relevance and technical precision.",
+          "Add clear annotations (e.g., a subtle highlight around the 'Publish' button or a numbered step indicator) using brand colors to guide the user's eye and explain the workflow.",
+          "Consider replacing the profile picture with a more abstract representation of a user, or focus purely on the UI, to maintain a technical and developer-focused tone.",
+          "Ensure the illustration conveys efficiency and speed, perhaps through concise visual cues or by highlighting the directness of the publishing action."
+        ],
+        "idealDescription": "An updated custom illustration or annotated screenshot of the AEM Sidekick interface, clearly showing a simplified content page with the Sidekick bar. The illustration should highlight the 'Publish Document' action or status using AEM.live's brand colors (Spectrum blue) for emphasis and annotations. It should be clean, technically precise, and designed to visually communicate the speed and simplicity of publishing content through the Sidekick, specifically for a developer audience.",
+        "suggestedAltText": "Illustration of the AEM Sidekick 'Publish Document' action, showing a browser window with content and a mouse cursor hovering over the 'Author' button within the Sidekick dialog."
+      },
+      "improvedImage": {
+        "path": "reports/images/improved-docs-authoring.jpg",
+        "size": 480007,
+        "mimeType": "image/jpeg"
+      },
+      "generationNotes": ""
+    },
+    {
+      "slug": "docs-architecture",
+      "category": "Architecture Diagram",
+      "type": "improvement",
+      "reason": "Architecture overview with technical diagram — edit/improve for clarity and brand",
+      "page": {
+        "path": "/docs/architecture",
+        "title": "Architecture",
+        "description": "Take a deep dive into the architecture behind Edge Delivery Services and document based authoring in Adobe Experience Manager Sites as a Cloud Service.",
+        "imageUrl": "/docs/media_12c0b6c754f10cc4e98df8f6e378c543531f7149e.png?width=1200&format=pjpg&optimize=medium"
+      },
+      "originalImage": {
+        "path": "reports/images/original-docs-architecture.png",
+        "size": 182705,
+        "mimeType": "image/png"
+      },
+      "analysis": {
+        "brandAlignmentScore": 3,
+        "weaknesses": [
+          "Color palette is misaligned with the brand; it heavily features purples/lilacs instead of the primary Spectrum blue or accent Adobe red.",
+          "Lacks technical specificity for an 'Architecture' page, using generic business metaphors (people, graphs, clocks, lightbulbs) rather than illustrating actual architectural components or processes.",
+          "Visual style feels like generic stock illustration, lacking unique branding elements or the 'technical precision' desired by the brand.",
+          "Tone is too generic and leans more towards general marketing than 'developer-focused' or 'performance-obsessed'.",
+          "Does not visually convey key themes like 'speed' or 'modern web standards' in a direct or impactful way."
+        ],
+        "strengths": [
+          "The illustration style is clean and uncluttered, aligning with the 'clean, minimal' aspect of the brand's visual style.",
+          "It is a custom illustration, avoiding the issue of bland screenshots.",
+          "The presence of gears and graphs can abstractly relate to system processes and data, albeit too generically for the page topic."
+        ],
+        "recommendations": [
+          "Redesign the illustration to prominently feature Spectrum blue (#3B63FB) as the primary color, with white/grays and sparing use of Adobe red (#EB1000) for highlights, removing or significantly reducing the current purple/lilac tones.",
+          "Replace generic icons with visual representations of actual Edge Delivery Services architectural components, such as CDN integration, Git repositories, content pipelines, rendering services, or data flows.",
+          "Adopt a more diagrammatic or abstract technical illustration style that emphasizes connectivity, data flow, and system structure, aligning with 'technical precision'.",
+          "Incorporate visual cues that convey 'speed' (e.g., subtle motion, streamlined paths) and 'simplicity' (e.g., clear, uncluttered component relationships) directly into the architectural depiction.",
+          "Ensure the illustration's content provides genuine insight into the architecture, acting as a visual aid rather than a decorative placeholder."
+        ],
+        "idealDescription": "A technical illustration depicting the core components and data flow of the Edge Delivery Services architecture. It should use a clean, minimalist style, primarily in Spectrum blue, white, and grays, with subtle Adobe red accents. Visual elements would represent interconnected services like a Git-based repository, CDN layer, headless CMS components, and optimized delivery paths, emphasizing speed, modularity, and modern web standards. The illustration should be precise and directly relevant to understanding the system's structure.",
+        "suggestedAltText": "Illustration of two individuals interacting with a computer monitor displaying abstract icons for user profiles, a bar graph, interlocking gears, a clock, a lightbulb, and dollar signs, representing collaboration and system processes."
+      },
+      "improvedImage": {
+        "path": "reports/images/improved-docs-architecture.jpg",
+        "size": 590087,
+        "mimeType": "image/jpeg"
+      },
+      "generationNotes": ""
+    },
+    {
+      "slug": "blog-recent",
+      "category": "Blog Post Header",
+      "type": "improvement",
+      "reason": "Recent blog post with header image — edit/improve for brand consistency",
+      "page": {
+        "path": "/blog/adapt-to-2025",
+        "title": "Best of adaptTo() 2025",
+        "description": "As every late September, it’s adaptTo() time! Europe’s leading AEM developer conference hosted by diva-e Conclusion.",
+        "imageUrl": "/blog/media_134522bf1f696a9ccde70efb2d824c56e939636d3.jpg?width=1200&format=pjpg&optimize=medium"
+      },
+      "originalImage": {
+        "path": "reports/images/original-blog-recent.jpg",
+        "size": 48743,
+        "mimeType": "image/jpeg"
+      },
+      "analysis": {
+        "brandAlignmentScore": 4,
+        "weaknesses": [
+          "Does not align with 'clean, minimal, technical precision' visual style due to candid nature, dark lighting, and visible background clutter (e.g., cables).",
+          "Lacks visual representation of key themes like 'speed,' 'simplicity,' or 'modern web standards.'",
+          "Not a branded illustration or diagram, missing an opportunity to elevate content quality as per current state issues.",
+          "Typography on the background screen is not clearly legible enough to verify brand-aligned fonts (Source Sans Pro / Adobe Clean)."
+        ],
+        "strengths": [
+          "Highly relevant to the page content ('Best of adaptTo() 2025') by featuring a speaker at the actual conference with visible branding.",
+          "Utilizes the brand's primary Spectrum blue effectively in the background lighting and adaptTo() logos.",
+          "It is a custom image, addressing the issue of generic fallback images.",
+          "Clearly communicates a developer-focused, technical tone suitable for the target audience."
+        ],
+        "recommendations": [
+          "Replace with a custom illustration or a more stylized, composed photograph that embodies the 'clean, minimal, technical precision' visual style of AEM.live.",
+          "Integrate AEM.live's key themes (speed, simplicity, modern web standards) visually, perhaps through abstract elements in an illustration.",
+          "Ensure all on-screen text in images is perfectly legible and, if applicable, uses brand-approved typography (Source Sans Pro / Adobe Clean).",
+          "Explore creating a branded illustration specifically for event summaries that represents a modern developer conference in AEM.live's visual language.",
+          "If using a photo, ensure it's a high-quality, well-composed shot that minimizes clutter and enhances focus."
+        ],
+        "idealDescription": "A clean, modern, and high-contrast illustration or a meticulously composed photograph that captures the essence of a cutting-edge AEM developer conference. It would subtly integrate AEM.live's primary blue and minimal design, perhaps through abstract representations of 'speed' or 'simplicity' in a technical context. Both adaptTo() and AEM.live branding would be precisely and clearly visible, utilizing brand-aligned typography.",
+        "suggestedAltText": "A bald man with a beard, wearing a blue adaptTo() conference jacket and lanyard, gestures while speaking on stage. Behind him, screens display the adaptTo() logo and text 'leading AEM developer Conference powered by diva-e Conclusion' against a blue background."
+      },
+      "improvedImage": {
+        "path": "reports/images/improved-blog-recent.jpg",
+        "size": 529096,
+        "mimeType": "image/jpeg"
+      },
+      "generationNotes": ""
+    },
+    {
+      "slug": "developer-hub",
+      "category": "Developer Hub OG",
+      "type": "generation",
+      "reason": "Developer landing page using generic fallback — pure generation opportunity",
+      "page": {
+        "path": "/developer",
+        "title": "AEM for Developers",
+        "description": "Frictionless experience management: Build blazing fast websites using tools content creators and developers already know.",
+        "imageUrl": "/default-social.png?width=1200&format=pjpg&optimize=medium"
+      },
+      "originalImage": {
+        "path": "reports/images/original-developer-hub.png",
+        "size": 217573,
+        "mimeType": "image/png"
+      },
+      "analysis": {
+        "brandAlignmentScore": 3,
+        "weaknesses": [
+          "Image is a generic fallback, not specific to the 'AEM for Developers' page content.",
+          "Does not visually communicate key themes such as 'speed', 'simplicity', 'frictionless experience', or 'developer focus'.",
+          "Primary brand color (#3B63FB Spectrum blue) is only subtly present in the background gradient, not used prominently.",
+          "The generic nature fails to provide useful context for social sharing (OG image).",
+          "Likely suffers from empty alt text, as per the reported widespread issue."
+        ],
+        "strengths": [
+          "Clearly identifies the Adobe brand with the prominent Adobe logo.",
+          "Visual style is clean and minimal, aligning with brand guidelines.",
+          "The subtle grid background hints at technical precision."
+        ],
+        "recommendations": [
+          "Replace the generic fallback with a custom-designed image specifically for the 'AEM for Developers' page.",
+          "Create an illustration or graphic that visually represents 'blazing fast websites', 'frictionless experience management', and developer tools/workflows.",
+          "Incorporate the primary brand color Spectrum blue (#3B63FB) more prominently, using Adobe red (#EB1000) as a sparse accent.",
+          "Consider abstract representations of speed, efficiency, and modern web standards, rendered in a clean, technical style.",
+          "For social sharing (OG image), include concise, relevant text overlays (e.g., 'AEM for Developers', 'Build Blazing Fast Websites') using Source Sans Pro / Adobe Clean typography.",
+          "Ensure the new image has comprehensive and descriptive alt text."
+        ],
+        "idealDescription": "A technical yet approachable illustration for 'AEM for Developers' that visually conveys speed, simplicity, and modern web development. This could feature stylized representations of code transforming into a fast-loading website, a streamlined deployment pipeline, or interconnected developer tools, all rendered in Adobe's Spectrum blue and white with minimal red accents. The design should be clean, precise, and abstract enough to evoke the 'frictionless' and 'blazing fast' themes without being overly complex, potentially incorporating subtle geometric or grid elements.",
+        "suggestedAltText": "Adobe logo, a white stylized 'A' on a red square with rounded corners, centered on a light gradient background with a subtle grid pattern."
+      },
+      "improvedImage": {
+        "path": "reports/images/improved-developer-hub.jpg",
+        "size": 553312,
+        "mimeType": "image/jpeg"
+      },
+      "generationNotes": ""
+    }
+  ]
+}

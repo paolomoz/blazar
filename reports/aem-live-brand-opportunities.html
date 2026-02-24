@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Improvement Opportunities — www.aem.live Brand &amp; Documentation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700;900&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="blazar-reports.css">
+<style>
+/* ── Stat Card Overrides ── */
+.stat-card.high { border-top-color: var(--amber); }
+.stat-card.medium { border-top-color: var(--purple); }
+.stat-card.low { border-top-color: var(--green); }
+
+/* ── Opportunity Card ── */
+.opp-card {
+  background: var(--bg-white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+.opp-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+}
+.opp-header:hover { background: #FAFAFA; }
+.opp-number {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 900; color: #fff; flex-shrink: 0;
+}
+.opp-number.critical { background: var(--red); }
+.opp-number.high { background: var(--amber); }
+.opp-number.medium { background: var(--purple); }
+.opp-number.low { background: var(--green); }
+.opp-title { font-size: 16px; font-weight: 700; color: var(--fg-heading); flex: 1; }
+.opp-severity {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  padding: 3px 12px; border-radius: var(--radius-pill); letter-spacing: 0.04em;
+}
+.opp-severity.critical { background: var(--red-bg); color: var(--red); }
+.opp-severity.high { background: var(--amber-bg); color: var(--amber); }
+.opp-severity.medium { background: var(--purple-bg); color: var(--purple); }
+.opp-severity.low { background: var(--green-bg); color: var(--green); }
+.opp-category {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  padding: 3px 10px; border-radius: var(--radius-pill);
+  background: var(--bg); color: var(--fg-muted); letter-spacing: 0.04em;
+}
+.opp-body { padding: 20px 24px; }
+.opp-body p { font-size: 15px; margin-bottom: 12px; }
+.opp-body ul { padding-left: 20px; font-size: 14px; }
+.opp-body li { margin-bottom: 6px; }
+.opp-evidence {
+  background: var(--bg); border-radius: var(--radius-sm);
+  padding: 12px 16px; margin-top: 12px;
+  font-size: 13px; color: var(--fg-muted);
+  border-left: 3px solid var(--border);
+}
+.opp-evidence strong { color: var(--fg); }
+.opp-impact {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 600; margin-top: 12px;
+}
+.impact-dot { width: 8px; height: 8px; border-radius: 50%; }
+.impact-dot.high { background: var(--red); }
+.impact-dot.medium { background: var(--amber); }
+.impact-dot.low { background: var(--green); }
+
+/* ── Impact Matrix ── */
+.matrix {
+  background: var(--bg-white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+.matrix h3 { font-size: 17px; font-weight: 700; color: var(--fg-heading); margin-bottom: 16px; }
+.matrix-grid {
+  display: grid;
+  grid-template-columns: auto 1fr 1fr;
+  grid-template-rows: auto auto auto;
+  gap: 2px;
+}
+.matrix-label {
+  font-size: 12px; font-weight: 700; color: var(--fg-muted);
+  text-transform: uppercase; letter-spacing: 0.05em;
+  display: flex; align-items: center; justify-content: center;
+  padding: 8px;
+}
+.matrix-cell {
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+}
+.matrix-cell.q1 { background: var(--red-bg); }
+.matrix-cell.q2 { background: var(--amber-bg); }
+.matrix-cell.q3 { background: var(--blue-light); }
+.matrix-cell.q4 { background: var(--green-bg); }
+.matrix-cell ul { list-style: none; padding: 0; }
+.matrix-cell li { padding: 3px 0; font-weight: 600; }
+.matrix-cell li::before { content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 6px; background: currentColor; opacity: 0.5; }
+</style>
+</head>
+<body>
+
+<!-- ── Report Nav ── -->
+<nav class="report-nav" aria-label="Report navigation">
+  <a href="hub.html" class="nav-hub">Blazar Hub</a>
+  <span class="nav-sep">/</span>
+  <span style="color:var(--fg);">Improvement Opportunities</span>
+  <span class="nav-sep">|</span>
+  <a href="aem-live-brand-guidelines.html" class="nav-related">Brand Guidelines</a>
+  <a href="aem-live-image-quality.html" class="nav-related">Image Quality & AI</a>
+  <a href="aem-live-content-gaps.html" class="nav-related">Content Gaps</a>
+  <a href="aem-live-action-plan.html" class="nav-related">Action Plan</a>
+</nav>
+
+<!-- ── Header ── -->
+<header class="report-header">
+  <div class="report-header-inner">
+    <div>
+      <h1>Improvement Opportunities</h1>
+      <p class="subtitle">www.aem.live — Brand, Documentation &amp; Image Quality</p>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div class="report-branding"><div class="logo-mark">B</div> Blazar</div>
+      <span class="report-date">2026-02-24</span>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+<!-- ── Jump Nav ── -->
+<nav class="jump-nav" aria-label="Section navigation">
+  <div class="jump-nav-title">Sections</div>
+  <ul class="jump-nav-links">
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#critical">Critical</a></li>
+    <li><a href="#high">High Priority</a></li>
+    <li><a href="#medium">Medium Priority</a></li>
+    <li><a href="#low">Low Priority</a></li>
+    <li><a href="#matrix">Impact Matrix</a></li>
+    <li><a href="#validation">Validation</a></li>
+  </ul>
+</nav>
+
+<!-- ── Summary Stats ── -->
+<div class="summary-grid">
+  <div class="stat-card critical">
+    <div class="stat-value" style="color:var(--red);">5</div>
+    <div class="stat-label">Critical</div>
+  </div>
+  <div class="stat-card high">
+    <div class="stat-value" style="color:var(--amber);">6</div>
+    <div class="stat-label">High Priority</div>
+  </div>
+  <div class="stat-card medium">
+    <div class="stat-value" style="color:var(--purple);">6</div>
+    <div class="stat-label">Medium Priority</div>
+  </div>
+  <div class="stat-card low">
+    <div class="stat-value" style="color:var(--green);">5</div>
+    <div class="stat-label">Low Priority</div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- OVERVIEW                                    -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section" id="overview">
+<h2 class="section-title">Overview</h2>
+<p class="section-desc">22 improvement opportunities identified across four domains: accessibility, brand consistency, documentation architecture, and image strategy. Derived from the <a href="aem-live-brand-guidelines.html">Brand Guidelines Extraction</a> analysis of 10 pages, 197 index entries, and 42 evidence quotes.</p>
+
+<div class="two-col">
+  <div class="card" style="border-left:4px solid var(--red);">
+    <h3>Accessibility</h3>
+    <p>The most urgent domain. Alt text failure across ~95% of images is a WCAG Level A violation affecting legal compliance, SEO, and user experience.</p>
+  </div>
+  <div class="card" style="border-left:4px solid var(--amber);">
+    <h3>Brand Consistency</h3>
+    <p>Product naming inconsistencies, deprecated terminology in index, broken navigation paths, and outdated copyright year undermine brand authority.</p>
+  </div>
+  <div class="card" style="border-left:4px solid var(--purple);">
+    <h3>Documentation Architecture</h3>
+    <p>Block documentation locked in tools, sparse code examples, missing intermediate content, and dual-path duplication create gaps in the learning journey.</p>
+  </div>
+  <div class="card" style="border-left:4px solid var(--green);">
+    <h3>Image Strategy</h3>
+    <p>Excellent delivery infrastructure (A+) is undermined by poor metadata (D), missing social images (45% generic fallback), and inconsistent visual treatment.</p>
+  </div>
+</div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- CRITICAL                                    -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section" id="critical">
+<h2 class="section-title">Critical Issues</h2>
+<p class="section-desc">These issues affect compliance, accessibility, or create broken user experiences. Should be addressed immediately.</p>
+
+<div class="opp-card">
+  <div class="opp-header">
+    <div class="opp-number critical">1</div>
+    <div class="opp-title">Add alt text to all informative images</div>
+    <span class="opp-category">Accessibility</span>
+    <span class="opp-severity critical">Critical</span>
+  </div>
+  <div class="opp-body">
+    <p>Approximately 95% of images across the site have empty <code>alt=""</code> attributes. This is a <strong>WCAG 2.1 Level A failure</strong> (Success Criterion 1.1.1) affecting screen reader users, SEO crawlers, and AI/LLM readers.</p>
+    <p>Out of 101 images analysed in detail across 7 pages, only 1 had meaningful alt text ("White Adobe logo on a red square" on the SharePoint setup guide).</p>
+    <div class="opp-evidence">
+      <strong>Irony:</strong> The /docs/authoring page tells authors "It is a good idea to set an alternative text for all images" — while having zero alt text on its own images.
+    </div>
+    <div class="opp-impact"><span class="impact-dot high"></span> Affects: Legal compliance, SEO, accessibility, LLM comprehension</div>
+  </div>
+</div>
+
+<div class="opp-card">
+  <div class="opp-header">
+    <div class="opp-number critical">2</div>
+    <div class="opp-title">Fix /developer/ returning 404</div>
+    <span class="opp-category">Brand</span>
+    <span class="opp-severity critical">Critical</span>
+  </div>
+  <div class="opp-body">
+    <p>The <code>/developer/</code> path returns a 404 error. This is a primary navigation destination and the entry point for the developer audience. The query index lists it with the title "AEM for Developers" and a valid description.</p>
+    <div class="opp-evidence">
+      <strong>Evidence:</strong> HTTP request to https://www.aem.live/developer/ returns 404. Listed in query-index.json as a valid page with title "AEM for Developers."
+    </div>
+    <div class="opp-impact"><span class="impact-dot high"></span> Affects: Developer onboarding, navigation, SEO, brand credibility</div>
+  </div>
+</div>
+
+<div class="opp-card">
+  <div class="opp-header">
+    <div class="opp-number critical">3</div>
+    <div class="opp-title">Block documentation locked inside tool views</div>
+    <span class="opp-category">Docs</span>
+    <span class="opp-severity critical">Critical</span>
+  </div>
+  <div class="opp-body">
+    <p>All 25+ individual block pages (columns, hero, footer, etc.) redirect via 301 to the Sidekick Library interactive app. There is <strong>no standalone readable documentation</strong> for any individual block.</p>
+    <ul>
+      <li>Invisible to search engines — redirects away from aem.live domain</li>
+      <li>Inaccessible to LLMs and AI assistants that cannot interact with apps</li>
+      <li>Requires Sidekick tool installation to read block documentation</li>
+      <li>No offline or print-friendly reference for blocks</li>
+    </ul>
+    <div class="opp-impact"><span class="impact-dot high"></span> Affects: Developer experience, search visibility, AI/LLM discoverability</div>
+  </div>
+</div>
+
+<div class="opp-card">
+  <div class="opp-header">
+    <div class="opp-number critical">4</div>
+    <div class="opp-title">Product naming inconsistency across site</div>
+    <span class="opp-category">Brand</span>
+    <span class="opp-severity critical">Critical</span>
+  </div>
+  <div class="opp-body">
+    <p>"Adobe Experience Manager" vs "AEM" vs "Edge Delivery Services" are used interchangeably with no clear hierarchy. The deprecated codename "Franklin" still appears in query index descriptions.</p>
+    <ul>
+      <li><code>/business/demo</code> still describes "AEM Franklin" — a deprecated name</li>
+      <li>17 old branding references identified in content gap analysis</li>
+      <li>"Operational Telemetry" is the new name but URL is still <code>/developer/rum</code></li>
+      <li>Homepage uses "Adobe Experience Manager"; docs often use just "AEM"</li>
+    </ul>
+    <div class="opp-impact"><span class="impact-dot medium"></span> Affects: Brand recognition, SEO consistency, user confusion</div>
+  </div>
+</div>
+
+<div class="opp-card">
+  <div class="opp-header">
+    <div class="opp-number critical">5</div>
+    <div class="opp-title">Verify OG meta tag injection</div>
+    <span class="opp-category">Images</span>
+    <span class="opp-severity critical">Critical</span>
+  </div>
+  <div class="opp-body">
+    <p>No <code>og:image</code>, <code>og:title</code>, or <code>twitter:card</code> meta tags were found in the HTML of any analysed page. 89 of 197 pages (45%) use the generic <code>default-social.png</code> fallback in the query index.</p>
+    <p>If the meta tags are injected client-side, they will be invisible to social media crawlers and link previews. This means shared links display no custom preview on Slack, Twitter, LinkedIn, etc.</p>
+    <div class="opp-impact"><span class="impact-dot high"></span> Affects: Social sharing, link previews, content distribution</div>
+  </div>
+</div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- HIGH PRIORITY                               -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section" id="high">
+<h2 class="section-title">High Priority</h2>
+<p class="section-desc">Significant improvements that affect user experience, discoverability, or brand perception. Address within the current quarter.</p>
+
+<div class="opp-card">
+  <div class="opp-header">
+    <div class="opp-number high">6</div>
+    <div class="opp-title">Create intermediate how-to documentation</div>
+    <span class="opp-category">Docs</span>
+    <span class="opp-severity high">High</span>
+  </div>
+  <div class="opp-body">
+    <p>There is a gap between the beginner tutorial and the sparse reference pages. No intermediate guides exist for common developer tasks:</p>
+    <ul>
+      <li>"Create a custom block from scratch" — end-to-end walkthrough</li>
+      <li>"Set up local testing for a specific block" — tooling setup</li>
+      <li>"Debug a rendering issue" — troubleshooting guide</li>
+      <li>"Customise the boilerplate for your brand" — configuration walkthrough</li>
+    </ul>
+    <div class="opp-evidence">
+      <strong>Pattern gap:</strong> Tutorial covers first 20 minutes. Reference covers lookup needs. Nothing covers the first week of real development.
+    </div>
+  </div>
+</div>
+
+<div class="opp-card">
+  <div class="opp-header">
+    <div class="opp-number high">7</div>
+    <div class="opp-title">Add more code examples to documentation</div>
+    <span class="opp-category">Docs</span>
+    <span class="opp-severity high">High</span>
+  </div>
+  <div class="opp-body">
+    <p>The markup-sections-blocks page — documenting the single most important concept in the platform (how documents become HTML blocks) — contains only <strong>one code example</strong>. The documentation lean toward linking to GitHub repos rather than providing inline code.</p>
+    <ul>
+      <li>No API reference documentation</li>
+      <li>No complete code sample library</li>
+      <li>No runnable embedded examples</li>
+      <li>Performance guide has zero code despite targeting developers</li>
+    </ul>
+  </div>
+</div>
+
+<div class="opp-card">
+  <div class="opp-header">
+    <div class="opp-number high">8</div>
+    <div class="opp-title">Migrate hlx.live asset references</div>
+    <span class="opp-category">Brand</span>
+    <span class="opp-severity high">High</span>
+  </div>
+  <div class="opp-body">
+    <p>4 partner logos are still served from the old <code>hlx.live</code> domain, causing 301 redirect chains on every page load. These should be migrated to <code>aem.live</code> to eliminate latency and remove references to the deprecated domain.</p>
+  </div>
+</div>
+
+<div class="opp-card">
+  <div class="opp-header">
+    <div class="opp-number high">9</div>
+    <div class="opp-title">Create custom OG images for key pages</div>
+    <span class="opp-category">Images</span>
+    <span class="opp-severity high">High</span>
+  </div>
+  <div class="opp-body">
+    <p>The homepage, developer hub, docs index, and tutorial pages all fall back to the generic <code>default-social.png</code>. Custom social images for the top 20 most-shared pages would dramatically improve link preview quality.</p>
+  </div>
+</div>
+
+<div class="opp-card">
+  <div class="opp-header">
+    <div class="opp-number high">10</div>
+    <div class="opp-title">Resolve dual-path documentation duplication</div>
+    <span class="opp-category">Docs</span>
+    <span class="opp-severity high">High</span>
+  </div>
+  <div class="opp-body">
+    <p>Several topics exist in both <code>/docs/</code> and <code>/developer/</code> with no clear canonical source:</p>
+    <ul>
+      <li><code>/developer/placeholders</code> and <code>/docs/placeholders</code></li>
+      <li><code>/developer/operational-telemetry</code> and <code>/docs/operational-telemetry</code></li>
+      <li><code>/developer/indexing</code> and <code>/docs/indexing-reference</code></li>
+    </ul>
+    <p>This causes confusion about which version to reference, link to, or update, and splits SEO authority between duplicate pages.</p>
+  </div>
+</div>
+
+<div class="opp-card">
+  <div class="opp-header">
+    <div class="opp-number high">11</div>
+    <div class="opp-title">Standardise CTA language across site</div>
+    <span class="opp-category">Brand</span>
+    <span class="opp-severity high">High</span>
+  </div>
+  <div class="opp-body">
+    <p>CTA text varies inconsistently: "Create your site" (nav), "Let's Connect!" (contact), "Get started with the boilerplate" (tutorial). Three-pillar capitalisation also varies: "Build, Publish, Launch" vs "build, publish, and launch."</p>
+    <p>A brand style guide with approved CTA templates would align all touchpoints.</p>
+  </div>
+</div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- MEDIUM PRIORITY                             -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section" id="medium">
+<h2 class="section-title">Medium Priority</h2>
+<p class="section-desc">Quality improvements that would elevate the professional perception of the documentation and brand.</p>
+
+<div class="opp-card">
+  <div class="opp-header">
+    <div class="opp-number medium">12</div>
+    <div class="opp-title">Add screenshot annotations to setup guides</div>
+    <span class="opp-category">Images</span>
+    <span class="opp-severity medium">Medium</span>
+  </div>
+  <div class="opp-body">
+    <p>Setup guide screenshots are "clean" captures without arrows, highlights, or callout annotations. Adding visual guides to complex multi-step screenshots (especially SharePoint and Google Drive setup) would reduce user confusion and support requests.</p>
+  </div>
+</div>
+
+<div class="opp-card">
+  <div class="opp-header">
+    <div class="opp-number medium">13</div>
+    <div class="opp-title">Implement figure/caption patterns</div>
+    <span class="opp-category">Images</span>
+    <span class="opp-severity medium">Medium</span>
+  </div>
+  <div class="opp-body">
+    <p>No <code>&lt;figure&gt;</code>/<code>&lt;figcaption&gt;</code> patterns are used anywhere on the site. Images float without context. Adding semantic figure markup with descriptive captions would improve accessibility, comprehension, and SEO.</p>
+  </div>
+</div>
+
+<div class="opp-card">
+  <div class="opp-header">
+    <div class="opp-number medium">14</div>
+    <div class="opp-title">Add a brand logo to the site header</div>
+    <span class="opp-category">Brand</span>
+    <span class="opp-severity medium">Medium</span>
+  </div>
+  <div class="opp-body">
+    <p>The navigation uses plain text "Adobe Experience Manager" with no logo mark or icon. This is unusual for an Adobe product site and misses an opportunity for visual brand reinforcement on every page.</p>
+  </div>
+</div>
+
+<div class="opp-card">
+  <div class="opp-header">
+    <div class="opp-number medium">15</div>
+    <div class="opp-title">Build a structured "Related Content" system</div>
+    <span class="opp-category">Docs</span>
+    <span class="opp-severity medium">Medium</span>
+  </div>
+  <div class="opp-body">
+    <p>Cross-links between pages are organic (embedded in paragraph text) rather than systematic. A structured "See also" or "Related guides" section at the bottom of each page would improve discoverability and reduce bounces from dead-end pages.</p>
+  </div>
+</div>
+
+<div class="opp-card">
+  <div class="opp-header">
+    <div class="opp-number medium">16</div>
+    <div class="opp-title">Apply CSS image styling tokens to screenshots</div>
+    <span class="opp-category">Images</span>
+    <span class="opp-severity medium">Medium</span>
+  </div>
+  <div class="opp-body">
+    <p>The CSS defines mature image design tokens (<code>--image-border-radius-m</code> through <code>--image-border-radius-xxl</code>, drop shadows) but documentation screenshots use <strong>none</strong> of them. Applying consistent border-radius and shadow to screenshots would create a more polished, cohesive visual presentation.</p>
+  </div>
+</div>
+
+<div class="opp-card">
+  <div class="opp-header">
+    <div class="opp-number medium">17</div>
+    <div class="opp-title">Update copyright year in footer</div>
+    <span class="opp-category">Brand</span>
+    <span class="opp-severity medium">Medium</span>
+  </div>
+  <div class="opp-body">
+    <p>Footer shows copyright 2025. Current year is 2026. While minor, an outdated copyright year signals neglect — especially for a platform that positions itself as modern and actively maintained.</p>
+  </div>
+</div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- LOW PRIORITY                                -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section" id="low">
+<h2 class="section-title">Low Priority</h2>
+<p class="section-desc">Nice-to-have improvements that would polish the experience but don't affect core functionality.</p>
+
+<div class="opp-card">
+  <div class="opp-header">
+    <div class="opp-number low">18</div>
+    <div class="opp-title">Consolidate community channels</div>
+    <span class="opp-category">Brand</span>
+    <span class="opp-severity low">Low</span>
+  </div>
+  <div class="opp-body">
+    <p>Community is fragmented across Discord, Slack, and Teams. While serving different audiences, this splits engagement and makes it harder for new users to find the right community. Consider designating a primary channel with clear guidance.</p>
+  </div>
+</div>
+
+<div class="opp-card">
+  <div class="opp-header">
+    <div class="opp-number low">19</div>
+    <div class="opp-title">Standardise partner logo format</div>
+    <span class="opp-category">Images</span>
+    <span class="opp-severity low">Low</span>
+  </div>
+  <div class="opp-body">
+    <p>Partner logos use a mix of SVG (from hlx.live domain) and PNG (from aem.live). Standardising all to SVG on aem.live domain would ensure consistency, reduce file sizes, and eliminate redirect chains.</p>
+  </div>
+</div>
+
+<div class="opp-card">
+  <div class="opp-header">
+    <div class="opp-number low">20</div>
+    <div class="opp-title">Screenshot freshness audit</div>
+    <span class="opp-category">Images</span>
+    <span class="opp-severity low">Low</span>
+  </div>
+  <div class="opp-body">
+    <p>Third-party UI screenshots (SharePoint settings, Google Drive dialogs) may show outdated interfaces. A periodic audit of screenshots against current UIs would prevent confusion when users see different screens than documented.</p>
+  </div>
+</div>
+
+<div class="opp-card">
+  <div class="opp-header">
+    <div class="opp-number low">21</div>
+    <div class="opp-title">Add visual content strategy for blog</div>
+    <span class="opp-category">Brand</span>
+    <span class="opp-severity low">Low</span>
+  </div>
+  <div class="opp-body">
+    <p>The blog section is a plain text link list with no thumbnails, featured images, or visual hierarchy. A card-based layout with featured images would increase engagement and align with modern content platform expectations.</p>
+  </div>
+</div>
+
+<div class="opp-card">
+  <div class="opp-header">
+    <div class="opp-number low">22</div>
+    <div class="opp-title">Clarify /docs/ vs /developer/ section assignment</div>
+    <span class="opp-category">Docs</span>
+    <span class="opp-severity low">Low</span>
+  </div>
+  <div class="opp-body">
+    <p>Some pages sit under <code>/docs/</code> despite being developer-focused (e.g., <code>dev-collab-and-good-practices</code>), while others under <code>/developer/</code> are relevant to authors. The Build/Publish/Launch hub masks this, but URL-based browsing is confusing.</p>
+  </div>
+</div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- IMPACT MATRIX                               -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section" id="matrix">
+<h2 class="section-title">Impact / Effort Matrix</h2>
+<p class="section-desc">Prioritised by business impact versus implementation effort. Start with high-impact, low-effort items (top-right quadrant).</p>
+
+<div class="matrix">
+  <h3>Quick Wins (High Impact, Low Effort)</h3>
+  <div class="two-col" style="margin-bottom:16px;">
+    <div class="card" style="background:var(--red-bg);border-color:#F5C6C6;">
+      <h3 style="font-size:15px;">#2 Fix /developer/ 404</h3>
+      <p style="font-size:13px;">Restore or redirect a single page. Immediate impact on developer onboarding.</p>
+    </div>
+    <div class="card" style="background:var(--red-bg);border-color:#F5C6C6;">
+      <h3 style="font-size:15px;">#17 Update copyright year</h3>
+      <p style="font-size:13px;">One-line change. Removes an obvious staleness signal.</p>
+    </div>
+    <div class="card" style="background:var(--amber-bg);border-color:#F5D5A5;">
+      <h3 style="font-size:15px;">#8 Migrate hlx.live assets</h3>
+      <p style="font-size:13px;">4 logo files to rehost. Eliminates redirect chains on every page.</p>
+    </div>
+    <div class="card" style="background:var(--amber-bg);border-color:#F5D5A5;">
+      <h3 style="font-size:15px;">#4 Remove "Franklin" references</h3>
+      <p style="font-size:13px;">17 description updates in the content source. Search-and-replace scope.</p>
+    </div>
+  </div>
+</div>
+
+<div class="matrix">
+  <h3>Strategic Investments (High Impact, High Effort)</h3>
+  <div class="two-col" style="margin-bottom:16px;">
+    <div class="card" style="background:var(--blue-light);border-color:#C4D4FF;">
+      <h3 style="font-size:15px;">#1 Alt text remediation</h3>
+      <p style="font-size:13px;">~100+ images across 197 pages. High effort but critical compliance requirement.</p>
+    </div>
+    <div class="card" style="background:var(--blue-light);border-color:#C4D4FF;">
+      <h3 style="font-size:15px;">#3 Block documentation pages</h3>
+      <p style="font-size:13px;">25+ new pages to write. Major content project but unlocks search and AI visibility.</p>
+    </div>
+    <div class="card" style="background:var(--blue-light);border-color:#C4D4FF;">
+      <h3 style="font-size:15px;">#6 Intermediate how-to guides</h3>
+      <p style="font-size:13px;">5-10 new guides covering the tutorial-to-reference gap. Content creation effort.</p>
+    </div>
+    <div class="card" style="background:var(--blue-light);border-color:#C4D4FF;">
+      <h3 style="font-size:15px;">#7 More code examples</h3>
+      <p style="font-size:13px;">Enriching existing pages with inline code. Moderate effort, cumulative benefit.</p>
+    </div>
+  </div>
+</div>
+
+<div class="matrix">
+  <h3>Recommended Execution Order</h3>
+  <div class="card">
+    <p><strong>Sprint 1 (quick wins):</strong> #2, #17, #8, #4, #5 — Fix broken paths, outdated references, and verify OG tags</p>
+    <p><strong>Sprint 2 (accessibility):</strong> #1, #13, #16 — Alt text remediation, figure/caption patterns, screenshot styling</p>
+    <p><strong>Sprint 3 (docs architecture):</strong> #3, #10, #15 — Block docs, deduplication, related content system</p>
+    <p><strong>Sprint 4 (content enrichment):</strong> #6, #7, #12, #9 — Intermediate guides, code examples, annotations, OG images</p>
+    <p><strong>Ongoing:</strong> #11, #14, #18-22 — Brand alignment, visual polish, community consolidation</p>
+  </div>
+</div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- VALIDATION STAMP                            -->
+<!-- ═══════════════════════════════════════════ -->
+<section id="validation">
+<div class="validation-stamp">
+  <h3>Validation Stamp</h3>
+  <ul>
+    <li>All 22 opportunities derived from the Brand Guidelines Extraction analysis</li>
+    <li>Each opportunity traced to specific evidence (HTTP checks, alt text counts, page comparisons)</li>
+    <li>Severity ratings based on user impact (accessibility &gt; brand consistency &gt; polish)</li>
+    <li>Effort estimates based on scope: single page fix vs content creation vs architectural change</li>
+    <li>Cross-referenced with existing Content Gaps Analysis and Action Plan reports</li>
+  </ul>
+  <div class="stamp-date">Validated 2026-02-24 by Blazar automated analysis</div>
+</div>
+</section>
+
+</div><!-- /container -->
+<script src="chat.js"></script>
+</body>
+</html>

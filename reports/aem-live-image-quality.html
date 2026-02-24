@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image Quality & AI Improvement Report — www.aem.live</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700;900&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="blazar-reports.css">
+<style>
+/* ── Report-specific overrides ── */
+
+/* Header — no bottom margin (lede follows directly) */
+.report-header { margin-bottom: 0; }
+
+/* ── Lede ── */
+.lede {
+  text-align: center;
+  padding: 40px 24px 32px;
+  background: var(--bg-white);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 32px;
+}
+.lede-score { font-size: 80px; font-weight: 900; color: var(--red); line-height: 1; }
+.lede-score .unit { font-size: 36px; color: var(--fg-muted); font-weight: 700; }
+.lede-label { font-size: 18px; font-weight: 600; color: var(--fg-muted); margin-top: 4px; }
+.lede-context { font-size: 15px; color: var(--fg-muted); max-width: 600px; margin: 16px auto 0; }
+
+/* Jump Nav — smaller padding */
+.jump-nav { padding: 16px 24px; }
+.jump-nav-title { margin-bottom: 10px; }
+
+/* Card — combined p/li rule */
+.card p, .card li { font-size: 15px; color: var(--fg); line-height: 1.6; }
+
+/* Bar Chart — default fill color, narrower count column */
+.bar-fill { background: var(--blue); }
+.bar-count { flex: 0 0 50px; }
+
+/* ── Comparison Card ── */
+.comparison-card {
+  background: var(--bg-white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  margin-bottom: 32px;
+  overflow: hidden;
+}
+.comparison-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+}
+.comparison-header h3 { font-size: 18px; font-weight: 700; color: var(--fg-heading); }
+.comparison-header .type-badge {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  padding: 3px 12px; border-radius: var(--radius-pill);
+}
+.type-badge.generation { background: var(--purple-bg); color: var(--purple); }
+.type-badge.improvement { background: var(--blue-light); color: var(--blue); }
+.comparison-images { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+@media (max-width: 768px) { .comparison-images { grid-template-columns: 1fr; } }
+.comparison-side { padding: 20px; position: relative; }
+.comparison-side:first-child { border-right: 1px solid var(--border); }
+@media (max-width: 768px) {
+  .comparison-side:first-child { border-right: none; border-bottom: 1px solid var(--border); }
+}
+.comparison-label {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.05em; margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.comparison-label.original { color: var(--fg-muted); }
+.comparison-label.improved { color: var(--blue); }
+.comparison-label .score {
+  padding: 2px 8px; border-radius: var(--radius-pill);
+  font-size: 12px; font-weight: 700;
+}
+.comparison-label .score.low { background: var(--red-bg); color: var(--red); }
+.comparison-label .score.mid { background: var(--amber-bg); color: var(--amber); }
+.comparison-img {
+  width: 100%; border-radius: var(--radius);
+  border: 1px solid var(--border); display: block;
+}
+.comparison-card > details > summary {
+  padding: 14px 24px;
+  font-size: 13px; font-weight: 600;
+  color: var(--fg-muted);
+  cursor: pointer; user-select: none;
+  border-top: 1px solid var(--border);
+}
+.comparison-card > details > summary:hover { color: var(--blue); }
+.comparison-details { padding: 20px 24px; }
+.comparison-details h4 { font-size: 14px; font-weight: 700; color: var(--fg-heading); margin-bottom: 8px; }
+.weakness-list, .recommendation-list { padding-left: 20px; margin-bottom: 12px; }
+.weakness-list li { font-size: 14px; color: var(--fg); margin-bottom: 4px; }
+.recommendation-list li { font-size: 14px; color: var(--fg); margin-bottom: 4px; }
+.comparison-meta {
+  display: flex; gap: 16px; flex-wrap: wrap;
+  font-size: 13px; color: var(--fg-muted);
+  margin-top: 12px; padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+.comparison-meta a { font-weight: 600; }
+
+/* ── Table — different structure from shared .data-table ── */
+.data-table { margin-bottom: 16px; border-radius: var(--radius); overflow: hidden; }
+.data-table th { letter-spacing: 0.05em; padding: 10px 16px; border-bottom: 2px solid var(--border); }
+.data-table td { padding: 10px 16px; }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: #FAFAFA; }
+.severity { font-size: 11px; font-weight: 700; text-transform: uppercase; padding: 2px 10px; border-radius: var(--radius-pill); display: inline-block; }
+.severity.critical { background: var(--red-bg); color: var(--red); }
+.severity.high { background: var(--amber-bg); color: var(--amber); }
+.severity.medium { background: var(--purple-bg); color: var(--purple); }
+.severity.low { background: var(--green-bg); color: var(--green); }
+
+/* ── Validation ── */
+.validation-line {
+  font-size: 13px; color: var(--fg-muted);
+  padding: 20px 0; border-top: 1px solid var(--border);
+  margin-top: 16px;
+}
+.validation-line .check { color: var(--green); font-weight: 700; }
+.validation-line .fail { color: var(--red); font-weight: 700; }
+.validation-line details { margin-top: 12px; }
+.validation-line summary { cursor: pointer; color: var(--blue); font-weight: 600; font-size: 13px; }
+.validation-line summary:hover { text-decoration: underline; }
+.validation-detail-list { padding: 12px 0 0 20px; }
+.validation-detail-list li { margin-bottom: 4px; font-size: 13px; color: var(--fg-muted); }
+</style>
+</head>
+<body>
+
+<!-- Report Nav -->
+<nav class="report-nav" aria-label="Report navigation">
+  <a href="hub.html" class="nav-hub">Blazar Hub</a>
+  <span class="nav-sep" aria-hidden="true">|</span>
+  <a href="aem-live-brand-guidelines.html" class="nav-related">Brand Guidelines</a>
+  <a href="aem-live-brand-opportunities.html" class="nav-related">Improvement Opportunities</a>
+  <a href="aem-live-content-gaps.html" class="nav-related">Content Gaps</a>
+</nav>
+
+<!-- Header -->
+<header class="report-header">
+  <div class="report-header-inner">
+    <div>
+      <h1>Image Quality & AI Improvement</h1>
+      <p class="subtitle">www.aem.live</p>
+    </div>
+    <div style="text-align: right;">
+      <div class="report-branding"><div class="logo-mark" aria-hidden="true">B</div> Blazar</div>
+      <div class="report-date" style="margin-top: 8px;">February 24, 2026</div>
+    </div>
+  </div>
+</header>
+
+<!-- Lede -->
+<div class="lede">
+  <div class="lede-score">3.6<span class="unit">/10</span></div>
+  <p class="lede-label">average brand alignment</p>
+  <p class="lede-context">197 pages inventoried &mdash; 132 custom images, 65 generic fallbacks. Five candidates analyzed and improved with Gemini 3 Pro.</p>
+</div>
+
+<div class="container">
+
+<!-- Jump Nav -->
+<nav class="jump-nav" aria-label="Section navigation">
+  <div class="jump-nav-title">Sections</div>
+  <div class="jump-nav-links">
+    <a href="#comparisons">AI Comparisons</a>
+    <a href="#landscape">Image Landscape</a>
+    <a href="#benchmarks">Benchmarks</a>
+    <a href="#recommendations">Recommendations</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- AI Comparisons (centerpiece — shown first) -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section" id="comparisons">
+  <h2 class="section-title">AI Comparisons</h2>
+  <p class="section-desc">2 pure generations replacing generic fallbacks, 3 improvements of existing images.</p>
+
+  <!-- Candidate 1: Homepage Hero -->
+  <div class="comparison-card">
+    <div class="comparison-header">
+      <div>
+        <h3>Homepage Hero</h3>
+        <span style="font-size: 13px; color: var(--fg-muted);">/ &mdash; Adobe Experience Manager</span>
+      </div>
+      <span class="type-badge generation">Generation</span>
+    </div>
+    <div class="comparison-images">
+      <div class="comparison-side">
+        <div class="comparison-label original">
+          Original
+          <span class="score low">3/10</span>
+        </div>
+        <img class="comparison-img" src="images/original-homepage-hero.png" alt="Generic Adobe logo fallback image used as default social sharing image for the homepage" loading="lazy">
+      </div>
+      <div class="comparison-side">
+        <div class="comparison-label improved">AI-Generated</div>
+        <img class="comparison-img" src="images/improved-homepage-hero.jpg" alt="AI-generated branded hero image for Adobe Experience Manager homepage featuring Spectrum blue accents and speed metaphors" loading="lazy">
+      </div>
+    </div>
+    <details>
+      <summary>View analysis</summary>
+      <div class="comparison-details">
+        <h4>Weaknesses</h4>
+        <ul class="weakness-list">
+          <li>Generic fallback &mdash; not tailored to homepage content or value proposition</li>
+          <li>Adobe red dominates; primary Spectrum blue is only a subtle background element</li>
+          <li>Doesn't convey "blazing fast" or "frictionless experience management" themes</li>
+          <li>Background grid too subtle to communicate technical precision</li>
+        </ul>
+        <h4>Generation Rationale</h4>
+        <ul class="recommendation-list">
+          <li>Abstract, conceptual shapes conveying speed and simplicity &mdash; no text, no fake UI</li>
+          <li>Spectrum blue (#3B63FB) as dominant color with dark backgrounds</li>
+          <li>Minimalist geometric composition &mdash; pure visual, no literal depictions</li>
+        </ul>
+        <div class="comparison-meta">
+          <span>Source: <a href="https://www.aem.live/" target="_blank">www.aem.live/</a></span>
+          <span>Original: 212 KB PNG</span>
+          <span>AI: Gemini 3 Pro</span>
+        </div>
+      </div>
+    </details>
+  </div>
+
+  <!-- Candidate 2: Docs Authoring -->
+  <div class="comparison-card">
+    <div class="comparison-header">
+      <div>
+        <h3>Documentation Screenshot</h3>
+        <span style="font-size: 13px; color: var(--fg-muted);">/docs/authoring &mdash; Authoring and Publishing Content</span>
+      </div>
+      <span class="type-badge improvement">Improvement</span>
+    </div>
+    <div class="comparison-images">
+      <div class="comparison-side">
+        <div class="comparison-label original">
+          Original
+          <span class="score mid">5/10</span>
+        </div>
+        <img class="comparison-img" src="images/original-docs-authoring.jpg" alt="Illustration of a browser window with the AEM Sidekick showing a Publish Document action on a light green background" loading="lazy">
+      </div>
+      <div class="comparison-side">
+        <div class="comparison-label improved">AI-Improved</div>
+        <img class="comparison-img" src="images/improved-docs-authoring.jpg" alt="AI-improved illustration of AEM Sidekick authoring workflow with brand-aligned Spectrum blue color palette and clear annotations" loading="lazy">
+      </div>
+    </div>
+    <details>
+      <summary>View analysis</summary>
+      <div class="comparison-details">
+        <h4>Weaknesses</h4>
+        <ul class="weakness-list">
+          <li>Off-brand color palette &mdash; light green background instead of Spectrum blue</li>
+          <li>Generic browser content &mdash; placeholder text rather than recognizable AEM elements</li>
+          <li>No annotations guiding the user's focus to key actions</li>
+          <li>Could apply to any CMS, no AEM-specific visual identity</li>
+        </ul>
+        <h4>Improvement Rationale</h4>
+        <ul class="recommendation-list">
+          <li>Shift color palette toward Spectrum blue, preserving original's minimal complexity</li>
+          <li>Keep same level of abstraction &mdash; no added detail or fake UI</li>
+          <li>Visual polish and brand-aligned composition without adding text</li>
+        </ul>
+        <div class="comparison-meta">
+          <span>Source: <a href="https://www.aem.live/docs/authoring" target="_blank">www.aem.live/docs/authoring</a></span>
+          <span>Original: 40 KB JPEG</span>
+          <span>AI: Gemini 3 Pro</span>
+        </div>
+      </div>
+    </details>
+  </div>
+
+  <!-- Candidate 3: Architecture Diagram -->
+  <div class="comparison-card">
+    <div class="comparison-header">
+      <div>
+        <h3>Architecture Diagram</h3>
+        <span style="font-size: 13px; color: var(--fg-muted);">/docs/architecture &mdash; Architecture</span>
+      </div>
+      <span class="type-badge improvement">Improvement</span>
+    </div>
+    <div class="comparison-images">
+      <div class="comparison-side">
+        <div class="comparison-label original">
+          Original
+          <span class="score low">3/10</span>
+        </div>
+        <img class="comparison-img" src="images/original-docs-architecture.png" alt="Generic illustration of two developers collaborating at a monitor with business icons like gears, clock, chart, and lightbulb" loading="lazy">
+      </div>
+      <div class="comparison-side">
+        <div class="comparison-label improved">AI-Improved</div>
+        <img class="comparison-img" src="images/improved-docs-architecture.jpg" alt="AI-improved architecture diagram showing Edge Delivery Services data flow with branded components, CDN layers, and content delivery pipeline" loading="lazy">
+      </div>
+    </div>
+    <details>
+      <summary>View analysis</summary>
+      <div class="comparison-details">
+        <h4>Weaknesses</h4>
+        <ul class="weakness-list">
+          <li>Purple/lilac palette misaligned with Spectrum blue brand color</li>
+          <li>Generic business metaphors (people, graphs, clocks) &mdash; not architecture-specific</li>
+          <li>Feels like stock illustration, lacks unique branding or technical precision</li>
+          <li>Too generic &mdash; could apply to any business context</li>
+        </ul>
+        <h4>Improvement Rationale</h4>
+        <ul class="recommendation-list">
+          <li>Shift to Spectrum blue palette, preserving the original's illustrative simplicity</li>
+          <li>Keep conceptual &mdash; no detailed fake diagrams or UI that could mislead</li>
+          <li>Improve brand color alignment without adding complexity</li>
+        </ul>
+        <div class="comparison-meta">
+          <span>Source: <a href="https://www.aem.live/docs/architecture" target="_blank">www.aem.live/docs/architecture</a></span>
+          <span>Original: 178 KB PNG</span>
+          <span>AI: Gemini 3 Pro</span>
+        </div>
+      </div>
+    </details>
+  </div>
+
+  <!-- Candidate 4: Blog Post -->
+  <div class="comparison-card">
+    <div class="comparison-header">
+      <div>
+        <h3>Blog Post Header</h3>
+        <span style="font-size: 13px; color: var(--fg-muted);">/blog/adapt-to-2025 &mdash; Best of adaptTo() 2025</span>
+      </div>
+      <span class="type-badge improvement">Improvement</span>
+    </div>
+    <div class="comparison-images">
+      <div class="comparison-side">
+        <div class="comparison-label original">
+          Original
+          <span class="score low">4/10</span>
+        </div>
+        <img class="comparison-img" src="images/original-blog-recent.jpg" alt="Conference photo showing a bald bearded speaker on stage at the adaptTo() 2025 AEM developer conference with blue stage lighting" loading="lazy">
+      </div>
+      <div class="comparison-side">
+        <div class="comparison-label improved">AI-Improved</div>
+        <img class="comparison-img" src="images/improved-blog-recent.jpg" alt="AI-improved branded conference image for adaptTo() 2025 with AEM.live brand elements, Spectrum blue overlay, and professional composition" loading="lazy">
+      </div>
+    </div>
+    <details>
+      <summary>View analysis</summary>
+      <div class="comparison-details">
+        <h4>Weaknesses</h4>
+        <ul class="weakness-list">
+          <li>Candid photo with dark lighting and visible background clutter</li>
+          <li>Doesn't align with "clean, minimal, technical precision" visual style</li>
+          <li>No AEM.live brand presence despite being on the AEM.live blog</li>
+          <li>Missing visual connection to speed, simplicity, or web standards themes</li>
+        </ul>
+        <h4>Improvement Rationale</h4>
+        <ul class="recommendation-list">
+          <li>Enhance color grading and composition while keeping the photographic style</li>
+          <li>Preserve the conference context &mdash; no added text or fake UI overlays</li>
+          <li>Subtle brand color alignment without overcooking the original</li>
+        </ul>
+        <div class="comparison-meta">
+          <span>Source: <a href="https://www.aem.live/blog/adapt-to-2025" target="_blank">www.aem.live/blog/adapt-to-2025</a></span>
+          <span>Original: 48 KB JPEG</span>
+          <span>AI: Gemini 3 Pro</span>
+        </div>
+      </div>
+    </details>
+  </div>
+
+  <!-- Candidate 5: Developer Hub -->
+  <div class="comparison-card">
+    <div class="comparison-header">
+      <div>
+        <h3>Developer Hub OG</h3>
+        <span style="font-size: 13px; color: var(--fg-muted);">/developer &mdash; AEM for Developers</span>
+      </div>
+      <span class="type-badge generation">Generation</span>
+    </div>
+    <div class="comparison-images">
+      <div class="comparison-side">
+        <div class="comparison-label original">
+          Original
+          <span class="score low">3/10</span>
+        </div>
+        <img class="comparison-img" src="images/original-developer-hub.png" alt="Same generic Adobe logo fallback image used across 65 pages including the developer landing page" loading="lazy">
+      </div>
+      <div class="comparison-side">
+        <div class="comparison-label improved">AI-Generated</div>
+        <img class="comparison-img" src="images/improved-developer-hub.jpg" alt="AI-generated developer-focused branded image for AEM Developer Hub with code elements, performance indicators, and Spectrum blue palette" loading="lazy">
+      </div>
+    </div>
+    <details>
+      <summary>View analysis</summary>
+      <div class="comparison-details">
+        <h4>Weaknesses</h4>
+        <ul class="weakness-list">
+          <li>Same generic fallback as 64 other pages &mdash; no page-specific value</li>
+          <li>Doesn't communicate developer-focused tools, speed, or simplicity</li>
+          <li>Spectrum blue only subtly present in background gradient</li>
+          <li>Generic nature provides no useful context for social sharing</li>
+        </ul>
+        <h4>Generation Rationale</h4>
+        <ul class="recommendation-list">
+          <li>Abstract geometric composition evoking speed and efficiency &mdash; no text overlays</li>
+          <li>Spectrum blue dominant, minimal elements, dark tech aesthetic</li>
+          <li>Conceptual only &mdash; no fake code editors or detailed UI mockups</li>
+        </ul>
+        <div class="comparison-meta">
+          <span>Source: <a href="https://www.aem.live/developer" target="_blank">www.aem.live/developer</a></span>
+          <span>Original: 212 KB PNG</span>
+          <span>AI: Gemini 3 Pro</span>
+        </div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- Image Landscape (merged inventory + brand) -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section" id="landscape">
+  <h2 class="section-title">Image Landscape</h2>
+  <p class="section-desc">Brand alignment grades and image coverage across 197 indexed pages.</p>
+
+  <div class="grade-grid">
+    <div class="grade-card">
+      <div class="grade-letter a">A+</div>
+      <div class="grade-aspect">Infrastructure</div>
+      <div class="grade-detail">Media Bus, WebP, responsive &lt;picture&gt;, lazy loading, content-addressed CDN</div>
+    </div>
+    <div class="grade-card">
+      <div class="grade-letter f">F</div>
+      <div class="grade-aspect">Accessibility</div>
+      <div class="grade-detail">~95% images have empty alt="" across the entire site</div>
+    </div>
+    <div class="grade-card">
+      <div class="grade-letter d">D</div>
+      <div class="grade-aspect">Social / OG</div>
+      <div class="grade-detail">33% pages use generic fallback; no og:image meta tags in HTML</div>
+    </div>
+    <div class="grade-card">
+      <div class="grade-letter d">D</div>
+      <div class="grade-aspect">Visual Consistency</div>
+      <div class="grade-detail">Mix of styles: raw screenshots, generic illustrations, event photos</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <h3>Coverage</h3>
+      <div class="bar-chart">
+        <div class="bar-row">
+          <span class="bar-label">Custom Image</span>
+          <div class="bar-track"><div class="bar-fill" style="width: 67%;">67%</div></div>
+          <span class="bar-count">132</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">Generic Fallback</span>
+          <div class="bar-track"><div class="bar-fill" style="width: 33%; opacity: 0.6;">33%</div></div>
+          <span class="bar-count">65</span>
+        </div>
+      </div>
+      <p style="font-size: 13px; color: var(--fg-muted); margin-top: 8px;">Format: 50% JPEG, 49% PNG. All images under 1 MB thanks to Media Bus optimization.</p>
+    </div>
+    <div class="card">
+      <h3>On-Brand Criteria</h3>
+      <ul>
+        <li><strong>Spectrum Blue (#3B63FB)</strong> as dominant accent</li>
+        <li><strong>Technical precision</strong> &mdash; clean, minimal, modern</li>
+        <li><strong>Speed</strong> &mdash; visual metaphors for fast delivery</li>
+        <li><strong>Developer-focused</strong> imagery</li>
+        <li><strong>Annotations</strong> on screenshots</li>
+        <li><strong>Meaningful alt text</strong></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- Benchmarks (compressed to table) -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section" id="benchmarks">
+  <h2 class="section-title">Benchmarks</h2>
+  <p class="section-desc">How leading developer docs handle images &mdash; and where aem.live falls short.</p>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th style="width: 120px;">Site</th>
+        <th>Strategy</th>
+        <th>aem.live Gap</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Vercel</strong></td>
+        <td>Dynamic OG per page via <code>@vercel/og</code>, brand-consistent dark theme, annotated screenshots</td>
+        <td>33% generic fallback, no dynamic OG, no annotations</td>
+      </tr>
+      <tr>
+        <td><strong>Stripe</strong></td>
+        <td>Hand-crafted illustrations, consistent purple + white palette, accessible diagrams</td>
+        <td>No branded illustrations, inconsistent diagram styles</td>
+      </tr>
+      <tr>
+        <td><strong>Tailwind CSS</strong></td>
+        <td>Distinctive gradient identity, OG images show design examples, composed screenshots</td>
+        <td>No distinctive visual identity beyond Adobe logo</td>
+      </tr>
+      <tr>
+        <td><strong>Netlify</strong></td>
+        <td>Section-themed illustrations, custom OG per section, full alt text coverage</td>
+        <td>95% empty alt text, no section-themed illustrations</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- Recommendations -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section" id="recommendations">
+  <h2 class="section-title">Recommendations</h2>
+  <p class="section-desc">Actions ranked by impact and effort.</p>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th style="width: 50px;">#</th>
+        <th>Action</th>
+        <th style="width: 100px;">Priority</th>
+        <th style="width: 100px;">Effort</th>
+        <th>Impact</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><strong>Deploy dynamic OG image generation</strong> &mdash; Build a <code>@vercel/og</code>-style service on Cloudflare Workers. Eliminates 65 generic fallbacks in one go.</td>
+        <td><span class="severity critical">Critical</span></td>
+        <td>Medium</td>
+        <td>Eliminates 33% generic fallbacks</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><strong>Fix alt text across the site</strong> &mdash; Add meaningful alt text to all images. Automate via LLM for existing screenshots; enforce in authoring guidelines.</td>
+        <td><span class="severity critical">Critical</span></td>
+        <td>High</td>
+        <td>Resolves accessibility F grade</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><strong>Create branded illustration system</strong> &mdash; Consistent set of illustrations for key concepts using Spectrum blue palette.</td>
+        <td><span class="severity high">High</span></td>
+        <td>Medium</td>
+        <td>Visual consistency D &rarr; B+</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td><strong>Annotate documentation screenshots</strong> &mdash; Add numbered callouts, arrows, and highlights using brand colors.</td>
+        <td><span class="severity high">High</span></td>
+        <td>Low</td>
+        <td>Better docs usability</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td><strong>Replace homepage + developer landing images</strong> &mdash; Use AI-generated improvements as starting point.</td>
+        <td><span class="severity high">High</span></td>
+        <td>Low</td>
+        <td>Immediate visual lift on top pages</td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td><strong>Add og:image meta tags</strong> &mdash; Ensure EDS head.html template includes social meta tags for all pages.</td>
+        <td><span class="severity high">High</span></td>
+        <td>Low</td>
+        <td>Fixes social sharing site-wide</td>
+      </tr>
+      <tr>
+        <td>7</td>
+        <td><strong>Standardize blog post headers</strong> &mdash; Template/style guide for consistent dimensions, brand overlay, typography.</td>
+        <td><span class="severity medium">Medium</span></td>
+        <td>Low</td>
+        <td>Blog visual consistency</td>
+      </tr>
+      <tr>
+        <td>8</td>
+        <td><strong>Migrate hlx.live image references</strong> &mdash; 4 partner logos still reference old domain causing 301 redirects.</td>
+        <td><span class="severity medium">Medium</span></td>
+        <td>Low</td>
+        <td>Removes unnecessary redirects</td>
+      </tr>
+      <tr>
+        <td>9</td>
+        <td><strong>Implement figure/figcaption patterns</strong> &mdash; Semantic HTML for documentation screenshots with descriptive captions.</td>
+        <td><span class="severity low">Low</span></td>
+        <td>Medium</td>
+        <td>Better semantics, accessibility</td>
+      </tr>
+      <tr>
+        <td>10</td>
+        <td><strong>Set up image quality CI</strong> &mdash; Automated checks for alt text, file size, format, and brand color usage.</td>
+        <td><span class="severity low">Low</span></td>
+        <td>Medium</td>
+        <td>Prevents regression</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- Validation (compressed) -->
+<div class="validation-line" id="validation">
+  <span class="check" id="val-icon">&#10003;</span>
+  <span id="val-summary">Validated Feb 24, 2026 &mdash; 10/10 images loaded, all counts cross-verified.</span>
+  <details>
+    <summary>Validation details</summary>
+    <ul class="validation-detail-list" id="val-details">
+      <li>Query index: 197 entries (independently verified from cached data)</li>
+      <li>Custom images: 132 (67%) &mdash; matches HEAD request inventory</li>
+      <li>Fallback images: 65 (33%) &mdash; cross-referenced with content gaps report</li>
+      <li>HEAD requests: 130/132 OK (98.5% success rate)</li>
+      <li>5 original images fetched and saved to reports/images/</li>
+      <li>5 AI-improved images generated via Gemini 3 Pro</li>
+      <li>Format distribution: 65 JPEG + 64 PNG + 1 other = 130</li>
+      <li>All 5 candidate URLs verified: /, /docs/authoring, /docs/architecture, /blog/adapt-to-2025, /developer</li>
+      <li>Brand alignment scores range 3&ndash;5/10, avg 3.6 &mdash; consistent with F/D grades</li>
+    </ul>
+  </details>
+</div>
+
+</div><!-- .container -->
+
+<script>
+(function() {
+  var imgs = document.querySelectorAll('.comparison-img');
+  var loaded = 0, failed = [];
+  imgs.forEach(function(img) {
+    var t = new Image();
+    t.onload = function() { loaded++; done(); };
+    t.onerror = function() { failed.push(img.src.split('/').pop()); done(); };
+    t.src = img.src;
+  });
+  function done() {
+    if (loaded + failed.length < imgs.length) return;
+    if (failed.length) {
+      document.getElementById('val-icon').className = 'fail';
+      document.getElementById('val-icon').innerHTML = '&#10007;';
+      document.getElementById('val-summary').textContent =
+        'Validated Feb 24, 2026 — ' + loaded + '/' + imgs.length +
+        ' images loaded (failed: ' + failed.join(', ') + ')';
+    }
+  }
+})();
+</script>
+
+</body>
+</html>

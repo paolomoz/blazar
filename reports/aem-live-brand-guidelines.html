@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brand Guidelines Extraction — www.aem.live</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700;900&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="blazar-reports.css">
+<style>
+/* ── Quote Block Overrides ── */
+.quote-block { padding: 20px 24px; }
+.quote-block.hero { border-left-color: var(--purple); background: var(--purple-bg); }
+.quote-block.secondary { border-left-color: var(--cyan); background: var(--cyan-bg); }
+.quote-text { font-size: 18px; font-weight: 700; line-height: 1.4; }
+.quote-text.sm { font-size: 15px; font-weight: 600; }
+.quote-source { margin-top: 8px; }
+.quote-tag { display: inline-block; padding: 2px 10px; border-radius: var(--radius-pill); font-size: 11px; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; margin-left: 8px; }
+
+/* ── Card Overrides ── */
+.card p, .card li { font-size: 15px; color: var(--fg); line-height: 1.6; }
+.card .badge { margin-left: 8px; }
+
+/* ── Tone Spectrum ── */
+.tone-spectrum { background: var(--bg-white); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 16px; box-shadow: var(--shadow-card); }
+.tone-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.tone-row:last-child { margin-bottom: 0; }
+.tone-label-left, .tone-label-right { font-size: 12px; font-weight: 600; color: var(--fg-muted); width: 100px; text-align: center; }
+.tone-track { flex: 1; height: 10px; background: linear-gradient(to right, var(--blue-light), var(--bg), var(--purple-bg)); border-radius: 5px; position: relative; }
+.tone-marker { position: absolute; top: -3px; width: 16px; height: 16px; border-radius: 50%; background: var(--blue); border: 2px solid var(--bg-white); box-shadow: 0 1px 4px rgba(0,0,0,0.2); transform: translateX(-50%); }
+
+/* ── Terminology ── */
+.term-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin-bottom: 16px; }
+.term-item { background: var(--bg-white); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 16px; box-shadow: var(--shadow-card); }
+.term-do { font-family: var(--font-mono); font-size: 14px; font-weight: 500; color: var(--green); }
+.term-dont { font-family: var(--font-mono); font-size: 13px; color: var(--red); text-decoration: line-through; margin-top: 2px; }
+.term-note { font-size: 12px; color: var(--fg-muted); margin-top: 4px; }
+
+/* ── Nav Tree ── */
+.nav-tree { background: var(--bg-white); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow-card); margin-bottom: 16px; }
+.nav-tree h4 { font-size: 14px; font-weight: 700; color: var(--fg-heading); margin-bottom: 12px; }
+.pillar-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+@media (max-width: 768px) { .pillar-grid { grid-template-columns: 1fr; } }
+.pillar { border-radius: var(--radius); padding: 16px; }
+.pillar.build { background: var(--blue-light); border: 1px solid #C4D4FF; }
+.pillar.publish { background: var(--green-bg); border: 1px solid #B4E6CD; }
+.pillar.launch { background: var(--purple-bg); border: 1px solid #D4C8FF; }
+.pillar h5 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+.pillar ul { list-style: none; padding: 0; }
+.pillar li { font-size: 13px; padding: 3px 0; color: var(--fg); }
+.pillar li::before { content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 8px; background: currentColor; opacity: 0.4; }
+
+/* ── Color Swatches ── */
+.color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin-bottom: 16px; }
+.swatch { background: var(--bg-white); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-card); }
+.swatch-block { height: 56px; }
+.swatch-info { padding: 8px 12px; }
+.swatch-name { font-size: 12px; font-weight: 700; color: var(--fg-heading); }
+.swatch-hex { font-size: 11px; font-family: var(--font-mono); color: var(--fg-muted); }
+
+/* ── Table Overrides ── */
+.data-table { margin-bottom: 16px; border-radius: var(--radius); overflow: hidden; }
+.data-table th { letter-spacing: 0.05em; padding: 10px 16px; border-bottom: 2px solid var(--border); }
+.data-table td { padding: 10px 16px; }
+.data-table tr:hover td { background: #FAFAFA; }
+.data-table code { font-family: var(--font-mono); font-size: 13px; background: var(--bg); padding: 2px 6px; border-radius: 3px; }
+.severity { font-size: 11px; font-weight: 700; text-transform: uppercase; padding: 2px 10px; border-radius: var(--radius-pill); display: inline-block; }
+.severity.critical { background: var(--red-bg); color: var(--red); }
+.severity.high { background: var(--amber-bg); color: var(--amber); }
+.severity.medium { background: var(--purple-bg); color: var(--purple); }
+.severity.low { background: var(--green-bg); color: var(--green); }
+
+/* ── Image Grades Override ── */
+.grade-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+
+/* ── Bar Chart Overrides ── */
+.bar-label { flex: 0 0 160px; }
+.bar-count { flex: 0 0 50px; }
+</style>
+</head>
+<body>
+
+<!-- ── Report Nav ── -->
+<nav class="report-nav" aria-label="Report navigation">
+  <a href="hub.html" class="nav-hub">Blazar Hub</a>
+  <span class="nav-sep">/</span>
+  <span style="color:var(--fg);">Brand Guidelines</span>
+  <span class="nav-sep">|</span>
+  <a href="aem-live-brand-opportunities.html" class="nav-related">Improvement Opportunities</a>
+  <a href="aem-live-image-quality.html" class="nav-related">Image Quality & AI</a>
+  <a href="aem-live-content-gaps.html" class="nav-related">Content Gaps</a>
+  <a href="aem-live-action-plan.html" class="nav-related">Action Plan</a>
+</nav>
+
+<!-- ── Header ── -->
+<header class="report-header">
+  <div class="report-header-inner">
+    <div>
+      <h1>Brand Guidelines Extraction</h1>
+      <p class="subtitle">www.aem.live — Tone, Structure, Documentation Logic &amp; Image Quality</p>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div class="report-branding"><div class="logo-mark">B</div> Blazar</div>
+      <span class="report-date">2026-02-24</span>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+<!-- ── Jump Nav ── -->
+<nav class="jump-nav" aria-label="Section navigation">
+  <div class="jump-nav-title">Sections</div>
+  <ul class="jump-nav-links">
+    <li><a href="#positioning">Brand Positioning</a></li>
+    <li><a href="#tone">Tone of Voice</a></li>
+    <li><a href="#personality">Personality Traits</a></li>
+    <li><a href="#terminology">Terminology</a></li>
+    <li><a href="#structure">Documentation Structure</a></li>
+    <li><a href="#doc-patterns">Documentation Patterns</a></li>
+    <li><a href="#images">Image Quality</a></li>
+    <li><a href="#visual-identity">Visual Identity</a></li>
+    <li><a href="#validation">Validation</a></li>
+  </ul>
+</nav>
+
+<!-- ── Summary Stats ── -->
+<div class="summary-grid">
+  <div class="stat-card accent">
+    <div class="stat-value">197</div>
+    <div class="stat-label">Indexed Pages</div>
+  </div>
+  <div class="stat-card info">
+    <div class="stat-value">10</div>
+    <div class="stat-label">Pages Analysed In Depth</div>
+  </div>
+  <div class="stat-card positive">
+    <div class="stat-value">42</div>
+    <div class="stat-label">Evidence Quotes</div>
+  </div>
+  <div class="stat-card warning">
+    <div class="stat-value">6</div>
+    <div class="stat-label">Brand Traits Identified</div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 1. BRAND POSITIONING                        -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section" id="positioning">
+<h2 class="section-title">1. Brand Positioning</h2>
+<p class="section-desc">AEM Edge Delivery Services positions itself around four pillars. Every marketing message, testimonial, and documentation page reinforces these themes.</p>
+
+<div class="two-col">
+  <div class="card">
+    <h3>Performance-First CMS <span class="badge" style="background:var(--blue-light);color:var(--blue);">Primary Pillar</span></h3>
+    <p>Speed dominates the brand. Lighthouse 100 appears in <strong>every customer testimonial</strong>. Performance is treated not as a feature but as a moral standard — the brand literally calls it "keeping it 100."</p>
+  </div>
+  <div class="card">
+    <h3>Familiar Tools, Not Replacements <span class="badge" style="background:var(--green-bg);color:var(--green);">Differentiator</span></h3>
+    <p>Authors use Word/Google Docs. Developers use GitHub. CDN is BYO. The platform integrates rather than replaces — "use the technology you already have."</p>
+  </div>
+  <div class="card">
+    <h3>Minimalism Philosophy <span class="badge" style="background:var(--purple-bg);color:var(--purple);">Identity</span></h3>
+    <p>Anti-complexity, anti-bloat. Explicitly rejects categories: not an SSG, not a headless CMS. "Everything modern web development needs, and not a single bit more."</p>
+  </div>
+  <div class="card">
+    <h3>Enterprise-Grade Simplicity <span class="badge" style="background:var(--amber-bg);color:var(--amber);">Paradox</span></h3>
+    <p>Balances enterprise credibility (PGA Tour, global CDN) with startup-like simplicity (10-20 minute setup, CLI-first, Discord community).</p>
+  </div>
+</div>
+
+<h3 style="font-size:17px;font-weight:700;color:var(--fg-heading);margin:24px 0 12px;">Hero Headlines</h3>
+
+<div class="quote-block hero">
+  <div class="quote-text">"Create a website, seriously fast."</div>
+  <div class="quote-source">Homepage hero H1 — core brand promise</div>
+</div>
+<div class="quote-block secondary">
+  <div class="quote-text">"Adobe Experience Manager now integrates the tech you already own, know, and love."</div>
+  <div class="quote-source">Homepage subtitle — integration positioning</div>
+</div>
+<div class="quote-block">
+  <div class="quote-text">"Everything modern web development needs, and not a single bit more."</div>
+  <div class="quote-source">Homepage section — minimalism philosophy</div>
+</div>
+<div class="quote-block warm">
+  <div class="quote-text">"A CMS that gets out of the way gets your content on the way."</div>
+  <div class="quote-source">Homepage section — authoring philosophy (wordplay)</div>
+</div>
+
+<h3 style="font-size:17px;font-weight:700;color:var(--fg-heading);margin:24px 0 12px;">Customer Testimonials</h3>
+<p style="font-size:14px;color:var(--fg-muted);margin-bottom:16px;">Pattern: Lighthouse 100 appears in every testimonial. Speed is the universal proof point.</p>
+
+<div class="three-col">
+  <div class="card">
+    <h3>PGA Tour</h3>
+    <p style="font-style:italic;font-size:14px;">"Adobe made it easy for us to launch with a Lighthouse Score of 100, something nearly unheard of for professional sites."</p>
+    <p style="font-size:13px;color:var(--fg-muted);margin-top:8px;">Scott Gutterman, SVP Digital Operations</p>
+    <p style="font-size:13px;margin-top:4px;"><strong>100</strong> Lighthouse &middot; <strong>50x</strong> Peak Traffic &middot; <strong>12+</strong> Sites</p>
+  </div>
+  <div class="card">
+    <h3>Airlessco / Graco</h3>
+    <p style="font-style:italic;font-size:14px;">"Adobe Experience Manager has been a game-changer for our website."</p>
+    <p style="font-size:13px;color:var(--fg-muted);margin-top:8px;">Geoff Angell, Digital Strategy Manager</p>
+    <p style="font-size:13px;margin-top:4px;"><strong>100</strong> Lighthouse &middot; <strong>8</strong> Languages &middot; <strong>10</strong> Custom Blocks</p>
+  </div>
+  <div class="card">
+    <h3>ThinkingBox</h3>
+    <p style="font-style:italic;font-size:14px;">"With AEM we were able to spin up a critical site in a few weeks and get our new division's story to market effectively."</p>
+    <p style="font-size:13px;color:var(--fg-muted);margin-top:8px;">Corey Hankey, Managing Partner</p>
+    <p style="font-size:13px;margin-top:4px;"><strong>100</strong> Lighthouse &middot; <strong>20+</strong> Blocks &middot; <strong>4+</strong> Case Studies</p>
+  </div>
+</div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 2. TONE OF VOICE                            -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section" id="tone">
+<h2 class="section-title">2. Tone of Voice</h2>
+<p class="section-desc">The brand voice sits at specific positions on seven key spectrums. It shifts depending on context: marketing pages are more aspirational, documentation is peer-like and educational.</p>
+
+<div class="tone-spectrum">
+  <div class="tone-row">
+    <span class="tone-label-left">Casual</span>
+    <div class="tone-track"><div class="tone-marker" style="left:65%"></div></div>
+    <span class="tone-label-right">Formal</span>
+  </div>
+  <div class="tone-row">
+    <span class="tone-label-left">Simple</span>
+    <div class="tone-track"><div class="tone-marker" style="left:72%"></div></div>
+    <span class="tone-label-right">Technical</span>
+  </div>
+  <div class="tone-row">
+    <span class="tone-label-left">Hedging</span>
+    <div class="tone-track"><div class="tone-marker" style="left:85%"></div></div>
+    <span class="tone-label-right">Assertive</span>
+  </div>
+  <div class="tone-row">
+    <span class="tone-label-left">Product-centric</span>
+    <div class="tone-track"><div class="tone-marker" style="left:60%"></div></div>
+    <span class="tone-label-right">User-centric</span>
+  </div>
+  <div class="tone-row">
+    <span class="tone-label-left">Abstract</span>
+    <div class="tone-track"><div class="tone-marker" style="left:78%"></div></div>
+    <span class="tone-label-right">Concrete</span>
+  </div>
+  <div class="tone-row">
+    <span class="tone-label-left">Reserved</span>
+    <div class="tone-track"><div class="tone-marker" style="left:55%"></div></div>
+    <span class="tone-label-right">Opinionated</span>
+  </div>
+  <div class="tone-row">
+    <span class="tone-label-left">Salesy</span>
+    <div class="tone-track"><div class="tone-marker" style="left:82%"></div></div>
+    <span class="tone-label-right">Educational</span>
+  </div>
+</div>
+
+<h3 style="font-size:17px;font-weight:700;color:var(--fg-heading);margin:24px 0 12px;">Voice Shifts by Context</h3>
+<div class="three-col">
+  <div class="card" style="border-top:3px solid var(--blue);">
+    <h3>Homepage</h3>
+    <p><strong>Aspirational, outcome-focused.</strong> Speaks to decision-makers. Bold claims, short sentences, benefit-led headlines.</p>
+  </div>
+  <div class="card" style="border-top:3px solid var(--green);">
+    <h3>Documentation Hub</h3>
+    <p><strong>Supportive, action-oriented.</strong> Speaks to practitioners. "Helpful guides for your journey" — journey metaphor, empathetic framing.</p>
+  </div>
+  <div class="card" style="border-top:3px solid var(--purple);">
+    <h3>Developer Docs</h3>
+    <p><strong>Peer-like, celebratory.</strong> Speaks to developers in implementation mode. "That's it, you made it! Congrats" — acknowledges effort.</p>
+  </div>
+</div>
+
+<h3 style="font-size:17px;font-weight:700;color:var(--fg-heading);margin:24px 0 12px;">CTA Patterns</h3>
+<p style="font-size:14px;color:var(--fg-muted);margin-bottom:12px;">Five distinct CTA types — notably, zero "Sign up" / "Buy now" / "Get a demo" language in the documentation.</p>
+<div class="two-col">
+  <div class="card">
+    <h3>Soft Educational</h3>
+    <p>"See the document... for more information" — guides rather than pushes.</p>
+  </div>
+  <div class="card">
+    <h3>Imperative Operational</h3>
+    <p>"Make sure," "Validate," "Check" — direct instructions for actions to take.</p>
+  </div>
+  <div class="card">
+    <h3>Community / Human</h3>
+    <p>"Connect on Discord" — warm, community-first engagement.</p>
+  </div>
+  <div class="card">
+    <h3>Tool / Reference Pointers</h3>
+    <p>Links to GitHub, PageSpeed Insights, status pages — trust in the tools.</p>
+  </div>
+</div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 3. PERSONALITY TRAITS                       -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section" id="personality">
+<h2 class="section-title">3. Six Brand Personality Traits</h2>
+<p class="section-desc">Identified across 10 pages and 42 evidence quotes. Each trait manifests differently depending on audience and context.</p>
+
+<div class="two-col">
+  <div class="card" style="border-left:4px solid var(--blue);">
+    <h3>Declarative Confidence</h3>
+    <p>Bold, unqualified assertions. No hedging, no "might" or "could."</p>
+    <div class="quote-block" style="margin-top:12px;padding:12px 16px;">
+      <div class="quote-text sm">"Every Edge Delivery Services site can and should achieve a Lighthouse score of 100."</div>
+      <div class="quote-source">/developer/keeping-it-100</div>
+    </div>
+  </div>
+  <div class="card" style="border-left:4px solid var(--green);">
+    <h3>Engineering Pragmatism</h3>
+    <p>Practical, measured, rooted in real experience. Acknowledges complexity honestly.</p>
+    <div class="quote-block" style="margin-top:12px;padding:12px 16px;">
+      <div class="quote-text sm">"It turns out that it is hard to improve your Lighthouse score once it is low, but it is not hard to keep it at 100 if you continuously test."</div>
+      <div class="quote-source">/developer/keeping-it-100</div>
+    </div>
+  </div>
+  <div class="card" style="border-left:4px solid var(--purple);">
+    <h3>Inclusive Directness</h3>
+    <p>Second-person address, collaborative framing, never talks down despite technical density.</p>
+    <div class="quote-block" style="margin-top:12px;padding:12px 16px;">
+      <div class="quote-text sm">"If you use Microsoft Word or Google Docs, then you already know how to create content."</div>
+      <div class="quote-source">/docs/authoring</div>
+    </div>
+  </div>
+  <div class="card" style="border-left:4px solid var(--amber);">
+    <h3>Performance Moralism</h3>
+    <p>Speed treated as a value system, not just a metric. GitHub bot auto-fails PRs below 100.</p>
+    <div class="quote-block" style="margin-top:12px;padding:12px 16px;">
+      <div class="quote-text sm">"Speed is Green."</div>
+      <div class="quote-source">/developer/keeping-it-100</div>
+    </div>
+  </div>
+  <div class="card" style="border-left:4px solid var(--cyan);">
+    <h3>Architectural Transparency</h3>
+    <p>Openly names internals: Content Bus, Media Bus, Code Bus, dual-stack architecture.</p>
+    <div class="quote-block" style="margin-top:12px;padding:12px 16px;">
+      <div class="quote-text sm">"Edge Delivery Services maintains a content bus that stores content in a clean and structured format."</div>
+      <div class="quote-source">/docs/architecture</div>
+    </div>
+  </div>
+  <div class="card" style="border-left:4px solid var(--fuchsia);">
+    <h3>Controlled Playfulness</h3>
+    <p>Dry, structural humor. Never forced, always rooted in developer culture.</p>
+    <div class="quote-block" style="margin-top:12px;padding:12px 16px;">
+      <div class="quote-text sm">"Edge Delivery Services is probably not down."</div>
+      <div class="quote-source">/docs/faq — uses "fstab" as config name (UNIX reference)</div>
+    </div>
+  </div>
+</div>
+
+<h3 style="font-size:17px;font-weight:700;color:var(--fg-heading);margin:24px 0 12px;">Anti-Patterns (Never Used)</h3>
+<div class="card" style="background:var(--red-bg);border:1px solid #F5C6C6;">
+  <p>Zero occurrences of marketing clichés across all analysed pages: <strong>"leverage," "synergy," "best-in-class," "unlock," "empower," "seamless," "robust."</strong> The brand deliberately avoids corporate filler language.</p>
+</div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 4. TERMINOLOGY                              -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section" id="terminology">
+<h2 class="section-title">4. Terminology Map</h2>
+<p class="section-desc">Official product naming conventions extracted from the FAQ and documentation. Consistency varies across the site.</p>
+
+<div class="term-grid">
+  <div class="term-item">
+    <div class="term-do">Edge Delivery Services</div>
+    <div class="term-dont">Franklin, Helix</div>
+    <div class="term-note">Canonical product name. Never abbreviated to "EDS" on site.</div>
+  </div>
+  <div class="term-item">
+    <div class="term-do">Adobe Experience Manager</div>
+    <div class="term-dont">AEM (standalone)</div>
+    <div class="term-note">Full name for formal contexts. "AEM" used as compound prefix.</div>
+  </div>
+  <div class="term-item">
+    <div class="term-do">Blocks</div>
+    <div class="term-dont">Components, Widgets</div>
+    <div class="term-note">Core content abstraction. Always "blocks," never "components."</div>
+  </div>
+  <div class="term-item">
+    <div class="term-do">Sidekick</div>
+    <div class="term-dont">—</div>
+    <div class="term-note">Browser extension for preview/publish. Proper noun, capitalized.</div>
+  </div>
+  <div class="term-item">
+    <div class="term-do">Boilerplate</div>
+    <div class="term-dont">Scaffold, Seed, Starter</div>
+    <div class="term-note">The template project. Always "boilerplate."</div>
+  </div>
+  <div class="term-item">
+    <div class="term-do">Operational Telemetry</div>
+    <div class="term-dont">RUM, Analytics</div>
+    <div class="term-note">New name, but URL still /developer/rum. Transition incomplete.</div>
+  </div>
+</div>
+
+<div class="card" style="border-left:4px solid var(--amber);">
+  <h3>Naming Inconsistency</h3>
+  <p>"Adobe Experience Manager" vs "AEM" vs "Edge Delivery Services" used interchangeably across the site. The query index still contains "Franklin" references (deprecated codename) in page descriptions like <code>/business/demo</code>.</p>
+</div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 5. DOCUMENTATION STRUCTURE                  -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section" id="structure">
+<h2 class="section-title">5. Documentation Structure</h2>
+<p class="section-desc">157 documentation pages split across two parallel trees, unified by a three-pillar lifecycle model.</p>
+
+<div class="summary-grid" style="grid-template-columns:repeat(3,1fr);">
+  <div class="stat-card accent">
+    <div class="stat-value">85</div>
+    <div class="stat-label">/docs/ pages (Authors)</div>
+  </div>
+  <div class="stat-card info">
+    <div class="stat-value">72</div>
+    <div class="stat-label">/developer/ pages (Devs)</div>
+  </div>
+  <div class="stat-card positive">
+    <div class="stat-value">3</div>
+    <div class="stat-label">Lifecycle Pillars</div>
+  </div>
+</div>
+
+<div class="nav-tree">
+  <h4>Three-Pillar Information Architecture</h4>
+  <div class="pillar-grid">
+    <div class="pillar build">
+      <h5 style="color:var(--blue);">Build</h5>
+      <ul>
+        <li>Developer Tutorial (5 phases)</li>
+        <li>Project Anatomy</li>
+        <li>Block Collection &amp; Block Party</li>
+        <li>Markup, Sections, Blocks</li>
+        <li>Spreadsheets &amp; Indexing</li>
+        <li>Performance ("Keeping it 100")</li>
+      </ul>
+    </div>
+    <div class="pillar publish">
+      <h5 style="color:var(--green);">Publish</h5>
+      <ul>
+        <li>Authoring in Word/Docs</li>
+        <li>Bulk Metadata</li>
+        <li>Sidekick Extension</li>
+        <li>Placeholders</li>
+        <li>Slack Bot Integration</li>
+        <li>Preview &amp; Live Workflow</li>
+      </ul>
+    </div>
+    <div class="pillar launch">
+      <h5 style="color:var(--purple);">Launch</h5>
+      <ul>
+        <li>Go-Live Checklist</li>
+        <li>CDN Setup (CF/Akamai/Fastly/CloudFront)</li>
+        <li>Redirects</li>
+        <li>Push Invalidation</li>
+        <li>DNS Configuration</li>
+        <li>SEO &amp; Performance Monitoring</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h3>Cross-Cutting Sections</h3>
+  <ul>
+    <li><strong>Resources:</strong> Sidekick, FAQ, Admin API, Status Page, Blog</li>
+    <li><strong>Architecture:</strong> System overview, staging environment, security model, global availability</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h3>Navigation Pattern</h3>
+  <p>Linear <strong>Previous / Next</strong> pagination forms a defined reading order within sections. Cross-links between pages are organic (contextual in-text links) rather than systematic — there is no structured "related content" or "see also" sidebar.</p>
+</div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 6. DOCUMENTATION PATTERNS                   -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section" id="doc-patterns">
+<h2 class="section-title">6. Documentation Patterns</h2>
+<p class="section-desc">Seven distinct content types identified. The site leans toward explanatory text and visual diagrams over code-heavy references.</p>
+
+<div class="two-col">
+  <div class="card" style="border-top:3px solid var(--blue);">
+    <h3>1. Getting-Started Tutorial</h3>
+    <p>Sequential 5-phase walkthrough. Copy-paste CLI commands with placeholders (<code>&lt;owner&gt;</code>, <code>&lt;repo&gt;</code>). Celebratory ending: "That's it, you made it!"</p>
+    <p style="font-size:13px;color:var(--fg-muted);margin-top:8px;">Example: /developer/tutorial</p>
+  </div>
+  <div class="card" style="border-top:3px solid var(--green);">
+    <h3>2. Guided References</h3>
+    <p>Hybrid style: narrative flow like a tutorial but structured for lookups. Progressively explains concepts, then lists specific conventions.</p>
+    <p style="font-size:13px;color:var(--fg-muted);margin-top:8px;">Example: /developer/anatomy-of-a-project</p>
+  </div>
+  <div class="card" style="border-top:3px solid var(--purple);">
+    <h3>3. Performance Guide</h3>
+    <p>Prescriptive how-to with concrete targets (LCP under 1560ms, payload under 100kb). Problem-explanation-solution structure. No code — entirely conceptual.</p>
+    <p style="font-size:13px;color:var(--fg-muted);margin-top:8px;">Example: /developer/keeping-it-100</p>
+  </div>
+  <div class="card" style="border-top:3px solid var(--amber);">
+    <h3>4. Catalog Pages</h3>
+    <p>Index of blocks with classification labels (Default Content, Block, Autoblock, Deprecated). Two tiers: Boilerplate vs Collection.</p>
+    <p style="font-size:13px;color:var(--fg-muted);margin-top:8px;">Example: /developer/block-collection</p>
+  </div>
+  <div class="card" style="border-top:3px solid var(--cyan);">
+    <h3>5. Interactive Tool Views</h3>
+    <p>Block detail pages redirect to Sidekick Library app. Not readable documentation — interactive preview tools. Invisible to search engines and LLMs.</p>
+    <p style="font-size:13px;color:var(--fg-muted);margin-top:8px;">Example: /developer/block-collection/columns</p>
+  </div>
+  <div class="card" style="border-top:3px solid var(--fuchsia);">
+    <h3>6. Author Guides</h3>
+    <p>Task-oriented, minimal jargon, empathetic tone. Heavy on screenshots, light on code. Progressive disclosure pattern.</p>
+    <p style="font-size:13px;color:var(--fg-muted);margin-top:8px;">Example: /docs/authoring</p>
+  </div>
+  <div class="card" style="border-top:3px solid #8AD5FF;">
+    <h3>7. Bridge Documents</h3>
+    <p>Connect authoring and developer perspectives. Show how Word/Docs tables become HTML div structures with CSS classes.</p>
+    <p style="font-size:13px;color:var(--fg-muted);margin-top:8px;">Example: /docs/exploring-blocks</p>
+  </div>
+</div>
+
+<h3 style="font-size:17px;font-weight:700;color:var(--fg-heading);margin:24px 0 12px;">Code Example Analysis</h3>
+<div class="card">
+  <p>Code examples are <strong>sparse</strong>. The documentation leans toward explanatory prose and links to GitHub repos ("See in Action") rather than inline code. There is no API reference, no complete code sample library, and no runnable embedded examples.</p>
+  <table class="data-table" style="margin-top:12px;">
+    <thead><tr><th>Page Type</th><th>Code Approach</th></tr></thead>
+    <tbody>
+      <tr><td>Tutorial</td><td>Shell commands with placeholders — copy-paste friendly</td></tr>
+      <tr><td>Markup Reference</td><td>Single HTML block showing the div pattern — minimal</td></tr>
+      <tr><td>Project Anatomy</td><td>Links to GitHub repos rather than inline code</td></tr>
+      <tr><td>Performance Guide</td><td>No code at all — metric thresholds and conceptual guidance</td></tr>
+      <tr><td>Author Guides</td><td>No code — screenshot-based instruction</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h3 style="font-size:17px;font-weight:700;color:var(--fg-heading);margin:24px 0 12px;">Seven Block Design Principles</h3>
+<p style="font-size:14px;color:var(--fg-muted);margin-bottom:12px;">Stated in the Block Collection page — establishes quality standards for all block development.</p>
+<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;">
+  <span style="padding:6px 14px;background:var(--blue-light);color:var(--blue);border-radius:var(--radius-pill);font-size:14px;font-weight:600;">Intuitive</span>
+  <span style="padding:6px 14px;background:var(--green-bg);color:var(--green);border-radius:var(--radius-pill);font-size:14px;font-weight:600;">Useable</span>
+  <span style="padding:6px 14px;background:var(--purple-bg);color:var(--purple);border-radius:var(--radius-pill);font-size:14px;font-weight:600;">Responsive</span>
+  <span style="padding:6px 14px;background:var(--amber-bg);color:var(--amber);border-radius:var(--radius-pill);font-size:14px;font-weight:600;">Context Aware</span>
+  <span style="padding:6px 14px;background:var(--cyan-bg);color:var(--cyan);border-radius:var(--radius-pill);font-size:14px;font-weight:600;">Localizable</span>
+  <span style="padding:6px 14px;background:var(--red-bg);color:var(--red);border-radius:var(--radius-pill);font-size:14px;font-weight:600;">Fast</span>
+  <span style="padding:6px 14px;background:#F3F0FF;color:#6B5CE7;border-radius:var(--radius-pill);font-size:14px;font-weight:600;">SEO &amp; A11y</span>
+</div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 7. IMAGE QUALITY                            -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section" id="images">
+<h2 class="section-title">7. Image Quality</h2>
+<p class="section-desc">The central paradox: world-class image delivery infrastructure coexists with near-total accessibility failure.</p>
+
+<div class="grade-grid">
+  <div class="grade-card">
+    <div class="grade-letter a">A+</div>
+    <div class="grade-aspect">Delivery Infrastructure</div>
+    <div class="grade-detail">Media Bus: content-addressable, 4 variants per image, WebP conversion, lazy loading, same-origin CDN</div>
+  </div>
+  <div class="grade-card">
+    <div class="grade-letter f">F</div>
+    <div class="grade-aspect">Accessibility (Alt Text)</div>
+    <div class="grade-detail">~95% of images lack meaningful alt text. WCAG 2.1 Level A failure (SC 1.1.1)</div>
+  </div>
+  <div class="grade-card">
+    <div class="grade-letter d">D</div>
+    <div class="grade-aspect">OG / Social Sharing</div>
+    <div class="grade-detail">45% of pages use generic fallback. No og:image tags found in HTML.</div>
+  </div>
+  <div class="grade-card">
+    <div class="grade-letter d">D</div>
+    <div class="grade-aspect">Visual Consistency</div>
+    <div class="grade-detail">No figure/figcaption. No screenshot annotations. Defined CSS tokens unused.</div>
+  </div>
+</div>
+
+<h3 style="font-size:17px;font-weight:700;color:var(--fg-heading);margin:24px 0 12px;">Image Coverage by the Numbers</h3>
+<div class="bar-chart">
+  <div class="bar-row">
+    <span class="bar-label">Custom OG image</span>
+    <div class="bar-track"><div class="bar-fill green" style="width:54%">54%</div></div>
+    <span class="bar-count">107</span>
+  </div>
+  <div class="bar-row">
+    <span class="bar-label">Generic fallback</span>
+    <div class="bar-track"><div class="bar-fill amber" style="width:45%">45%</div></div>
+    <span class="bar-count">89</span>
+  </div>
+  <div class="bar-row">
+    <span class="bar-label">No image at all</span>
+    <div class="bar-track"><div class="bar-fill red" style="width:0.5%"></div></div>
+    <span class="bar-count">1</span>
+  </div>
+</div>
+
+<h3 style="font-size:17px;font-weight:700;color:var(--fg-heading);margin:24px 0 12px;">Media Bus Architecture (Strength)</h3>
+<div class="card" style="border-left:4px solid var(--green);">
+  <h3>Content-Addressable Storage</h3>
+  <ul>
+    <li>Every image stored once with a unique hash (e.g., <code>media_1efffe0288d261...</code>)</li>
+    <li>4 variants auto-generated: 750px mobile + 2000px desktop, each in WebP + original format</li>
+    <li><code>&lt;picture&gt;</code> elements with <code>&lt;source&gt;</code> for responsive delivery</li>
+    <li>Lazy loading by default, priority for LCP hero images</li>
+    <li>Same-origin delivery — no third-party CDN connection overhead</li>
+    <li>Dynamic manipulation via URL params: <code>?width=750&amp;format=webply&amp;optimize=medium</code></li>
+  </ul>
+</div>
+
+<h3 style="font-size:17px;font-weight:700;color:var(--fg-heading);margin:24px 0 12px;">Irony of the Self-Serve Documentation</h3>
+<div class="card" style="border-left:4px solid var(--red);background:var(--red-bg);">
+  <p>The <code>/docs/authoring</code> page explicitly tells authors: <em>"It is a good idea to set an alternative text for all images"</em> — while having <strong>zero alt text on its own images</strong>.</p>
+</div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 8. VISUAL IDENTITY                          -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section" id="visual-identity">
+<h2 class="section-title">8. Visual Identity</h2>
+<p class="section-desc">Extracted color palette, typography, and brand asset observations from the live site.</p>
+
+<h3 style="font-size:17px;font-weight:700;color:var(--fg-heading);margin:0 0 12px;">Color Palette (Observed)</h3>
+<div class="color-grid">
+  <div class="swatch">
+    <div class="swatch-block" style="background:#EB1000;"></div>
+    <div class="swatch-info"><div class="swatch-name">Adobe Red</div><div class="swatch-hex">#EB1000</div></div>
+  </div>
+  <div class="swatch">
+    <div class="swatch-block" style="background:#1473E6;"></div>
+    <div class="swatch-info"><div class="swatch-name">Adobe Blue</div><div class="swatch-hex">#1473E6</div></div>
+  </div>
+  <div class="swatch">
+    <div class="swatch-block" style="background:#292929;"></div>
+    <div class="swatch-info"><div class="swatch-name">Body Text</div><div class="swatch-hex">#292929</div></div>
+  </div>
+  <div class="swatch">
+    <div class="swatch-block" style="background:#F8F8F8;border:1px solid #E1E1E1;"></div>
+    <div class="swatch-info"><div class="swatch-name">Background</div><div class="swatch-hex">#F8F8F8</div></div>
+  </div>
+  <div class="swatch">
+    <div class="swatch-block" style="background:#FFFFFF;border:1px solid #E1E1E1;"></div>
+    <div class="swatch-info"><div class="swatch-name">Surface White</div><div class="swatch-hex">#FFFFFF</div></div>
+  </div>
+  <div class="swatch">
+    <div class="swatch-block" style="background:#505050;"></div>
+    <div class="swatch-info"><div class="swatch-name">Muted Text</div><div class="swatch-hex">#505050</div></div>
+  </div>
+</div>
+
+<h3 style="font-size:17px;font-weight:700;color:var(--fg-heading);margin:24px 0 12px;">Brand Asset Observations</h3>
+<div class="two-col">
+  <div class="card">
+    <h3>No Header Logo</h3>
+    <p>The navigation uses plain text "Adobe Experience Manager" — no logo mark, no icon. This is unusual for an Adobe product site.</p>
+  </div>
+  <div class="card">
+    <h3>Partner Logo Issues</h3>
+    <p>4 partner logos still served from old <code>hlx.live</code> domain, causing 301 redirect chains. Mix of SVG and PNG formats — inconsistent.</p>
+  </div>
+  <div class="card">
+    <h3>Screenshot Styling</h3>
+    <p>CSS defines mature image tokens (<code>--image-border-radius-m</code> through <code>--image-border-radius-xxl</code>, drop shadows) but documentation screenshots use <strong>none</strong> of them.</p>
+  </div>
+  <div class="card">
+    <h3>Copyright Year</h3>
+    <p>Footer shows 2025 copyright. Current year is 2026.</p>
+  </div>
+</div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- VALIDATION STAMP                            -->
+<!-- ═══════════════════════════════════════════ -->
+<section id="validation">
+<div class="validation-stamp">
+  <h3>Validation Stamp</h3>
+  <ul>
+    <li>Fetched and analysed 10 live pages from www.aem.live (homepage, docs hub, developer tutorial, FAQ, architecture, keeping-it-100, go-live-checklist, authoring, RUM, block-collection)</li>
+    <li>Cross-referenced query index (197 pages) for OG image coverage statistics</li>
+    <li>Verified /developer/ returns 404 via HTTP check</li>
+    <li>Confirmed "Franklin" references still present in query index descriptions</li>
+    <li>Verified alt text absence by inspecting img elements across 7 pages (101 images, 1 with alt text)</li>
+    <li>Confirmed partner logos redirect from hlx.live to aem.live via HTTP 301</li>
+    <li>42 direct quotes extracted as evidence — all exact text from live pages</li>
+  </ul>
+  <div class="stamp-date">Validated 2026-02-24 by Blazar automated analysis</div>
+</div>
+</section>
+
+</div><!-- /container -->
+<script src="chat.js"></script>
+</body>
+</html>

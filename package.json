@@ -4,7 +4,22 @@
   "private": true,
   "description": "LLM-driven content and experience management and optimization system",
   "type": "module",
-  "scripts": {},
-  "keywords": ["llm", "cms", "content-management", "experience-optimization", "cloudflare"],
-  "license": "UNLICENSED"
+  "scripts": {
+    "dev": "npx wrangler pages dev reports",
+    "deploy": "npx wrangler pages deploy reports"
+  },
+  "keywords": [
+    "llm",
+    "cms",
+    "content-management",
+    "experience-optimization",
+    "cloudflare"
+  ],
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@google/genai": "^1.42.0"
+  },
+  "devDependencies": {
+    "wrangler": "^4.68.0"
+  }
 }

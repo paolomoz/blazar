@@ -1,0 +1,1610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEO Brand Signals — www.aem.live</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700;900&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="blazar-reports.css">
+<style>
+/* ── Jump Nav Overrides ── */
+.jump-nav-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  background: var(--bg);
+  color: var(--fg);
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  transition: all 0.15s;
+}
+.jump-nav-links a:hover {
+  background: var(--blue-light);
+  border-color: var(--blue);
+  color: var(--blue);
+  text-decoration: none;
+}
+
+/* ── Scorecard ── */
+.scorecard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+.score-tile {
+  background: var(--bg-white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow-card);
+  text-align: center;
+}
+.score-tile .score-value {
+  font-size: 36px;
+  font-weight: 900;
+  color: var(--fg-heading);
+  line-height: 1;
+}
+.score-tile .score-label {
+  font-size: 13px;
+  color: var(--fg-muted);
+  margin-top: 6px;
+  font-weight: 600;
+}
+.score-tile.red .score-value { color: var(--red); }
+.score-tile.amber .score-value { color: var(--amber); }
+.score-tile.green .score-value { color: var(--green); }
+.score-tile.blue .score-value { color: var(--blue); }
+
+/* ── Section Overrides ── */
+.section { margin-bottom: 40px; }
+.section-title {
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom-color: var(--border);
+  display: block;
+}
+
+/* ── Badge Override ── */
+.badge { font-size: 12px; }
+
+/* ── Data Table Wrap (report-specific class) ── */
+.data-table-wrap {
+  background: var(--bg-white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  overflow-x: auto;
+  margin-bottom: 24px;
+}
+
+/* ── Data Table Overrides ── */
+.data-table th {
+  padding: 10px 16px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.data-table td { padding: 10px 16px; }
+.data-table tr:hover td { background: #FAFBFF; }
+.data-table .mono {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  word-break: break-all;
+}
+.data-table .truncate {
+  max-width: 350px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Card Overrides ── */
+.card { padding: 20px 24px; }
+.card-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--fg-heading);
+  margin-bottom: 8px;
+}
+.card p { font-size: 14px; color: var(--fg); margin-bottom: 4px; }
+.card .meta-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--fg-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.card .meta-value {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--fg);
+  word-break: break-all;
+  background: var(--bg);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  margin-top: 2px;
+  display: block;
+}
+
+/* ── Page Detail Card ── */
+.page-card {
+  background: var(--bg-white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+.page-card-header {
+  background: var(--bg);
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.page-card-header h3 {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--fg-heading);
+  margin: 0;
+}
+.page-card-url {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+}
+.page-card-body {
+  padding: 20px 24px;
+}
+.meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 12px;
+}
+.meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.meta-item .label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--fg-muted);
+}
+.meta-item .value {
+  font-size: 13px;
+  color: var(--fg);
+  background: var(--bg);
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  word-break: break-all;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+}
+.meta-item .value.mono {
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+.meta-item .value.missing {
+  color: var(--red);
+  font-weight: 600;
+  background: var(--red-bg);
+}
+.meta-item .value.present {
+  color: var(--green);
+  font-weight: 600;
+  background: var(--green-bg);
+}
+
+/* ── Findings boxes ── */
+.finding {
+  border-left: 4px solid var(--border);
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  background: var(--bg-white);
+}
+.finding.critical { border-left-color: var(--red); background: var(--red-bg); }
+.finding.warning { border-left-color: var(--amber); background: var(--amber-bg); }
+.finding.good { border-left-color: var(--green); background: var(--green-bg); }
+.finding.info { border-left-color: var(--blue); background: var(--blue-light); }
+.finding-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--fg-heading);
+  margin-bottom: 4px;
+}
+.finding p { font-size: 14px; color: var(--fg); }
+
+/* ── Code block ── */
+.code-block {
+  background: #1E1E2E;
+  color: #CDD6F4;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 16px 20px;
+  border-radius: var(--radius);
+  overflow-x: auto;
+  margin: 8px 0;
+  line-height: 1.6;
+  white-space: pre;
+}
+
+/* ── SERP Preview ── */
+.serp-preview {
+  background: var(--bg-white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  margin-bottom: 16px;
+  max-width: 650px;
+}
+.serp-preview .serp-url {
+  font-size: 13px;
+  color: var(--green);
+  font-family: var(--font);
+  margin-bottom: 2px;
+}
+.serp-preview .serp-title {
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--blue);
+  line-height: 1.3;
+  margin-bottom: 4px;
+}
+.serp-preview .serp-desc {
+  font-size: 14px;
+  color: var(--fg);
+  line-height: 1.4;
+}
+
+/* ── Heading hierarchy ── */
+.heading-tree {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  padding: 12px 16px;
+  background: var(--bg);
+  border-radius: var(--radius);
+  line-height: 1.8;
+}
+.heading-tree .h1 { font-weight: 700; color: var(--blue); }
+.heading-tree .h2 { margin-left: 20px; color: var(--fg-heading); }
+.heading-tree .h3 { margin-left: 40px; color: var(--fg-muted); }
+
+/* ── Validation Stamp Overrides ── */
+.validation-stamp {
+  border: 2px solid var(--green);
+}
+.validation-stamp h3 {
+  font-size: 16px;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+.validation-stamp ul {
+  list-style: none;
+  padding: 0;
+}
+.validation-stamp li {
+  padding: 4px 0;
+  color: var(--fg);
+}
+.validation-stamp li::before {
+  content: "\2713  ";
+  color: var(--green);
+  font-weight: 700;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .scorecard { grid-template-columns: repeat(2, 1fr); }
+  .meta-grid { grid-template-columns: 1fr; }
+  .report-header h1 { font-size: 22px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Report Navigation -->
+<nav class="report-nav" aria-label="Report navigation">
+  <a href="hub.html" class="nav-hub">Blazar Hub</a>
+  <span class="nav-sep">/</span>
+  <span style="color:var(--fg-heading); font-weight:700;">SEO Brand Signals</span>
+  <span class="nav-sep">|</span>
+  <a href="aem-live-content-gaps.html" class="nav-related">Content Gaps</a>
+  <a href="aem-live-brand-guidelines.html" class="nav-related">Brand Guidelines</a>
+  <a href="aem-live-brand-opportunities.html" class="nav-related">Opportunities</a>
+  <a href="aem-live-action-plan.html" class="nav-related">Action Plan</a>
+</nav>
+
+<!-- Header -->
+<header class="report-header">
+  <div class="report-header-inner">
+    <div>
+      <h1>SEO Brand Signals Analysis</h1>
+      <p class="subtitle">How www.aem.live presents itself to search engines and social platforms</p>
+    </div>
+    <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+      <div class="report-branding">
+        <div class="logo-mark">B</div>
+        Blazar
+      </div>
+      <span class="report-date">2026-02-24</span>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+<!-- Jump Nav -->
+<nav class="jump-nav" aria-label="Page sections">
+  <div class="jump-nav-title">Sections</div>
+  <div class="jump-nav-links">
+    <a href="#scorecard">Scorecard</a>
+    <a href="#page-metadata">Page Metadata</a>
+    <a href="#structured-data">Structured Data</a>
+    <a href="#heading-hierarchy">Heading Hierarchy</a>
+    <a href="#technical-seo">Technical SEO</a>
+    <a href="#robots-sitemap">Robots &amp; Sitemap</a>
+    <a href="#serp-presence">SERP Presence</a>
+    <a href="#brand-consistency">Brand Consistency</a>
+    <a href="#findings">Key Findings</a>
+    <a href="#validation">Validation</a>
+  </div>
+</nav>
+
+<!-- ================================================================
+     SCORECARD
+     ================================================================ -->
+<section class="section" id="scorecard">
+  <h2 class="section-title">SEO Signals Scorecard</h2>
+  <div class="scorecard">
+    <div class="score-tile green">
+      <div class="score-value">8/8</div>
+      <div class="score-label">Pages with title tag</div>
+    </div>
+    <div class="score-tile green">
+      <div class="score-value">8/8</div>
+      <div class="score-label">Pages with meta description</div>
+    </div>
+    <div class="score-tile green">
+      <div class="score-value">8/8</div>
+      <div class="score-label">Pages with OG tags</div>
+    </div>
+    <div class="score-tile green">
+      <div class="score-value">8/8</div>
+      <div class="score-label">Pages with canonical URL</div>
+    </div>
+    <div class="score-tile red">
+      <div class="score-value">0/8</div>
+      <div class="score-label">Pages with lang attribute</div>
+    </div>
+    <div class="score-tile red">
+      <div class="score-value">1/8</div>
+      <div class="score-label">Pages with structured data</div>
+    </div>
+    <div class="score-tile red">
+      <div class="score-value">0/8</div>
+      <div class="score-label">Pages with og:type</div>
+    </div>
+    <div class="score-tile red">
+      <div class="score-value">0/8</div>
+      <div class="score-label">Pages with favicon link tag</div>
+    </div>
+    <div class="score-tile green">
+      <div class="score-value">8/8</div>
+      <div class="score-label">Exactly 1 H1 per page</div>
+    </div>
+    <div class="score-tile green">
+      <div class="score-value">8/8</div>
+      <div class="score-label">Twitter card tags present</div>
+    </div>
+    <div class="score-tile red">
+      <div class="score-value">0/8</div>
+      <div class="score-label">Pages with hreflang</div>
+    </div>
+    <div class="score-tile amber">
+      <div class="score-value">3/8</div>
+      <div class="score-label">Custom OG image (not default)</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     PAGE-BY-PAGE METADATA
+     ================================================================ -->
+<section class="section" id="page-metadata">
+  <h2 class="section-title">Page-by-Page Metadata Audit</h2>
+
+  <!-- PAGE 1: Homepage -->
+  <div class="page-card">
+    <div class="page-card-header">
+      <h3>Homepage</h3>
+      <span class="page-card-url">https://www.aem.live/</span>
+      <span class="badge badge-info">Home template</span>
+    </div>
+    <div class="page-card-body">
+      <div class="meta-grid">
+        <div class="meta-item">
+          <span class="label">Title</span>
+          <span class="value">Adobe Experience Manager</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Meta Description</span>
+          <span class="value">Frictionless experience management: Build blazing fast websites using tools content creators and developers already know.</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">OG:Title</span>
+          <span class="value">Adobe Experience Manager</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">OG:Description</span>
+          <span class="value">Frictionless experience management: Build blazing fast websites using tools content creators and developers already know.</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">OG:Image</span>
+          <span class="value mono">/default-social.png <span class="badge badge-warn">Default</span></span>
+        </div>
+        <div class="meta-item">
+          <span class="label">OG:Type</span>
+          <span class="value missing">NOT PRESENT</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Twitter Card</span>
+          <span class="value present">summary_large_image</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Canonical</span>
+          <span class="value mono">https://www.aem.live/</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Robots Meta</span>
+          <span class="value missing">NOT PRESENT (defaults to index,follow)</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">HTML lang</span>
+          <span class="value missing">NOT PRESENT</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Hreflang</span>
+          <span class="value missing">NOT PRESENT</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Favicon link tag</span>
+          <span class="value missing">NOT PRESENT (relies on /favicon.ico convention)</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Apple Touch Icon</span>
+          <span class="value missing">NOT PRESENT (404 at /apple-touch-icon.png)</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Structured Data</span>
+          <span class="value present">JSON-LD: Corporation (Adobe, https://www.adobe.com)</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">H1 Text</span>
+          <span class="value">"Create a website, seriously fast."</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">H1 Count</span>
+          <span class="value present">1</span>
+        </div>
+      </div>
+      <div style="margin-top:16px;">
+        <span class="label" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--fg-muted);">JSON-LD Content</span>
+        <div class="code-block">{
+  "@context": "https://schema.org",
+  "@type": "Corporation",
+  "name": "Adobe",
+  "url": "https://www.adobe.com"
+}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 2: Docs Hub -->
+  <div class="page-card">
+    <div class="page-card-header">
+      <h3>Documentation Hub</h3>
+      <span class="page-card-url">https://www.aem.live/docs/</span>
+      <span class="badge badge-info">Guides template</span>
+    </div>
+    <div class="page-card-body">
+      <div class="meta-grid">
+        <div class="meta-item">
+          <span class="label">Title</span>
+          <span class="value">Documentation</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Meta Description</span>
+          <span class="value">Documentation hub for authors, developers and operations.</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">OG:Title</span>
+          <span class="value">Documentation</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">OG:Description</span>
+          <span class="value">Documentation hub for authors, developers and operations.</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">OG:Image</span>
+          <span class="value mono">/default-social.png <span class="badge badge-warn">Default</span></span>
+        </div>
+        <div class="meta-item">
+          <span class="label">OG:Type</span>
+          <span class="value missing">NOT PRESENT</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Twitter Card</span>
+          <span class="value present">summary_large_image</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Canonical</span>
+          <span class="value mono">https://www.aem.live/docs/</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Robots Meta</span>
+          <span class="value missing">NOT PRESENT</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">HTML lang</span>
+          <span class="value missing">NOT PRESENT</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Structured Data</span>
+          <span class="value missing">NOT PRESENT</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">H1 Text</span>
+          <span class="value">"Helpful guides for your journey with Adobe Experience Manager"</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">H1 Count</span>
+          <span class="value present">1</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 3: Tutorial -->
+  <div class="page-card">
+    <div class="page-card-header">
+      <h3>Developer Tutorial</h3>
+      <span class="page-card-url">https://www.aem.live/developer/tutorial</span>
+      <span class="badge badge-info">Guides template</span>
+    </div>
+    <div class="page-card-body">
+      <div class="meta-grid">
+        <div class="meta-item">
+          <span class="label">Title</span>
+          <span class="value">Getting Started -- Developer Tutorial</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Meta Description</span>
+          <span class="value">This tutorial will get you up-and-running with a new Adobe Experience Manager (AEM) project. In ten to twenty minutes, you will have created your own ...</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">OG:Title</span>
+          <span class="value">Getting Started -- Developer Tutorial</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">OG:Description</span>
+          <span class="value">This tutorial will get you up-and-running with a new Adobe Experience Manager (AEM) project. In ten to twenty minutes, you will have created your own ...</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">OG:Image</span>
+          <span class="value mono present">/developer/media_1d00989ba18e942f...png <span class="badge badge-pass">Custom</span></span>
+        </div>
+        <div class="meta-item">
+          <span class="label">OG:Type</span>
+          <span class="value missing">NOT PRESENT</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Twitter Card</span>
+          <span class="value present">summary_large_image</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Canonical</span>
+          <span class="value mono">https://www.aem.live/developer/tutorial</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Structured Data</span>
+          <span class="value missing">NOT PRESENT</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">H1 Text</span>
+          <span class="value">"Getting Started -- Developer Tutorial"</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">H1 Count</span>
+          <span class="value present">1</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 4: FAQ -->
+  <div class="page-card">
+    <div class="page-card-header">
+      <h3>Frequently Asked Questions</h3>
+      <span class="page-card-url">https://www.aem.live/docs/faq</span>
+      <span class="badge badge-info">Guides template</span>
+    </div>
+    <div class="page-card-body">
+      <div class="meta-grid">
+        <div class="meta-item">
+          <span class="label">Title</span>
+          <span class="value">Frequently Asked Questions</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Meta Description</span>
+          <span class="value">Franklin and Helix were internal project names for the Adobe Experience Manager engineering team's initiative to develop an innovative publishing and delivery service situated at ...</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">OG:Title</span>
+          <span class="value">Frequently Asked Questions</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">OG:Description</span>
+          <span class="value">Franklin and Helix were internal project names for the Adobe Experience Manager engineering team's initiative to develop an innovative publishing and delivery service situated at ...</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">OG:Image</span>
+          <span class="value mono present">/docs/media_13872adbc8f2...png <span class="badge badge-pass">Custom</span></span>
+        </div>
+        <div class="meta-item">
+          <span class="label">OG:Type</span>
+          <span class="value missing">NOT PRESENT</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Twitter Card</span>
+          <span class="value present">summary_large_image</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Canonical</span>
+          <span class="value mono">https://www.aem.live/docs/faq</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Structured Data</span>
+          <span class="value missing">NOT PRESENT (FAQ page has no FAQPage schema)</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">H1 Text</span>
+          <span class="value">"Frequently Asked Questions"</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">H1 Count</span>
+          <span class="value present">1</span>
+        </div>
+      </div>
+      <div class="finding warning" style="margin-top:16px;">
+        <div class="finding-title">Meta Description Mentions Old Brand Names</div>
+        <p>The meta description starts with "Franklin and Helix were internal project names..." -- these deprecated names appear in search results, undermining the current "Adobe Experience Manager" branding in SERPs.</p>
+      </div>
+      <div class="finding warning" style="margin-top:8px;">
+        <div class="finding-title">Missing FAQPage Schema Markup</div>
+        <p>This is a FAQ page but lacks FAQPage structured data. Adding this schema would enable rich FAQ snippets in Google results, significantly increasing SERP real estate and click-through rates.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 5: Authoring -->
+  <div class="page-card">
+    <div class="page-card-header">
+      <h3>Authoring Guide</h3>
+      <span class="page-card-url">https://www.aem.live/docs/authoring</span>
+      <span class="badge badge-info">Guides template</span>
+    </div>
+    <div class="page-card-body">
+      <div class="meta-grid">
+        <div class="meta-item">
+          <span class="label">Title</span>
+          <span class="value">Authoring and Publishing Content</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Meta Description</span>
+          <span class="value">How to author, preview and publish content using the AEM Sidekick.</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">OG:Title</span>
+          <span class="value">Authoring and Publishing Content</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">OG:Description</span>
+          <span class="value">How to author, preview and publish content using the AEM Sidekick.</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">OG:Image</span>
+          <span class="value mono present">/docs/media_1cf7bb3a1af0...jpg <span class="badge badge-pass">Custom</span></span>
+        </div>
+        <div class="meta-item">
+          <span class="label">OG:Type</span>
+          <span class="value missing">NOT PRESENT</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Twitter Card</span>
+          <span class="value present">summary_large_image</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Canonical</span>
+          <span class="value mono">https://www.aem.live/docs/authoring</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Structured Data</span>
+          <span class="value missing">NOT PRESENT</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">H1 Text</span>
+          <span class="value">"Authoring and Publishing Content"</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">H1 Count</span>
+          <span class="value present">1</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 6: Performance -->
+  <div class="page-card">
+    <div class="page-card-header">
+      <h3>Performance Guide</h3>
+      <span class="page-card-url">https://www.aem.live/developer/keeping-it-100</span>
+      <span class="badge badge-info">Guides template</span>
+    </div>
+    <div class="page-card-body">
+      <div class="meta-grid">
+        <div class="meta-item">
+          <span class="label">Title</span>
+          <span class="value">Web Performance, Keeping your Lighthouse Score 100.</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Meta Description</span>
+          <span class="value">The quality of the experience of websites is crucial to achieving the business goals of your website and the satisfaction of your visitors.</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">OG:Title</span>
+          <span class="value">Web Performance, Keeping your Lighthouse Score 100.</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">OG:Description</span>
+          <span class="value">The quality of the experience of websites is crucial to achieving the business goals of your website and the satisfaction of your visitors.</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">OG:Image</span>
+          <span class="value mono">/default-social.png <span class="badge badge-warn">Default</span></span>
+        </div>
+        <div class="meta-item">
+          <span class="label">OG:Type</span>
+          <span class="value missing">NOT PRESENT</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Twitter Card</span>
+          <span class="value present">summary_large_image</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Canonical</span>
+          <span class="value mono">https://www.aem.live/developer/keeping-it-100</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Structured Data</span>
+          <span class="value missing">NOT PRESENT</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">H1 Text</span>
+          <span class="value">"Web Performance, Keeping your Lighthouse Score 100."</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">H1 Count</span>
+          <span class="value present">1</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 7: Go-Live Checklist -->
+  <div class="page-card">
+    <div class="page-card-header">
+      <h3>Go-Live Checklist</h3>
+      <span class="page-card-url">https://www.aem.live/docs/go-live-checklist</span>
+      <span class="badge badge-info">Guides template</span>
+    </div>
+    <div class="page-card-body">
+      <div class="meta-grid">
+        <div class="meta-item">
+          <span class="label">Title</span>
+          <span class="value">Go-Live Checklist</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Meta Description</span>
+          <span class="value">The go-live checklist is a summary of best practices to consider when launching a website. These steps are generally good practices but have some aspects ...</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">OG:Title</span>
+          <span class="value">Go-Live Checklist</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">OG:Description</span>
+          <span class="value">The go-live checklist is a summary of best practices to consider when launching a website. These steps are generally good practices but have some aspects ...</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">OG:Image</span>
+          <span class="value mono present">/docs/media_1da4bd7d3a11...png <span class="badge badge-pass">Custom (but see note)</span></span>
+        </div>
+        <div class="meta-item">
+          <span class="label">OG:Type</span>
+          <span class="value missing">NOT PRESENT</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Twitter Card</span>
+          <span class="value present">summary_large_image</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Canonical</span>
+          <span class="value mono">https://www.aem.live/docs/go-live-checklist</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Structured Data</span>
+          <span class="value missing">NOT PRESENT</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">H1 Text</span>
+          <span class="value">"Go-Live Checklist"</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">H1 Count</span>
+          <span class="value present">1</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 8: Architecture -->
+  <div class="page-card">
+    <div class="page-card-header">
+      <h3>Architecture</h3>
+      <span class="page-card-url">https://www.aem.live/docs/architecture</span>
+      <span class="badge badge-info">Guides template</span>
+    </div>
+    <div class="page-card-body">
+      <div class="meta-grid">
+        <div class="meta-item">
+          <span class="label">Title</span>
+          <span class="value">Architecture</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Meta Description</span>
+          <span class="value">Take a deep dive into the architecture behind Edge Delivery Services and document based authoring in Adobe Experience Manager Sites as a Cloud Service.</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">OG:Title</span>
+          <span class="value">Architecture</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">OG:Description</span>
+          <span class="value">Take a deep dive into the architecture behind Edge Delivery Services and document based authoring in Adobe Experience Manager Sites as a Cloud Service.</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">OG:Image</span>
+          <span class="value mono present">/docs/media_12c0b6c754f1...png <span class="badge badge-pass">Custom</span></span>
+        </div>
+        <div class="meta-item">
+          <span class="label">OG:Type</span>
+          <span class="value missing">NOT PRESENT</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Twitter Card</span>
+          <span class="value present">summary_large_image</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Canonical</span>
+          <span class="value mono">https://www.aem.live/docs/architecture</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Structured Data</span>
+          <span class="value missing">NOT PRESENT</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">H1 Text</span>
+          <span class="value">"Architecture"</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">H1 Count</span>
+          <span class="value present">1</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     SUMMARY TABLE
+     ================================================================ -->
+<section class="section">
+  <h2 class="section-title">Metadata Coverage Matrix</h2>
+  <div class="data-table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Page</th>
+          <th>Title</th>
+          <th>Desc</th>
+          <th>OG</th>
+          <th>Twitter</th>
+          <th>Canonical</th>
+          <th>og:type</th>
+          <th>lang</th>
+          <th>Schema</th>
+          <th>Custom Image</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Homepage</strong></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-fail">No</span></td>
+          <td><span class="badge badge-fail">No</span></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-warn">Default</span></td>
+        </tr>
+        <tr>
+          <td><strong>Docs Hub</strong></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-fail">No</span></td>
+          <td><span class="badge badge-fail">No</span></td>
+          <td><span class="badge badge-fail">No</span></td>
+          <td><span class="badge badge-warn">Default</span></td>
+        </tr>
+        <tr>
+          <td><strong>Tutorial</strong></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-fail">No</span></td>
+          <td><span class="badge badge-fail">No</span></td>
+          <td><span class="badge badge-fail">No</span></td>
+          <td><span class="badge badge-pass">Custom</span></td>
+        </tr>
+        <tr>
+          <td><strong>FAQ</strong></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-fail">No</span></td>
+          <td><span class="badge badge-fail">No</span></td>
+          <td><span class="badge badge-fail">No</span></td>
+          <td><span class="badge badge-pass">Custom</span></td>
+        </tr>
+        <tr>
+          <td><strong>Authoring</strong></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-fail">No</span></td>
+          <td><span class="badge badge-fail">No</span></td>
+          <td><span class="badge badge-fail">No</span></td>
+          <td><span class="badge badge-pass">Custom</span></td>
+        </tr>
+        <tr>
+          <td><strong>Performance</strong></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-fail">No</span></td>
+          <td><span class="badge badge-fail">No</span></td>
+          <td><span class="badge badge-fail">No</span></td>
+          <td><span class="badge badge-warn">Default</span></td>
+        </tr>
+        <tr>
+          <td><strong>Go-Live</strong></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-fail">No</span></td>
+          <td><span class="badge badge-fail">No</span></td>
+          <td><span class="badge badge-fail">No</span></td>
+          <td><span class="badge badge-pass">Custom</span></td>
+        </tr>
+        <tr>
+          <td><strong>Architecture</strong></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-pass">Yes</span></td>
+          <td><span class="badge badge-fail">No</span></td>
+          <td><span class="badge badge-fail">No</span></td>
+          <td><span class="badge badge-fail">No</span></td>
+          <td><span class="badge badge-pass">Custom</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ================================================================
+     STRUCTURED DATA
+     ================================================================ -->
+<section class="section" id="structured-data">
+  <h2 class="section-title">Structured Data Analysis</h2>
+
+  <div class="finding critical">
+    <div class="finding-title">Only 1 of 8 pages has structured data</div>
+    <p>Only the homepage includes JSON-LD markup (a minimal Corporation schema for Adobe). No other page has any structured data. This is a significant missed opportunity.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Homepage: Corporation Schema</div>
+    <div class="code-block">{
+  "@context": "https://schema.org",
+  "@type": "Corporation",
+  "name": "Adobe",
+  "url": "https://www.adobe.com"
+}</div>
+    <p style="margin-top:12px;"><strong>Issues:</strong></p>
+    <ul style="padding-left:20px; font-size:14px; margin-top:4px;">
+      <li>Extremely minimal -- no logo, description, sameAs, or contactPoint properties</li>
+      <li>Points to adobe.com not aem.live -- does not establish aem.live's own identity</li>
+      <li>Missing WebSite schema (needed for sitelinks search box in SERP)</li>
+      <li>Missing Organization schema specific to AEM/EDS product</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Missing Structured Data Opportunities</div>
+    <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:12px; margin-top:12px;">
+      <div style="background:var(--red-bg); padding:12px 16px; border-radius:var(--radius-sm);">
+        <strong style="color:var(--red);">FAQ Page</strong><br>
+        <span style="font-size:13px;">No FAQPage schema despite being a pure Q&A page. Would enable rich FAQ snippets.</span>
+      </div>
+      <div style="background:var(--red-bg); padding:12px 16px; border-radius:var(--radius-sm);">
+        <strong style="color:var(--red);">Tutorial Page</strong><br>
+        <span style="font-size:13px;">No HowTo or TechArticle schema. Tutorial content could earn rich results.</span>
+      </div>
+      <div style="background:var(--amber-bg); padding:12px 16px; border-radius:var(--radius-sm);">
+        <strong style="color:var(--amber);">Documentation Pages</strong><br>
+        <span style="font-size:13px;">No TechArticle or Article schema. Would help Google understand content type.</span>
+      </div>
+      <div style="background:var(--amber-bg); padding:12px 16px; border-radius:var(--radius-sm);">
+        <strong style="color:var(--amber);">Homepage</strong><br>
+        <span style="font-size:13px;">No WebSite schema (for sitelinks search box), no SoftwareApplication schema for the product.</span>
+      </div>
+      <div style="background:var(--amber-bg); padding:12px 16px; border-radius:var(--radius-sm);">
+        <strong style="color:var(--amber);">All Pages</strong><br>
+        <span style="font-size:13px;">No BreadcrumbList schema despite breadcrumb-like navigation structure.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     HEADING HIERARCHY
+     ================================================================ -->
+<section class="section" id="heading-hierarchy">
+  <h2 class="section-title">Heading Hierarchy</h2>
+  <p style="margin-bottom:16px; font-size:14px; color:var(--fg-muted);">All 8 pages correctly use exactly one H1 tag. Heading nesting is generally correct. Notable patterns below.</p>
+
+  <div class="card">
+    <div class="card-title">Homepage Heading Structure</div>
+    <div class="heading-tree">
+<span class="h1">H1: Create a website, seriously fast.</span>
+<span class="h2">H2: Documentation</span>
+<span class="h2">H2: Resources</span>
+<span class="h2">H2: What is Adobe Experience Manager?</span>
+<span class="h2">H2: Use the technology you already have</span>
+<span class="h2">H2: No time for slow sites</span>
+<span class="h2">H2: Benefits</span>
+<span class="h3">H3: Unmatched Speed</span>
+<span class="h3">H3: Content At Scale</span>
+<span class="h3">H3: Uncertainty Eliminated</span>
+<span class="h3">H3: Widen the Talent Pool</span>
+<span class="h3">H3: Low Code Productivity</span>
+<span class="h3">H3: Composability is Here</span>
+<span class="h2">H2: Go live with trusted digital leaders</span>
+<span class="h2">H2: Customer Stories</span>
+<span class="h2">H2: How it works</span>
+<span class="h3">H3: Create content in Microsoft Word or Google Docs</span>
+<span class="h3">H3: Share your folder with Adobe</span>
+<span class="h3">H3: See your site in action</span>
+<span class="h2">H2: See the real value of Adobe Experience Manager</span>
+    </div>
+    <p style="margin-top:8px; font-size:13px; color:var(--fg-muted);">Note: H1 ("Create a website, seriously fast") does not mention the brand name "Adobe Experience Manager" or "Edge Delivery Services". The title tag ("Adobe Experience Manager") and H1 text are completely different, which is uncommon.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Tutorial Heading Structure</div>
+    <div class="heading-tree">
+<span class="h1">H1: Getting Started -- Developer Tutorial</span>
+<span class="h2">H2: Documentation (nav)</span>
+<span class="h2">H2: Resources (nav)</span>
+<span class="h2">H2: Create your site (nav)</span>
+<span class="h2">H2: Getting Started -- Developer Tutorial</span>
+<span class="h2">H2: Get started with the boilerplate repository template</span>
+<span class="h2">H2: Edit, Preview and Publish your content</span>
+<span class="h2">H2: Install Sidekick</span>
+<span class="h2">H2: Start developing styling and functionality</span>
+    </div>
+    <p style="margin-top:8px; font-size:13px; color:var(--fg-muted);">Note: The navigation sidebar contributes H2 headings ("Documentation", "Resources", "Create your site") to every docs page. This means all docs pages have navigation headings in the document outline, which dilutes the content heading hierarchy.</p>
+  </div>
+
+  <div class="finding warning">
+    <div class="finding-title">Navigation Headings Pollute Document Outline</div>
+    <p>The sidebar navigation uses H2 elements ("Documentation", "Resources", "Create your site") that appear in the heading outline of every documentation page. These are navigational, not content, headings. Search engines may interpret them as content sections, diluting the topical focus of each page.</p>
+  </div>
+</section>
+
+<!-- ================================================================
+     TECHNICAL SEO
+     ================================================================ -->
+<section class="section" id="technical-seo">
+  <h2 class="section-title">Technical SEO Signals</h2>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-title">HTTPS &amp; Security</div>
+    <div class="meta-grid" style="margin-top:8px;">
+      <div class="meta-item">
+        <span class="label">HTTP to HTTPS Redirect</span>
+        <span class="value present">301 redirect: http://www.aem.live/ -> https://www.aem.live/</span>
+      </div>
+      <div class="meta-item">
+        <span class="label">Non-WWW Redirect</span>
+        <span class="value present">301 redirect: aem.live -> www.aem.live (both HTTP and HTTPS)</span>
+      </div>
+      <div class="meta-item">
+        <span class="label">HSTS</span>
+        <span class="value present">strict-transport-security: max-age=31557600 (~1 year)</span>
+      </div>
+      <div class="meta-item">
+        <span class="label">CSP</span>
+        <span class="value present">script-src with nonce, strict-dynamic; base-uri 'self'; object-src 'none'</span>
+      </div>
+      <div class="meta-item">
+        <span class="label">Server</span>
+        <span class="value mono">Cloudflare (CDN: Varnish)</span>
+      </div>
+      <div class="meta-item">
+        <span class="label">HTTP/2</span>
+        <span class="value present">Yes (HTTP/2, H3 via alt-svc)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-title">Trailing Slash Behavior</div>
+    <div class="data-table-wrap" style="margin-top:8px;">
+      <table class="data-table">
+        <thead>
+          <tr><th>URL</th><th>Status</th><th>Behavior</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="mono">/docs</td>
+            <td><span class="badge badge-warn">301</span></td>
+            <td>Redirects to /docs/ (trailing slash added)</td>
+          </tr>
+          <tr>
+            <td class="mono">/docs/</td>
+            <td><span class="badge badge-pass">200</span></td>
+            <td>Canonical form (with trailing slash)</td>
+          </tr>
+          <tr>
+            <td class="mono">/developer/tutorial</td>
+            <td><span class="badge badge-pass">200</span></td>
+            <td>Canonical form (no trailing slash)</td>
+          </tr>
+          <tr>
+            <td class="mono">/developer/tutorial/</td>
+            <td><span class="badge badge-fail">404</span></td>
+            <td>Returns 404 (trailing slash breaks it)</td>
+          </tr>
+          <tr>
+            <td class="mono">/docs/faq</td>
+            <td><span class="badge badge-pass">200</span></td>
+            <td>Canonical form (no trailing slash)</td>
+          </tr>
+          <tr>
+            <td class="mono">/docs/faq/</td>
+            <td><span class="badge badge-fail">404</span></td>
+            <td>Returns 404 (trailing slash breaks it)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="finding warning" style="margin-top:12px;">
+      <div class="finding-title">Inconsistent Trailing Slash Convention</div>
+      <p>The /docs/ hub requires a trailing slash (redirects /docs -> /docs/), but sub-pages reject trailing slashes with 404s. This inconsistency can confuse crawlers and create duplicate URL problems. The sitemap also shows mixed patterns: most URLs lack trailing slashes, but some /tools/ paths include them.</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-title">Site-Wide Missing Elements</div>
+    <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:12px; margin-top:12px;">
+      <div style="background:var(--red-bg); padding:12px 16px; border-radius:var(--radius-sm);">
+        <strong style="color:var(--red);">lang="en" Missing on All Pages</strong><br>
+        <span style="font-size:13px;">Every page has a bare <code>&lt;html&gt;</code> tag with no lang attribute. This is an accessibility failure (WCAG 3.1.1) and signals to search engines that the language is unknown.</span>
+      </div>
+      <div style="background:var(--red-bg); padding:12px 16px; border-radius:var(--radius-sm);">
+        <strong style="color:var(--red);">No Favicon Link Tag in HTML</strong><br>
+        <span style="font-size:13px;">No page includes a <code>&lt;link rel="icon"&gt;</code>. The site relies on the /favicon.ico convention (which redirects to a media hash). An explicit link tag would be more reliable.</span>
+      </div>
+      <div style="background:var(--red-bg); padding:12px 16px; border-radius:var(--radius-sm);">
+        <strong style="color:var(--red);">No Apple Touch Icon</strong><br>
+        <span style="font-size:13px;">/apple-touch-icon.png returns 404. No apple-touch-icon link tag. iOS users adding the site to their home screen get a generic icon.</span>
+      </div>
+      <div style="background:var(--red-bg); padding:12px 16px; border-radius:var(--radius-sm);">
+        <strong style="color:var(--red);">og:type Missing on All Pages</strong><br>
+        <span style="font-size:13px;">No page specifies og:type (should be "website" for homepage, "article" for docs). Required by OG protocol specification.</span>
+      </div>
+      <div style="background:var(--amber-bg); padding:12px 16px; border-radius:var(--radius-sm);">
+        <strong style="color:var(--amber);">No Hreflang Tags</strong><br>
+        <span style="font-size:13px;">No hreflang tags on any page. This is acceptable if the site is English-only with no localized versions, but should be added if localization is planned.</span>
+      </div>
+      <div style="background:var(--amber-bg); padding:12px 16px; border-radius:var(--radius-sm);">
+        <strong style="color:var(--amber);">No Robots Meta Tag</strong><br>
+        <span style="font-size:13px;">No page has a robots meta tag. While this defaults to index/follow, explicit declaration is a best practice.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     ROBOTS & SITEMAP
+     ================================================================ -->
+<section class="section" id="robots-sitemap">
+  <h2 class="section-title">Robots.txt &amp; Sitemap</h2>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-title">robots.txt</div>
+    <div class="code-block">User-Agent: *
+Allow: /
+Sitemap: https://www.aem.live/sitemap.xml</div>
+    <div class="finding good" style="margin-top:12px;">
+      <div class="finding-title">Clean and Open</div>
+      <p>Robots.txt allows all crawlers full access and correctly references the sitemap. No unnecessary blocks.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">sitemap.xml</div>
+    <div class="meta-grid" style="margin-top:8px;">
+      <div class="meta-item">
+        <span class="label">Format</span>
+        <span class="value">Single flat sitemap (no sitemap index)</span>
+      </div>
+      <div class="meta-item">
+        <span class="label">Total URLs</span>
+        <span class="value"><strong>241</strong></span>
+      </div>
+      <div class="meta-item">
+        <span class="label">lastmod Range</span>
+        <span class="value">2025-11-13 to 2026-02-23</span>
+      </div>
+      <div class="meta-item">
+        <span class="label">changefreq / priority</span>
+        <span class="value missing">NOT PRESENT</span>
+      </div>
+      <div class="meta-item">
+        <span class="label">Trailing Slash Consistency</span>
+        <span class="value" style="background:var(--amber-bg); color:var(--amber);font-weight:600;">Mixed: most without, some /tools/ paths with</span>
+      </div>
+    </div>
+    <div style="margin-top:16px;">
+      <p style="font-size:14px;"><strong>URL directory distribution:</strong></p>
+      <ul style="padding-left:20px; font-size:14px; margin-top:4px;">
+        <li><code>/docs/</code> -- documentation pages</li>
+        <li><code>/developer/</code> -- developer guides and block collection</li>
+        <li><code>/business/</code> -- business content</li>
+        <li><code>/blog/</code> -- blog posts</li>
+        <li><code>/tools/</code> -- utilities</li>
+        <li><code>/previous/</code> -- archived content</li>
+        <li><code>/experiments/</code> -- experimental pages</li>
+      </ul>
+    </div>
+    <div class="finding info" style="margin-top:12px;">
+      <div class="finding-title">Query Index vs. Sitemap Count Mismatch</div>
+      <p>The query index has 197 pages while the sitemap has 241 URLs (previously 192 in earlier checks). The sitemap includes paths not in the query index (e.g., /tools/, /experiments/) and vice versa. This gap should be audited and reconciled.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     SERP PRESENCE
+     ================================================================ -->
+<section class="section" id="serp-presence">
+  <h2 class="section-title">SERP Presence &amp; Brand Appearance</h2>
+
+  <h3 style="font-size:18px; font-weight:700; color:var(--fg-heading); margin-bottom:16px;">Simulated SERP Previews (Based on Actual Metadata)</h3>
+
+  <div class="serp-preview">
+    <div class="serp-url">https://www.aem.live</div>
+    <div class="serp-title">Adobe Experience Manager</div>
+    <div class="serp-desc">Frictionless experience management: Build blazing fast websites using tools content creators and developers already know.</div>
+  </div>
+
+  <div class="serp-preview">
+    <div class="serp-url">https://www.aem.live > docs</div>
+    <div class="serp-title">Documentation</div>
+    <div class="serp-desc">Documentation hub for authors, developers and operations.</div>
+  </div>
+
+  <div class="serp-preview">
+    <div class="serp-url">https://www.aem.live > developer > tutorial</div>
+    <div class="serp-title">Getting Started -- Developer Tutorial</div>
+    <div class="serp-desc">This tutorial will get you up-and-running with a new Adobe Experience Manager (AEM) project. In ten to twenty minutes, you will have created your own ...</div>
+  </div>
+
+  <div class="serp-preview">
+    <div class="serp-url">https://www.aem.live > docs > faq</div>
+    <div class="serp-title">Frequently Asked Questions</div>
+    <div class="serp-desc">Franklin and Helix were internal project names for the Adobe Experience Manager engineering team's initiative to develop an innovative publishing and delivery service situated at ...</div>
+  </div>
+
+  <div class="finding critical" style="margin-top:16px;">
+    <div class="finding-title">Brand Fragmentation in Search Results</div>
+    <p>The SERP previews reveal serious brand inconsistency:</p>
+    <ul style="padding-left:20px; font-size:14px; margin-top:8px;">
+      <li><strong>Homepage title</strong> says "Adobe Experience Manager" -- no mention of Edge Delivery Services or what the product actually is</li>
+      <li><strong>Docs hub title</strong> is just "Documentation" -- no brand qualifier. In a search result, users cannot tell what product this documents.</li>
+      <li><strong>FAQ description</strong> leads with deprecated names "Franklin and Helix" -- these appear verbatim in search results</li>
+      <li><strong>Architecture title</strong> is just "Architecture" -- zero brand context outside the URL</li>
+      <li><strong>No title template</strong> -- pages lack a consistent suffix like "| Adobe Experience Manager" or "| AEM Edge Delivery Services"</li>
+    </ul>
+  </div>
+
+  <h3 style="font-size:18px; font-weight:700; color:var(--fg-heading); margin:32px 0 16px;">Web Search Results for Brand Terms</h3>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-title">Search: "aem edge delivery services"</div>
+    <div style="font-size:14px; margin-top:8px;">
+      <p style="margin-bottom:12px;"><strong>Key observation: www.aem.live does NOT appear in the top 10 results.</strong></p>
+      <p>Instead, the results are dominated by:</p>
+      <ul style="padding-left:20px; margin-top:8px; margin-bottom:12px;">
+        <li><strong>Adobe partners and agencies:</strong> Arbor Digital, ShiftParadigm, GSPANN, Ranosys, TTMS, Merkle</li>
+        <li><strong>Adobe Experience League:</strong> experienceleague.adobe.com (official docs on different domain)</li>
+        <li><strong>Medium articles</strong> by individual practitioners</li>
+        <li><strong>LinkedIn articles</strong> discussing the product</li>
+        <li><strong>Adobe Certification</strong> page (certification.adobe.com)</li>
+      </ul>
+      <p>The aem.live site itself is outranked by partner blog posts for its own primary brand term. This is a significant authority/SEO signal problem.</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-title">Search: "adobe edge delivery services"</div>
+    <div style="font-size:14px; margin-top:8px;">
+      <p style="margin-bottom:12px;"><strong>aem.live/docs/architecture appears at approximately position 9</strong> -- the only aem.live page in the top 10.</p>
+      <p>The results are dominated by:</p>
+      <ul style="padding-left:20px; margin-top:8px; margin-bottom:12px;">
+        <li><strong>Adobe Experience League</strong> (multiple positions: overview, sites-and-edge, cloud-manager, forms)</li>
+        <li><strong>Experience League Community</strong> forums</li>
+        <li><strong>Agency sites:</strong> TTMS, Ranosys, Merkle</li>
+        <li><strong>Medium articles</strong></li>
+      </ul>
+      <p>The architecture page ranks because its meta description contains "Edge Delivery Services" -- demonstrating the value of brand-keyword-rich descriptions that other pages lack.</p>
+    </div>
+  </div>
+
+  <div class="finding critical">
+    <div class="finding-title">aem.live Is Not Ranking for Its Own Brand Terms</div>
+    <p>The product's primary documentation site (www.aem.live) is essentially invisible in search results for "aem edge delivery services" and barely visible for "adobe edge delivery services". This is caused by a combination of factors:</p>
+    <ul style="padding-left:20px; font-size:14px; margin-top:8px;">
+      <li>Title tags are generic and lack brand keywords</li>
+      <li>Meta descriptions rarely mention "Edge Delivery Services"</li>
+      <li>No structured data to help search engines understand the site's authority</li>
+      <li>Competing with Adobe's own Experience League domain for the same terms</li>
+      <li>Third-party agencies are writing more keyword-optimized content about EDS than aem.live itself</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================================================================
+     BRAND CONSISTENCY
+     ================================================================ -->
+<section class="section" id="brand-consistency">
+  <h2 class="section-title">Brand Naming Consistency in SEO Elements</h2>
+
+  <div class="data-table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Page</th>
+          <th>Title Uses Brand Name?</th>
+          <th>Description Uses Brand Name?</th>
+          <th>H1 Uses Brand Name?</th>
+          <th>Old Names in Metadata?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Homepage</strong></td>
+          <td><span class="badge badge-pass">Yes</span> "Adobe Experience Manager"</td>
+          <td><span class="badge badge-fail">No</span> (generic)</td>
+          <td><span class="badge badge-fail">No</span> "Create a website, seriously fast"</td>
+          <td><span class="badge badge-pass">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>Docs Hub</strong></td>
+          <td><span class="badge badge-fail">No</span> Just "Documentation"</td>
+          <td><span class="badge badge-fail">No</span> (generic)</td>
+          <td><span class="badge badge-pass">Yes</span> mentions "Adobe Experience Manager"</td>
+          <td><span class="badge badge-pass">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>Tutorial</strong></td>
+          <td><span class="badge badge-fail">No</span> "Getting Started -- Developer Tutorial"</td>
+          <td><span class="badge badge-pass">Yes</span> "Adobe Experience Manager (AEM)"</td>
+          <td><span class="badge badge-fail">No</span></td>
+          <td><span class="badge badge-pass">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>FAQ</strong></td>
+          <td><span class="badge badge-fail">No</span> "Frequently Asked Questions"</td>
+          <td><span class="badge badge-fail">No</span></td>
+          <td><span class="badge badge-fail">No</span></td>
+          <td><span class="badge badge-fail">Yes</span> "Franklin and Helix" in description</td>
+        </tr>
+        <tr>
+          <td><strong>Authoring</strong></td>
+          <td><span class="badge badge-fail">No</span> "Authoring and Publishing Content"</td>
+          <td><span class="badge badge-warn">Partial</span> "AEM Sidekick" (abbreviation only)</td>
+          <td><span class="badge badge-fail">No</span></td>
+          <td><span class="badge badge-pass">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>Performance</strong></td>
+          <td><span class="badge badge-fail">No</span> "Web Performance, Keeping..."</td>
+          <td><span class="badge badge-fail">No</span> (completely generic)</td>
+          <td><span class="badge badge-fail">No</span></td>
+          <td><span class="badge badge-pass">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>Go-Live</strong></td>
+          <td><span class="badge badge-fail">No</span> "Go-Live Checklist"</td>
+          <td><span class="badge badge-fail">No</span> (generic)</td>
+          <td><span class="badge badge-fail">No</span></td>
+          <td><span class="badge badge-pass">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>Architecture</strong></td>
+          <td><span class="badge badge-fail">No</span> Just "Architecture"</td>
+          <td><span class="badge badge-pass">Yes</span> "Edge Delivery Services...Adobe Experience Manager"</td>
+          <td><span class="badge badge-fail">No</span></td>
+          <td><span class="badge badge-pass">No</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="finding critical" style="margin-top:16px;">
+    <div class="finding-title">1 of 8 Titles Contains the Brand Name</div>
+    <p>Only the homepage title tag mentions "Adobe Experience Manager". The other 7 pages have completely generic titles ("Documentation", "Architecture", "Go-Live Checklist") that could belong to any product. There is no title template appending a brand suffix. Combined with the lack of structured data, search engines have very little signal connecting these pages to the AEM brand.</p>
+  </div>
+
+  <div class="finding warning" style="margin-top:8px;">
+    <div class="finding-title">Brand Name vs. Product Name Confusion</div>
+    <p>The site uses "Adobe Experience Manager" as the brand but the product is "Edge Delivery Services". The title tag says "Adobe Experience Manager" (the umbrella platform), the H1 says "Create a website, seriously fast" (marketing tagline), and the actual product name "Edge Delivery Services" appears almost nowhere in SEO-critical elements. Users searching for "Edge Delivery Services" documentation cannot find this site.</p>
+  </div>
+</section>
+
+<!-- ================================================================
+     KEY FINDINGS
+     ================================================================ -->
+<section class="section" id="findings">
+  <h2 class="section-title">Key Findings &amp; Recommendations</h2>
+
+  <div class="finding critical">
+    <div class="finding-title">CRITICAL: Site Is Invisible for Its Own Brand Keywords</div>
+    <p>www.aem.live does not rank in the top 10 for "aem edge delivery services" and barely appears for "adobe edge delivery services". Third-party agency blog posts outrank the official product site. This is an existential SEO problem.</p>
+    <p style="margin-top:8px;"><strong>Fix:</strong> Implement a title template ("Page Title | AEM Edge Delivery Services"), add brand keywords to meta descriptions, deploy structured data, and build topic authority through optimized content.</p>
+  </div>
+
+  <div class="finding critical">
+    <div class="finding-title">CRITICAL: No lang Attribute on Any Page</div>
+    <p>Every page has <code>&lt;html&gt;</code> without a lang attribute. This fails WCAG 3.1.1 (Level A accessibility), degrades screen reader experience, and removes a language signal for search engines.</p>
+    <p style="margin-top:8px;"><strong>Fix:</strong> Add <code>lang="en"</code> to the html tag site-wide.</p>
+  </div>
+
+  <div class="finding critical">
+    <div class="finding-title">CRITICAL: Structured Data Nearly Absent</div>
+    <p>Only the homepage has JSON-LD (a minimal Corporation schema). 7 of 8 pages have zero structured data. The FAQ page lacks FAQPage schema. No BreadcrumbList, no WebSite, no TechArticle schemas.</p>
+    <p style="margin-top:8px;"><strong>Fix:</strong> Add FAQPage schema to the FAQ, WebSite + Organization to homepage, BreadcrumbList to all pages, TechArticle to documentation pages.</p>
+  </div>
+
+  <div class="finding critical">
+    <div class="finding-title">CRITICAL: Generic Titles Without Brand Context</div>
+    <p>7 of 8 title tags contain no brand identifier. "Documentation", "Architecture", "Go-Live Checklist" are indistinguishable from any other product's documentation in search results.</p>
+    <p style="margin-top:8px;"><strong>Fix:</strong> Implement a title template: <code>{Page Title} | AEM Edge Delivery Services</code> or <code>{Page Title} -- Adobe Experience Manager</code>.</p>
+  </div>
+
+  <div class="finding warning">
+    <div class="finding-title">HIGH: og:type Missing Everywhere</div>
+    <p>The Open Graph protocol requires og:type. No page specifies it. This affects how social platforms classify shared links.</p>
+    <p style="margin-top:8px;"><strong>Fix:</strong> Add <code>og:type</code> = "website" on the homepage and "article" on documentation pages.</p>
+  </div>
+
+  <div class="finding warning">
+    <div class="finding-title">HIGH: 5 of 8 Pages Use Default Social Image</div>
+    <p>The homepage, docs hub, and performance guide all use <code>/default-social.png</code> instead of a page-specific social image. When these pages are shared on social media, they all show the same generic preview.</p>
+    <p style="margin-top:8px;"><strong>Fix:</strong> Create unique OG images for at minimum the homepage and docs hub.</p>
+  </div>
+
+  <div class="finding warning">
+    <div class="finding-title">HIGH: FAQ Description Contains Old Brand Names</div>
+    <p>The FAQ page's meta description starts with "Franklin and Helix were internal project names..." This appears in search results and social shares, surfacing deprecated internal codenames as the first thing users see.</p>
+    <p style="margin-top:8px;"><strong>Fix:</strong> Rewrite the FAQ description to lead with current brand language.</p>
+  </div>
+
+  <div class="finding warning">
+    <div class="finding-title">HIGH: Trailing Slash Inconsistency</div>
+    <p>/docs requires a trailing slash (301 redirect), but /docs/faq and /developer/tutorial return 404 with a trailing slash. This creates an inconsistent URL structure that can confuse crawlers.</p>
+    <p style="margin-top:8px;"><strong>Fix:</strong> Standardize on no trailing slashes and configure redirects accordingly, or ensure trailing slashes work everywhere.</p>
+  </div>
+
+  <div class="finding info">
+    <div class="finding-title">GOOD: Core Meta Tags Are Present</div>
+    <p>All 8 pages have title tags, meta descriptions, OG tags (except og:type), Twitter card tags, canonical URLs, and exactly one H1. The basic SEO infrastructure is solid -- it's the content and brand optimization of those tags that needs work.</p>
+  </div>
+
+  <div class="finding info">
+    <div class="finding-title">GOOD: Technical Foundation Is Strong</div>
+    <p>HTTPS is properly enforced with HSTS. HTTP/2 and H3 are supported. Non-www redirects work correctly. Cloudflare CDN delivers fast responses. Content Security Policy is properly configured with nonces.</p>
+  </div>
+</section>
+
+<!-- ================================================================
+     VALIDATION STAMP
+     ================================================================ -->
+<section id="validation">
+  <div class="validation-stamp">
+    <h3>Cross-Validation Stamp</h3>
+    <p style="font-size:14px; color:var(--fg); margin-bottom:12px;">All findings independently verified via raw HTTP requests. No self-grading.</p>
+    <ul>
+      <li>HTML &lt;head&gt; sections fetched via <code>curl</code> for all 8 pages -- raw HTML parsed, not rendered JavaScript</li>
+      <li>HTTP headers verified via <code>curl -sI</code> for HTTPS redirects, HSTS, HTTP/2, trailing slash behavior</li>
+      <li>robots.txt fetched and verified -- complete content: User-Agent: *, Allow: /, Sitemap reference</li>
+      <li>sitemap.xml fetched and parsed -- 241 URLs confirmed, lastmod range 2025-11-13 to 2026-02-23</li>
+      <li>&lt;html&gt; tag verified on all 8 pages -- bare <code>&lt;html&gt;</code> with no lang attribute confirmed</li>
+      <li>favicon.ico verified -- 301 redirect to /media_...ico (exists, 200), no explicit link tag in HTML</li>
+      <li>apple-touch-icon.png verified -- returns 404</li>
+      <li>Trailing slash behavior verified with 6 HTTP requests across 3 URL patterns</li>
+      <li>Non-www and HTTP/HTTPS redirect chains verified (aem.live -> www.aem.live, http -> https)</li>
+      <li>Web searches for "aem edge delivery services" and "adobe edge delivery services" executed to verify SERP presence</li>
+    </ul>
+  </div>
+</section>
+
+</div><!-- /container -->
+</body>
+</html>
