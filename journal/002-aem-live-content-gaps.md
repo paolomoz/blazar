@@ -73,6 +73,17 @@ The biggest finding is **content freshness**: 37% of pages haven't been updated 
 
 A complete, shareable content gaps report for www.aem.live. The analysis script is reusable and the data is saved for comparison over time. First entry in the blazar reports manifest.
 
+## Cross-Validation
+
+After the initial report was built, the user asked whether it had been cross-validated per project guidelines — it hadn't. Four parallel validation checks were run:
+
+1. **HTTP spot-checks** — curled all 10 index-not-in-sitemap, 5 sitemap-not-in-index, and 2 nav link targets. Found `/mwp-demo` returns 404 (dead page, added to report). Found `/home` and `/developer/anatomy-of-a-helix-project` both return 200 — reclassified from "broken" to "unindexed nav targets."
+2. **Stale content recount** — independently re-ran the 12-month cutoff calculation on raw data. Result: 72, matching exactly.
+3. **Old branding sampling** — fetched 5 flagged pages, grepped for Franklin/Helix/hlx. All confirmed with 15–21 mentions each — worse than flagged.
+4. **Metadata recount** — independently counted default images (65), empty descriptions (6), deprecated (2), labs (14). All matched exactly.
+
+**Corrections applied:** Reclassified "broken nav links" severity from critical to warning. Added dead page section. Added validation stamp to report.
+
 ## Thesis Reflections
 
 This session demonstrates the core value proposition of blazar: point the LLM at a site, get a comprehensive analysis in a single conversation. A human analyst doing this manually would need to:
