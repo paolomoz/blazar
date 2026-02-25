@@ -20,6 +20,11 @@
   let discoveryPrompts = null;
   let historyOpen = false;
   let writeMode = false;
+  const MODELS = [
+    { key: 'opus-4.6', label: 'Opus 4.6' },
+    { key: 'gpt-oss-120b', label: 'GPT-OSS 120B' },
+  ];
+  let selectedModel = localStorage.getItem('blazar-chat-model') || 'opus-4.6';
 
   /* ── Styles ── */
   const css = `
@@ -242,6 +247,35 @@
       30% { transform: translateY(-4px); }
     }
 
+    /* Thinking shimmer — shown while waiting for first content token */
+    .blazar-chat-thinking {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 4px 0;
+      font-size: 14px; color: #999;
+    }
+    .blazar-chat-thinking-text {
+      background: linear-gradient(90deg, #CCC 0%, #888 50%, #CCC 100%);
+      background-size: 200% 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: blazar-shimmer 1.5s ease-in-out infinite;
+    }
+    .blazar-chat-thinking-dots {
+      display: inline-flex; gap: 3px; align-items: center;
+    }
+    .blazar-chat-thinking-dots span {
+      display: inline-block; width: 4px; height: 4px;
+      border-radius: 50%; background: #BBB;
+      animation: blazar-chat-bounce 1.2s infinite;
+    }
+    .blazar-chat-thinking-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .blazar-chat-thinking-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes blazar-shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
     /* Discovery prompts — Manus suggested follow-ups style */
     .blazar-chat-discovery {
       padding: 20px;
@@ -329,6 +363,26 @@
     }
     .blazar-chat-write-toggle.active:hover { background: #333; border-color: #333; }
     .blazar-chat-write-toggle svg { width: 13px; height: 13px; flex-shrink: 0; }
+
+    /* Model selector */
+    .blazar-chat-model-select {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 4px 8px;
+      border-radius: 20px;
+      border: 1px solid #E0E0E0;
+      background: #FFFFFF;
+      font-family: inherit; font-size: 12px; font-weight: 500;
+      color: #999;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .blazar-chat-model-select:hover { border-color: #CCC; color: #666; }
+    .blazar-chat-model-select svg { width: 10px; height: 10px; flex-shrink: 0; }
+    .blazar-chat-input-right {
+      display: flex; align-items: center; gap: 8px;
+    }
 
     /* Bottom spacer for scroll */
     .blazar-chat-spacer { height: 20px; flex-shrink: 0; }
@@ -883,7 +937,10 @@
           <textarea class="blazar-chat-textarea" placeholder="Ask about reports..." rows="1"></textarea>
           <div class="blazar-chat-input-actions">
             <button class="blazar-chat-write-toggle" aria-label="Toggle write mode" data-write-toggle>${WRITE_SVG}</button>
-            <button class="blazar-chat-send" aria-label="Send message" disabled>${SEND_SVG}</button>
+            <div class="blazar-chat-input-right">
+              <button class="blazar-chat-model-select" aria-label="Switch model" data-model-select>${(MODELS.find(m => m.key === selectedModel) || MODELS[0]).label} <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 4L5 6.5L7.5 4"/></svg></button>
+              <button class="blazar-chat-send" aria-label="Send message" disabled>${SEND_SVG}</button>
+            </div>
           </div>
         </div>
       </div>
@@ -970,6 +1027,16 @@
       writeMode = !writeMode;
       writeToggleBtn.classList.toggle('active', writeMode);
       textarea.placeholder = writeMode ? 'Ask anything or request a new report...' : 'Ask about reports...';
+      textarea.focus();
+    });
+
+    const modelSelectBtn = panel.querySelector('[data-model-select]');
+    modelSelectBtn.addEventListener('click', () => {
+      const idx = MODELS.findIndex(m => m.key === selectedModel);
+      const next = MODELS[(idx + 1) % MODELS.length];
+      selectedModel = next.key;
+      localStorage.setItem('blazar-chat-model', selectedModel);
+      modelSelectBtn.innerHTML = `${next.label} <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 4L5 6.5L7.5 4"/></svg>`;
       textarea.focus();
     });
 
@@ -1141,7 +1208,11 @@
       } else {
         const wrap = document.createElement('div');
         wrap.className = 'blazar-chat-msg-assistant-wrap';
-        wrap.innerHTML = `<div class="blazar-chat-msg-label">${SPARKLE_SVG} blazar</div><div class="blazar-chat-msg-body">${renderMarkdown(msg.content)}</div>`;
+        const isThinking = isStreaming && !msg.content && msg === messages[messages.length - 1];
+        const bodyHtml = isThinking
+          ? `<div class="blazar-chat-thinking"><span class="blazar-chat-thinking-text">Thinking</span><span class="blazar-chat-thinking-dots"><span></span><span></span><span></span></span></div>`
+          : renderMarkdown(msg.content);
+        wrap.innerHTML = `<div class="blazar-chat-msg-label">${SPARKLE_SVG} blazar</div><div class="blazar-chat-msg-body">${bodyHtml}</div>`;
         messagesEl.appendChild(wrap);
       }
     });
@@ -1382,7 +1453,6 @@
     updateChatTitle(chat);
     saveStore();
     renderTabs();
-    renderMessages();
 
     isStreaming = true;
     sendBtn.disabled = false;
@@ -1390,6 +1460,7 @@
     sendBtn.innerHTML = STOP_SVG;
     textarea.disabled = true;
     abortController = new AbortController();
+    renderMessages();
 
     const apiMessages = chat.messages.filter(m => m.role === 'user' || m.role === 'assistant').map(m => ({ role: m.role, content: m.content }));
 
@@ -1397,13 +1468,15 @@
       const resp = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: apiMessages, mode: writeMode ? 'write' : 'read' }),
+        body: JSON.stringify({ messages: apiMessages, mode: writeMode ? 'write' : 'read', model: selectedModel }),
         signal: abortController.signal,
       });
       if (!resp.ok) throw new Error(`API error (${resp.status})`);
 
       chat.messages.push({ role: 'assistant', content: '' });
       renderMessages();
+      // Yield to browser so the thinking shimmer paints before stream blocks
+      await new Promise(r => requestAnimationFrame(r));
 
       const reader = resp.body.getReader();
       const decoder = new TextDecoder();

@@ -143,9 +143,56 @@ async function loadManifest(env, requestUrl) {
   return [...merged.values()];
 }
 
-export async function onRequestPost(context) {
-  const { request, env } = context;
+/* ── Parse AWS EventStream binary format from Bedrock ── */
+async function* parseBedrockStream(reader) {
+  let buf = new Uint8Array(0);
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    const next = new Uint8Array(buf.length + value.length);
+    next.set(buf);
+    next.set(value, buf.length);
+    buf = next;
+    while (buf.length >= 12) {
+      const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
+      const totalLen = view.getUint32(0);
+      if (buf.length < totalLen) break;
+      const headersLen = view.getUint32(4);
+      const headers = {};
+      let pos = 12;
+      const headersEnd = 12 + headersLen;
+      while (pos < headersEnd) {
+        const nameLen = buf[pos]; pos += 1;
+        const name = new TextDecoder().decode(buf.slice(pos, pos + nameLen)); pos += nameLen;
+        const valueType = buf[pos]; pos += 1;
+        if (valueType === 7) {
+          const vLen = new DataView(buf.buffer, buf.byteOffset + pos, 2).getUint16(0); pos += 2;
+          headers[name] = new TextDecoder().decode(buf.slice(pos, pos + vLen)); pos += vLen;
+        } else { break; }
+      }
+      const payloadLen = totalLen - 12 - headersLen - 4;
+      const payload = buf.slice(12 + headersLen, 12 + headersLen + payloadLen);
+      buf = buf.slice(totalLen);
+      if (headers[':message-type'] === 'event' && headers[':event-type'] === 'chunk') {
+        try {
+          const wrapper = JSON.parse(new TextDecoder().decode(payload));
+          if (wrapper.bytes) yield JSON.parse(atob(wrapper.bytes));
+        } catch {}
+      } else if (headers[':message-type'] === 'exception') {
+        try {
+          const err = JSON.parse(new TextDecoder().decode(payload));
+          throw new Error(err.message || 'Bedrock stream exception');
+        } catch (e) {
+          if (e instanceof Error && e.message !== 'Bedrock stream exception') throw e;
+          throw new Error('Bedrock stream exception');
+        }
+      }
+    }
+  }
+}
 
+/* ── Cerebras path — proxy OpenAI-compatible SSE ── */
+async function handleCerebras(env, messages) {
   const apiKey = env.CEREBRAS_API_KEY;
   if (!apiKey) {
     return new Response(JSON.stringify({ error: 'CEREBRAS_API_KEY not configured' }), {
@@ -153,28 +200,6 @@ export async function onRequestPost(context) {
       headers: { 'Content-Type': 'application/json', ...corsHeaders() },
     });
   }
-
-  let body;
-  try {
-    body = await request.json();
-  } catch {
-    return new Response(JSON.stringify({ error: 'Invalid JSON' }), {
-      status: 400,
-      headers: { 'Content-Type': 'application/json', ...corsHeaders() },
-    });
-  }
-
-  // Build report context dynamically from manifest
-  const manifest = await loadManifest(env, request.url);
-  const reportsContext = buildReportsContext(manifest);
-  const systemPrompt = body.mode === 'write'
-    ? writePrompt(reportsContext)
-    : readPrompt(reportsContext);
-
-  const messages = [
-    { role: 'system', content: systemPrompt },
-    ...(body.messages || []),
-  ];
 
   const resp = await fetch('https://api.cerebras.ai/v1/chat/completions', {
     method: 'POST',
@@ -206,6 +231,112 @@ export async function onRequestPost(context) {
       ...corsHeaders(),
     },
   });
+}
+
+/* ── Bedrock path — convert binary EventStream to OpenAI SSE ── */
+async function handleBedrock(context, systemPrompt, userMessages) {
+  const { env } = context;
+  const apiKey = env.ANTHROPIC_AWS_BEARER_TOKEN_BEDROCK;
+  if (!apiKey) {
+    return new Response(JSON.stringify({ error: 'ANTHROPIC_AWS_BEARER_TOKEN_BEDROCK not configured' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json', ...corsHeaders() },
+    });
+  }
+
+  const region = env.AWS_REGION || 'us-east-1';
+  const modelId = env.ANTHROPIC_MODEL || 'global.anthropic.claude-opus-4-6-v1';
+  const bedrockUrl = `https://bedrock-runtime.${region}.amazonaws.com/model/${encodeURIComponent(modelId)}/invoke-with-response-stream`;
+
+  const resp = await fetch(bedrockUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      anthropic_version: 'bedrock-2023-05-31',
+      max_tokens: 4096,
+      system: systemPrompt,
+      messages: userMessages,
+    }),
+  });
+
+  if (!resp.ok) {
+    const err = await resp.text();
+    return new Response(JSON.stringify({ error: `Bedrock API error: ${resp.status}`, detail: err }), {
+      status: resp.status,
+      headers: { 'Content-Type': 'application/json', ...corsHeaders() },
+    });
+  }
+
+  // Convert Bedrock binary EventStream → OpenAI-format SSE
+  const { readable, writable } = new TransformStream();
+  const writer = writable.getWriter();
+  const encoder = new TextEncoder();
+
+  context.waitUntil((async () => {
+    try {
+      const reader = resp.body.getReader();
+      for await (const event of parseBedrockStream(reader)) {
+        if (event.type === 'content_block_delta' && event.delta?.type === 'text_delta') {
+          const chunk = JSON.stringify({ choices: [{ delta: { content: event.delta.text } }] });
+          await writer.write(encoder.encode(`data: ${chunk}\n\n`));
+        }
+      }
+      await writer.write(encoder.encode('data: [DONE]\n\n'));
+    } catch (err) {
+      const errChunk = JSON.stringify({ choices: [{ delta: { content: `\n\n[Error: ${err.message}]` } }] });
+      await writer.write(encoder.encode(`data: ${errChunk}\n\n`));
+      await writer.write(encoder.encode('data: [DONE]\n\n'));
+    } finally {
+      await writer.close();
+    }
+  })());
+
+  return new Response(readable, {
+    headers: {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      'Connection': 'keep-alive',
+      ...corsHeaders(),
+    },
+  });
+}
+
+export async function onRequestPost(context) {
+  const { request, env } = context;
+
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return new Response(JSON.stringify({ error: 'Invalid JSON' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json', ...corsHeaders() },
+    });
+  }
+
+  // Build report context dynamically from manifest
+  const manifest = await loadManifest(env, request.url);
+  const reportsContext = buildReportsContext(manifest);
+  const systemPrompt = body.mode === 'write'
+    ? writePrompt(reportsContext)
+    : readPrompt(reportsContext);
+
+  const requestedModel = body.model || 'opus-4.6';
+  const userMessages = (body.messages || []).filter(m => m.role === 'user' || m.role === 'assistant').map(m => ({ role: m.role, content: m.content }));
+
+  if (requestedModel === 'opus-4.6') {
+    return handleBedrock(context, systemPrompt, userMessages);
+  }
+
+  // Default: Cerebras path (OpenAI-compatible, system message in messages array)
+  const messages = [
+    { role: 'system', content: systemPrompt },
+    ...userMessages,
+  ];
+  return handleCerebras(env, messages);
 }
 
 export async function onRequestOptions() {
