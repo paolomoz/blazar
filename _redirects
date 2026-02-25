@@ -1,0 +1,9 @@
+# Root and /reports redirect to hub
+/ /reports/hub 302
+/reports /reports/hub 302
+
+# Asset redirects — generated reports may reference root-level paths
+/blazar-reports.css /reports/blazar-reports.css 301
+/chat.js /reports/chat.js 301
+/blazar-logo-36.svg /reports/blazar-logo-36.svg 301
+/hub.html /reports/hub.html 301

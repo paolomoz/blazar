@@ -439,23 +439,22 @@
       margin-bottom: 10px; font-size: 13px; font-weight: 600; color: #1A1A1A;
     }
     .blazar-chat-generation-card .gen-header svg { width: 16px; height: 16px; }
+    .blazar-chat-generation-card .gen-meta {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 8px;
+    }
     .blazar-chat-generation-card .gen-status {
-      font-size: 13px; color: #666; margin-bottom: 8px;
+      font-size: 13px; color: #666;
+    }
+    .blazar-chat-generation-card .gen-elapsed {
+      font-size: 12px; color: #999; font-variant-numeric: tabular-nums;
     }
     .blazar-chat-generation-card .gen-bar {
       height: 4px; background: #E8E8E8; border-radius: 2px; overflow: hidden;
     }
     .blazar-chat-generation-card .gen-bar-fill {
       height: 100%; background: #1A1A1A; border-radius: 2px;
-      width: 0%; transition: width 0.3s ease;
-    }
-    .blazar-chat-generation-card.gen-indeterminate .gen-bar-fill {
-      width: 40%;
-      animation: blazar-gen-slide 1.5s ease-in-out infinite;
-    }
-    @keyframes blazar-gen-slide {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(350%); }
+      width: 0%; transition: width 0.6s ease;
     }
     .blazar-chat-generation-card .gen-link {
       display: flex; align-items: center; gap: 8px;
@@ -484,6 +483,33 @@
       margin-top: 8px; padding: 8px 10px;
       background: #FFF5F5; border: 1px solid #FFE0E0; border-radius: 8px;
       color: #CC3333; font-size: 13px;
+    }
+    .blazar-chat-generation-card .gen-link-live {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 12px; margin-top: 10px;
+      background: #FFFFFF; border: 2px solid #3B63FB; border-radius: 8px;
+      text-decoration: none; color: #1A1A1A;
+      animation: gen-live-pulse 2s ease-in-out infinite;
+      transition: box-shadow 0.15s;
+    }
+    .blazar-chat-generation-card .gen-link-live:hover {
+      box-shadow: 0 2px 12px rgba(59,99,251,0.2);
+    }
+    .blazar-chat-generation-card .gen-link-live .gen-link-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: #3B63FB; color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; flex-shrink: 0;
+    }
+    .blazar-chat-generation-card .gen-link-live .gen-link-title {
+      font-size: 14px; font-weight: 600; color: #3B63FB;
+    }
+    .blazar-chat-generation-card .gen-link-live .gen-link-url {
+      font-size: 12px; color: #999; margin-top: 1px;
+    }
+    @keyframes gen-live-pulse {
+      0%, 100% { border-color: #3B63FB; }
+      50% { border-color: #A8BFFF; }
     }
 
     /* Responsive */
@@ -1125,17 +1151,43 @@
   }
 
   /* ── Report generation ── */
+  function formatElapsed(ms) {
+    const secs = Math.floor(ms / 1000);
+    if (secs < 60) return `${secs}s`;
+    return `${Math.floor(secs / 60)}m ${secs % 60}s`;
+  }
+
   function renderGenerationCard(msg) {
     const card = document.createElement('div');
-    card.className = 'blazar-chat-generation-card' + (msg.genState === 'generating' ? ' gen-indeterminate' : '');
+    card.className = 'blazar-chat-generation-card';
     const BOLT_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`;
 
     let inner = `<div class="gen-header">${BOLT_SVG} Generating Report</div>`;
-    inner += `<div class="gen-status">${esc(msg.genStatus || 'Starting...')}</div>`;
+
+    const percent = msg.genPercent || 0;
+    const elapsed = msg.genStarted ? Date.now() - msg.genStarted : 0;
 
     if (msg.genState === 'generating') {
-      inner += `<div class="gen-bar"><div class="gen-bar-fill"></div></div>`;
-    } else if (msg.genState === 'done' && msg.genUrl) {
+      inner += `<div class="gen-meta"><div class="gen-status">${esc(msg.genStatus || 'Starting...')}</div><div class="gen-elapsed">${formatElapsed(elapsed)}</div></div>`;
+      inner += `<div class="gen-bar"><div class="gen-bar-fill" style="width:${percent}%"></div></div>`;
+      if (msg.genUrl) {
+        const title = msg.genTitle || 'Report';
+        inner += `<a class="gen-link-live" href="${msg.genUrl}" target="_blank">
+          <div class="gen-link-icon">\u{26A1}</div>
+          <div class="gen-link-body">
+            <div class="gen-link-title">View live &mdash; ${esc(title)}</div>
+            <div class="gen-link-url">${msg.genUrl}</div>
+          </div>
+        </a>`;
+      }
+    } else if (msg.genState === 'done') {
+      inner += `<div class="gen-meta"><div class="gen-status">${esc(msg.genStatus || 'Done')}</div><div class="gen-elapsed">${formatElapsed(elapsed)}</div></div>`;
+      inner += `<div class="gen-bar"><div class="gen-bar-fill" style="width:100%"></div></div>`;
+    } else {
+      inner += `<div class="gen-status">${esc(msg.genStatus || 'Starting...')}</div>`;
+    }
+
+    if (msg.genState === 'done' && msg.genUrl) {
       const title = msg.genTitle || 'Generated Report';
       inner += `<a class="gen-link" href="${msg.genUrl}">
         <div class="gen-link-icon">\u{1F4CB}</div>
@@ -1153,18 +1205,48 @@
   }
 
   async function triggerGeneration(spec, chat) {
+    const reportUrl = `/r/${spec.id}`;
+
     // Add a generation message to the chat
     const genMsg = {
       role: 'generation',
       genState: 'generating',
-      genStatus: 'Starting report generation...',
+      genStatus: 'Preparing report...',
       genTitle: spec.title,
+      genUrl: reportUrl,
+      genPercent: 0,
+      genStarted: Date.now(),
       content: '',
     };
+    genMsg.genHtml = '';  // accumulate all HTML for replay
     chat.messages.push(genMsg);
     chat.ts = Date.now();
     saveStore();
     renderMessages();
+
+    // BroadcastChannel for cross-tab streaming
+    let bc = null;
+    try { bc = new BroadcastChannel('blazar-report-' + spec.id); } catch {}
+
+    // Listen for sync requests from live viewers that opened mid-stream
+    if (bc) {
+      bc.onmessage = function(ev) {
+        if (ev.data && ev.data.type === 'sync' && genMsg.genState === 'generating') {
+          bc.postMessage({ type: 'full', html: genMsg.genHtml });
+        }
+      };
+    }
+
+    // Notify hub to show generating card
+    window.dispatchEvent(new CustomEvent('blazar-report-generating', {
+      detail: { id: spec.id, title: spec.title, subtitle: spec.subtitle || '', category: spec.category || 'audit', summary: spec.summary || '', related: spec.related || [] }
+    }));
+
+    // Tick the elapsed timer every second while generating
+    const elapsedTimer = setInterval(() => {
+      if (genMsg.genState === 'generating') renderMessages();
+      else clearInterval(elapsedTimer);
+    }, 1000);
 
     try {
       const resp = await fetch('/api/generate-report', {
@@ -1175,7 +1257,9 @@
 
       if (!resp.ok) {
         genMsg.genState = 'error';
-        genMsg.genError = `API error (${resp.status})`;
+        genMsg.genError = `Generation failed (${resp.status})`;
+        clearInterval(elapsedTimer);
+        if (bc) { bc.postMessage({ type: 'error' }); bc.close(); }
         saveStore();
         renderMessages();
         return;
@@ -1199,22 +1283,36 @@
           } else if (line.startsWith('data: ') && currentEvent) {
             try {
               const data = JSON.parse(line.slice(6));
-              if (currentEvent === 'progress') {
-                genMsg.genStatus = data.status;
+              if (currentEvent === 'chunk') {
+                // Accumulate HTML for replay, then relay to live viewer
+                genMsg.genHtml += data.delta || '';
+                if (bc) bc.postMessage({ type: 'chunk', delta: data.delta });
+                genMsg.genStatus = 'Writing report content...';
+                if (data.percent != null) genMsg.genPercent = data.percent;
                 renderMessages();
-              } else if (currentEvent === 'chunk') {
-                genMsg.genStatus = `Generating HTML... (${Math.round(data.length / 1024)}KB)`;
+              } else if (currentEvent === 'progress') {
+                genMsg.genStatus = data.status;
+                if (data.percent != null) genMsg.genPercent = data.percent;
                 renderMessages();
               } else if (currentEvent === 'done') {
                 genMsg.genState = 'done';
                 genMsg.genUrl = data.reportUrl;
-                genMsg.genStatus = 'Report generated successfully!';
+                genMsg.genPercent = 100;
+                genMsg.genStatus = 'Report ready';
+                clearInterval(elapsedTimer);
+                if (bc) { bc.postMessage({ type: 'done' }); bc.close(); bc = null; }
+                // Notify hub to transition generating card to permanent
+                window.dispatchEvent(new CustomEvent('blazar-report-generated', {
+                  detail: { manifest: data.manifest }
+                }));
                 chat.ts = Date.now();
                 saveStore();
                 renderMessages();
               } else if (currentEvent === 'error') {
                 genMsg.genState = 'error';
                 genMsg.genError = data.message;
+                clearInterval(elapsedTimer);
+                if (bc) { bc.postMessage({ type: 'error' }); bc.close(); bc = null; }
                 saveStore();
                 renderMessages();
               }
@@ -1228,12 +1326,16 @@
       if (genMsg.genState === 'generating') {
         genMsg.genState = 'error';
         genMsg.genError = 'Stream ended without completion';
+        clearInterval(elapsedTimer);
+        if (bc) { bc.postMessage({ type: 'error' }); bc.close(); bc = null; }
         saveStore();
         renderMessages();
       }
     } catch (err) {
       genMsg.genState = 'error';
       genMsg.genError = err.message || 'Network error';
+      clearInterval(elapsedTimer);
+      if (bc) { try { bc.postMessage({ type: 'error' }); bc.close(); } catch {} bc = null; }
       saveStore();
       renderMessages();
     }

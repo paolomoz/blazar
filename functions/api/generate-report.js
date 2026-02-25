@@ -24,12 +24,12 @@ Every report must follow this exact structure:
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700;900&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/blazar-reports.css">
+  <link rel="stylesheet" href="/reports/blazar-reports.css">
   <style>/* report-specific overrides only */</style>
 </head>
 <body>
   <nav class="report-nav">
-    <a href="/hub.html" class="nav-hub">← Hub</a>
+    <a href="/reports/hub.html" class="nav-hub">← Hub</a>
     <span class="nav-sep">|</span>
     <!-- related report links as .nav-related pills -->
   </nav>
@@ -42,7 +42,7 @@ Every report must follow this exact structure:
       </div>
       <div style="display:flex;align-items:center;gap:16px;">
         <div class="report-branding">
-          <img src="/blazar-logo-36.svg" width="28" height="28" alt="" class="logo-mark">
+          <img src="/reports/blazar-logo-36.svg" width="28" height="28" alt="" class="logo-mark">
           Blazar
         </div>
         <span class="report-date">{Date}</span>
@@ -54,7 +54,7 @@ Every report must follow this exact structure:
     <!-- Jump nav, sections, stat cards, tables, charts, etc. -->
   </div>
 
-  <script src="/chat.js"></script>
+  <script src="/reports/chat.js"></script>
 </body>
 </html>
 \`\`\`
@@ -75,7 +75,7 @@ Use these classes to build the report content:
 **Validation:** .validation-stamp
 
 ## Rules
-- Use ABSOLUTE paths for all assets: /blazar-reports.css, /chat.js, /blazar-logo-36.svg
+- Use ABSOLUTE paths for all assets: /reports/blazar-reports.css, /reports/chat.js, /reports/blazar-logo-36.svg
 - Do NOT embed the CSS inline — always use the external stylesheet link
 - Make the content detailed, data-rich, and visually structured
 - Use stat cards for key metrics, bar charts for distributions, tables for detailed data
@@ -86,9 +86,9 @@ Use these classes to build the report content:
 export async function onRequestPost(context) {
   const { request, env } = context;
 
-  const apiKey = env.ANTHROPIC_API_KEY;
+  const apiKey = env.ANTHROPIC_AWS_BEARER_TOKEN_BEDROCK;
   if (!apiKey) {
-    return new Response(JSON.stringify({ error: 'ANTHROPIC_API_KEY not configured' }), {
+    return new Response(JSON.stringify({ error: 'ANTHROPIC_AWS_BEARER_TOKEN_BEDROCK not configured' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json', ...corsHeaders() },
     });
@@ -127,19 +127,23 @@ export async function onRequestPost(context) {
   // Run generation in the background
   context.waitUntil((async () => {
     try {
-      sendSSE('progress', { status: 'Calling Claude API...' });
+      sendSSE('progress', { status: 'Analyzing report structure...', percent: 5 });
 
-      const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      const region = env.AWS_REGION || 'us-east-1';
+      const modelId = env.REPORT_MODEL || 'us.anthropic.claude-sonnet-4-20250514-v1:0';
+      const bedrockUrl = `https://bedrock-runtime.${region}.amazonaws.com/model/${encodeURIComponent(modelId)}/invoke-with-response-stream`;
+
+      sendSSE('progress', { status: 'Writing report content...', percent: 10 });
+
+      const resp = await fetch(bedrockUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01',
+          'Authorization': `Bearer ${apiKey}`,
         },
         body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
+          anthropic_version: 'bedrock-2023-05-31',
           max_tokens: 16000,
-          stream: true,
           system: SYSTEM_PROMPT,
           messages: [{ role: 'user', content: userPrompt }],
         }),
@@ -147,45 +151,27 @@ export async function onRequestPost(context) {
 
       if (!resp.ok) {
         const err = await resp.text();
-        sendSSE('error', { message: `Claude API error: ${resp.status}`, detail: err });
+        sendSSE('error', { message: `Report generation failed (${resp.status})`, detail: err });
         writer.close();
         return;
       }
 
-      sendSSE('progress', { status: 'Generating HTML...' });
-
-      let html = '';
+      // Parse AWS EventStream binary format from Bedrock streaming response
       const reader = resp.body.getReader();
-      const decoder = new TextDecoder();
-      let buffer = '';
-      let chunkCount = 0;
+      let html = '';
+      const EXPECTED_LENGTH = 18000;
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buffer += decoder.decode(value, { stream: true });
-
-        const lines = buffer.split('\n');
-        buffer = lines.pop() || '';
-
-        for (const line of lines) {
-          if (!line.startsWith('data: ')) continue;
-          const data = line.slice(6).trim();
-          if (!data || data === '[DONE]') continue;
-
-          try {
-            const parsed = JSON.parse(data);
-            if (parsed.type === 'content_block_delta' && parsed.delta?.text) {
-              html += parsed.delta.text;
-              chunkCount++;
-              // Send preview every 20 chunks
-              if (chunkCount % 20 === 0) {
-                sendSSE('chunk', { length: html.length });
-              }
-            }
-          } catch {}
+      for await (const event of parseBedrockStream(reader)) {
+        if (event.type === 'content_block_delta' && event.delta?.type === 'text_delta') {
+          const delta = event.delta.text;
+          html += delta;
+          const percent = Math.min(90, Math.round(10 + (html.length / EXPECTED_LENGTH) * 80));
+          sendSSE('chunk', { delta, percent, totalLength: html.length });
         }
       }
+
+      // Validate
+      sendSSE('progress', { status: 'Validating report...', percent: 92 });
 
       if (!html.includes('<!DOCTYPE html>') && !html.includes('<html')) {
         sendSSE('error', { message: 'Generated content is not valid HTML' });
@@ -193,7 +179,7 @@ export async function onRequestPost(context) {
         return;
       }
 
-      sendSSE('progress', { status: 'Storing report...' });
+      sendSSE('progress', { status: 'Publishing to report hub...', percent: 95 });
 
       // Store HTML in KV
       if (env.REPORTS) {
@@ -210,6 +196,10 @@ export async function onRequestPost(context) {
         category: spec.category || 'audit',
         summary: spec.summary || '',
         related: spec.related || [],
+        sections: (spec.sections || []).map(s => ({
+          id: s.id,
+          label: s.description || s.title || s.id,
+        })),
         generated: true,
       };
 
@@ -244,6 +234,77 @@ export async function onRequestPost(context) {
       ...corsHeaders(),
     },
   });
+}
+
+/**
+ * Parse AWS EventStream binary format from Bedrock invoke-with-response-stream.
+ * Each message: [total_len:4][headers_len:4][prelude_crc:4][headers:N][payload:M][msg_crc:4]
+ * Payload for chunk events contains base64-encoded JSON with Anthropic streaming events.
+ */
+async function* parseBedrockStream(reader) {
+  let buf = new Uint8Array(0);
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    // Append new data to buffer
+    const next = new Uint8Array(buf.length + value.length);
+    next.set(buf);
+    next.set(value, buf.length);
+    buf = next;
+
+    // Extract complete messages
+    while (buf.length >= 12) {
+      const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
+      const totalLen = view.getUint32(0);
+      if (buf.length < totalLen) break; // need more data
+
+      const headersLen = view.getUint32(4);
+      // prelude CRC at bytes 8-11 (skip)
+
+      // Parse headers to find :event-type and :message-type
+      const headers = {};
+      let pos = 12;
+      const headersEnd = 12 + headersLen;
+      while (pos < headersEnd) {
+        const nameLen = buf[pos]; pos += 1;
+        const name = new TextDecoder().decode(buf.slice(pos, pos + nameLen)); pos += nameLen;
+        const valueType = buf[pos]; pos += 1;
+        if (valueType === 7) { // string
+          const vLen = new DataView(buf.buffer, buf.byteOffset + pos, 2).getUint16(0); pos += 2;
+          headers[name] = new TextDecoder().decode(buf.slice(pos, pos + vLen)); pos += vLen;
+        } else {
+          break; // unknown type — skip rest of headers
+        }
+      }
+
+      // Extract payload
+      const payloadLen = totalLen - 12 - headersLen - 4;
+      const payload = buf.slice(12 + headersLen, 12 + headersLen + payloadLen);
+
+      // Advance buffer
+      buf = buf.slice(totalLen);
+
+      // Decode chunk events
+      if (headers[':message-type'] === 'event' && headers[':event-type'] === 'chunk') {
+        try {
+          const wrapper = JSON.parse(new TextDecoder().decode(payload));
+          if (wrapper.bytes) {
+            yield JSON.parse(atob(wrapper.bytes));
+          }
+        } catch {}
+      } else if (headers[':message-type'] === 'exception') {
+        try {
+          const err = JSON.parse(new TextDecoder().decode(payload));
+          throw new Error(err.message || 'Bedrock stream exception');
+        } catch (e) {
+          if (e instanceof Error && e.message !== 'Bedrock stream exception') throw e;
+          throw new Error('Bedrock stream exception');
+        }
+      }
+    }
+  }
 }
 
 function buildUserPrompt(spec) {

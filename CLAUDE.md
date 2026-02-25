@@ -42,6 +42,7 @@ TBD — to be defined as we build. Cloudflare-first for all blazar infrastructur
 
 ## Operational Notes
 
+- **LLM API:** Always use AWS Bedrock (via ABSK token), never the direct Anthropic API. Billing goes through AWS. The ABSK token authenticates with `Authorization: Bearer` against `bedrock-runtime.{region}.amazonaws.com`.
 - **API keys:** `.env` file in project root (gitignored).
 - **AEM EDS skills:** 17 skills installed via `aem-edge-delivery-services` plugin — use for all EDS analysis and development work.
 - **Reports:** Design follows `/Users/paolo/excat/nova/DESIGN.md`. To preview, use the local dev server (`npx wrangler pages dev .` or equivalent) at `localhost` — never open HTML files directly as `file://` because the chat widget and API calls require a server.
@@ -49,4 +50,6 @@ TBD — to be defined as we build. Cloudflare-first for all blazar infrastructur
 - **Report navigation:** Every report must include a sticky `.report-nav` bar at the top of `<body>` with a link back to `hub.html` and pill links to all `related` reports from the manifest. When creating or updating reports, always add this nav bar.
 - **Chat widget:** Every report includes `<script src="chat.js"></script>` before `</body>`. Persistent multi-tab chat assistant powered by Cloudflare Pages Function + Cerebras llama3.1-8b. Supports parallel conversations as browser-style tabs, history dropdown for reopening closed chats, localStorage persistence with migration from legacy format.
 - **Parallel agents:** For multi-report sprints, launch all research agents in a single tool call for maximum parallelism. Wall-clock time = slowest agent, not sum. Coordinate manifests after all agents complete.
+- **Generated report asset paths:** Reports served from `/r/{id}` (KV) must use absolute paths with `/reports/` prefix: `/reports/blazar-reports.css`, `/reports/chat.js`, `/reports/blazar-logo-36.svg`, `/reports/hub.html`. Never use bare `/blazar-reports.css` — it 404s. The `_redirects` file provides fallback redirects for backward compatibility.
+- **Live viewer streaming:** `/r/{id}` serves a live viewer shell when KV misses. Uses BroadcastChannel with sync/full/chunk/done protocol for replay support. The iframe needs `<meta charset="UTF-8">` and `<base href="/reports/">` injected after `<head>` to fix encoding and relative path resolution.
 - **Design refinement:** Use `/impeccable:critique` then the appropriate follow-up (`/impeccable:bolder`, `/impeccable:simplify`, etc.). Critique identifies specific issues; follow-up fixes them. Key principles: color as communication (not decoration), section-specific accents as visual landmarks, typography scale jumps for hierarchy. For simplification: lead with the single most important number/finding, use `<details>` for progressive disclosure, compress supporting sections into tables, remove redundant stat grids.
