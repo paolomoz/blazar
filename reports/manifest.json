@@ -1,7 +1,7 @@
 [
   {
     "id": "aem-live-content-gaps",
-    "file": "aem-live-content-gaps.html",
+    "file": "/reports/aem-live-content-gaps",
     "title": "Content Gaps Analysis: www.aem.live",
     "date": "2026-02-24",
     "category": "audit",
@@ -19,7 +19,7 @@
   },
   {
     "id": "aem-live-action-plan",
-    "file": "aem-live-action-plan.html",
+    "file": "/reports/aem-live-action-plan",
     "title": "Action Plan: www.aem.live",
     "date": "2026-02-24",
     "category": "optimization",
@@ -36,7 +36,7 @@
   },
   {
     "id": "aem-live-brand-guidelines",
-    "file": "aem-live-brand-guidelines.html",
+    "file": "/reports/aem-live-brand-guidelines",
     "title": "Brand Guidelines Extraction: www.aem.live",
     "date": "2026-02-24",
     "category": "brand",
@@ -56,7 +56,7 @@
   },
   {
     "id": "aem-live-brand-opportunities",
-    "file": "aem-live-brand-opportunities.html",
+    "file": "/reports/aem-live-brand-opportunities",
     "title": "Improvement Opportunities: www.aem.live Brand & Docs",
     "date": "2026-02-24",
     "category": "optimization",
@@ -74,7 +74,7 @@
   },
   {
     "id": "aem-live-readability",
-    "file": "aem-live-readability.html",
+    "file": "/reports/aem-live-readability",
     "title": "Content Readability Scoring: www.aem.live",
     "date": "2026-02-24",
     "category": "brand",
@@ -94,7 +94,7 @@
   },
   {
     "id": "aem-live-rum-analysis",
-    "file": "aem-live-rum-analysis.html",
+    "file": "/reports/aem-live-rum-analysis",
     "title": "Traffic-Weighted Content Intelligence: www.aem.live",
     "date": "2026-02-24",
     "category": "performance",
@@ -115,7 +115,7 @@
   },
   {
     "id": "aem-live-seo-signals",
-    "file": "aem-live-seo-signals.html",
+    "file": "/reports/aem-live-seo-signals",
     "title": "SEO Brand Signals: www.aem.live",
     "date": "2026-02-24",
     "category": "performance",
@@ -136,7 +136,7 @@
   },
   {
     "id": "aem-live-brand-consistency",
-    "file": "aem-live-brand-consistency.html",
+    "file": "/reports/aem-live-brand-consistency",
     "title": "Brand Consistency Scorecard: www.aem.live",
     "date": "2026-02-24",
     "category": "brand",
@@ -156,7 +156,7 @@
   },
   {
     "id": "aem-live-brand-evolution",
-    "file": "aem-live-brand-evolution.html",
+    "file": "/reports/aem-live-brand-evolution",
     "title": "Brand Evolution Timeline: AEM Edge Delivery Services",
     "date": "2026-02-24",
     "category": "brand",
@@ -178,7 +178,7 @@
   },
   {
     "id": "aem-live-competitor-positioning",
-    "file": "aem-live-competitor-positioning.html",
+    "file": "/reports/aem-live-competitor-positioning",
     "title": "Competitor Brand Positioning Audit: www.aem.live",
     "date": "2026-02-24",
     "category": "brand",
@@ -200,7 +200,7 @@
   },
   {
     "id": "aem-live-developer-touchpoints",
-    "file": "aem-live-developer-touchpoints.html",
+    "file": "/reports/aem-live-developer-touchpoints",
     "title": "Developer Touchpoint Brand Audit: www.aem.live",
     "date": "2026-02-24",
     "category": "brand",
@@ -222,7 +222,7 @@
   },
   {
     "id": "aem-live-link-equity",
-    "file": "aem-live-link-equity.html",
+    "file": "/reports/aem-live-link-equity",
     "title": "Internal Link Equity Map: www.aem.live",
     "date": "2026-02-24",
     "category": "audit",
@@ -244,7 +244,7 @@
   },
   {
     "id": "aem-live-image-quality",
-    "file": "aem-live-image-quality.html",
+    "file": "/reports/aem-live-image-quality",
     "title": "Image Quality & AI Improvement: www.aem.live",
     "date": "2026-02-24",
     "category": "brand",
@@ -260,7 +260,7 @@
   },
   {
     "id": "aem-live-performance-validation",
-    "file": "aem-live-performance-validation.html",
+    "file": "/reports/aem-live-performance-validation",
     "title": "Performance Brand Validation: www.aem.live",
     "date": "2026-02-24",
     "category": "performance",

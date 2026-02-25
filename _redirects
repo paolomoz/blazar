@@ -1,9 +1,26 @@
 # Root and /reports redirect to hub
 / /reports/hub 302
 /reports /reports/hub 302
+/hub /reports/hub-graph 302
 
 # Asset redirects — generated reports may reference root-level paths
 /blazar-reports.css /reports/blazar-reports.css 301
 /chat.js /reports/chat.js 301
 /blazar-logo-36.svg /reports/blazar-logo-36.svg 301
 /hub.html /reports/hub.html 301
+
+# Report redirects — bare slugs to /reports/ paths
+/aem-live-content-gaps /reports/aem-live-content-gaps 301
+/aem-live-action-plan /reports/aem-live-action-plan 301
+/aem-live-brand-guidelines /reports/aem-live-brand-guidelines 301
+/aem-live-brand-opportunities /reports/aem-live-brand-opportunities 301
+/aem-live-readability /reports/aem-live-readability 301
+/aem-live-rum-analysis /reports/aem-live-rum-analysis 301
+/aem-live-seo-signals /reports/aem-live-seo-signals 301
+/aem-live-brand-consistency /reports/aem-live-brand-consistency 301
+/aem-live-brand-evolution /reports/aem-live-brand-evolution 301
+/aem-live-competitor-positioning /reports/aem-live-competitor-positioning 301
+/aem-live-developer-touchpoints /reports/aem-live-developer-touchpoints 301
+/aem-live-link-equity /reports/aem-live-link-equity 301
+/aem-live-image-quality /reports/aem-live-image-quality 301
+/aem-live-performance-validation /reports/aem-live-performance-validation 301

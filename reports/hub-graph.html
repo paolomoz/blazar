@@ -246,7 +246,7 @@ body { font-family: var(--font); background: var(--bg); color: var(--fg); }
       <img src="blazar-logo-36.svg" width="32" height="32" alt="" class="header-logo">
       <div><h1>Blazar</h1><div class="header-subtitle">Network Graph</div></div>
     </div>
-    <a class="hub-link" href="hub.html">
+    <a class="hub-link" href="/hub">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="9"/><line x1="12" y1="15" x2="12" y2="22"/><line x1="2" y1="12" x2="9" y2="12"/><line x1="15" y1="12" x2="22" y2="12"/></svg>
       Hub
     </a>
@@ -329,7 +329,7 @@ function normalizeReport(m) {
     size: related.length === 0 ? 1 : related.length <= 2 ? 2 : 3,
     summary: m.summary || '',
     date: m.date || '',
-    file: m.file || '',
+    file: m.file ? (m.file.startsWith('/') ? m.file : '/reports/' + m.file.replace(/\.html$/, '')) : '',
     related,
     _generating: !!m._generating,
   };
@@ -343,6 +343,8 @@ let edges = [];
 let neighbors = [];
 let posX, posY;
 let regions = {};
+let enteringNodeId = null;       // ID of node animating in (generating phase)
+let animateFromPositions = null;  // {id: {x,y}} for settle animation, null = instant
 
 /* ═══════════════════════════════════════════
    4. buildEdges
@@ -677,7 +679,7 @@ function render() {
     path.setAttribute('fill', 'none');
     path.setAttribute('stroke', color);
     path.setAttribute('stroke-width', e.type === 'related' ? '1.2' : '0.8');
-    path.setAttribute('opacity', opacity);
+    path.setAttribute('opacity', animateFromPositions ? 0 : opacity);
     path.dataset.a = e.a;
     path.dataset.b = e.b;
     svg.appendChild(path);
@@ -698,12 +700,30 @@ function render() {
     el.dataset.cat = r.cat;
     el.dataset.exp = r.exp;
     el.dataset.title = r.title.toLowerCase();
-    el.style.left = x + 'px';
-    el.style.top = y + 'px';
     el.style.width = radius * 2 + 'px';
     el.style.height = radius * 2 + 'px';
     el.style.background = meta.hex;
     el.style.color = meta.hex;
+
+    /* Animation: position at old coords or invisible for new nodes */
+    if (animateFromPositions) {
+      const old = animateFromPositions[r.id];
+      if (old) {
+        el.style.left = (old.x * W) + 'px';
+        el.style.top = (old.y * H) + 'px';
+      } else {
+        el.style.left = x + 'px';
+        el.style.top = y + 'px';
+        el.style.opacity = '0';
+      }
+    } else if (enteringNodeId === r.id) {
+      el.style.left = x + 'px';
+      el.style.top = y + 'px';
+      el.style.opacity = '0';
+    } else {
+      el.style.left = x + 'px';
+      el.style.top = y + 'px';
+    }
 
     const summaryText = r._generating ? 'Report is being generated\u2026' : r.summary;
     const dateText = r._generating ? 'Generating\u2026' : (r.date ? r.date.slice(5) : '');
@@ -741,6 +761,8 @@ function render() {
     .sort((a, b) => b.conns - a.conns);
   const labelSet = new Set();
   const catCovered = new Set();
+  // Always label generating nodes
+  graphReports.forEach((r, i) => { if (r._generating) { labelSet.add(i); catCovered.add(r.cat); } });
   // First pass: take top 10 by connections
   byConns.slice(0, Math.max(10, Math.round(graphReports.length * 0.4))).forEach(r => {
     labelSet.add(r.i);
@@ -756,6 +778,50 @@ function render() {
   canvas.querySelectorAll('.node').forEach(n => {
     if (labelSet.has(parseInt(n.dataset.idx))) n.classList.add('show-label');
   });
+
+  /* ── Animation triggers ── */
+  if (animateFromPositions) {
+    /* Phase 2 settle: animate from old positions to new */
+    requestAnimationFrame(() => {
+      canvas.querySelectorAll('.node').forEach(n => {
+        n.style.transition = 'left 0.8s cubic-bezier(0.4,0,0.2,1), top 0.8s cubic-bezier(0.4,0,0.2,1), width 0.4s ease, height 0.4s ease, opacity 0.4s ease';
+      });
+      requestAnimationFrame(() => {
+        graphReports.forEach((r, i) => {
+          const el = canvas.querySelector('.node[data-id="' + CSS.escape(r.id) + '"]');
+          if (!el) return;
+          el.style.left = posX[i] * W + 'px';
+          el.style.top = posY[i] * H + 'px';
+          const c = neighbors[i] ? neighbors[i].size : 0;
+          const nr = Math.max(6, 4 + c * 2.5);
+          el.style.width = nr * 2 + 'px';
+          el.style.height = nr * 2 + 'px';
+          el.style.opacity = '';
+        });
+        svg.querySelectorAll('path').forEach(p => {
+          p.style.transition = 'opacity 0.5s ease 0.3s';
+          const a = parseInt(p.dataset.a), b = parseInt(p.dataset.b);
+          const e = edges.find(e => e.a === a && e.b === b);
+          const op = e ? (e.type === 'cluster' ? 0.12 : e.type === 'related' ? 0.18 : 0.06) : 0.1;
+          p.setAttribute('opacity', op);
+        });
+        setTimeout(() => {
+          canvas.querySelectorAll('.node').forEach(n => { n.style.transition = ''; });
+          svg.querySelectorAll('path').forEach(p => { p.style.transition = ''; });
+          animateFromPositions = null;
+        }, 1000);
+      });
+    });
+  } else if (enteringNodeId) {
+    /* Phase 1 entrance: fade in the generating node */
+    const entEl = canvas.querySelector('.node[data-id="' + CSS.escape(enteringNodeId) + '"]');
+    if (entEl) {
+      entEl.offsetHeight; /* force reflow */
+      entEl.style.transition = 'opacity 0.4s ease-out';
+      entEl.style.opacity = '';
+    }
+    enteringNodeId = null;
+  }
 }
 
 /* ═══════════════════════════════════════════

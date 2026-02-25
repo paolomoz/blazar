@@ -926,6 +926,13 @@ async function init() {
     }
   } catch {}
 
+  // Normalize file paths to absolute
+  manifest.forEach(r => {
+    if (r.file && !r.file.startsWith('/')) {
+      r.file = '/reports/' + r.file.replace(/\.html$/, '');
+    }
+  });
+
   buildMindmap();
   buildTimeline();
 }
