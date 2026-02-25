@@ -1348,6 +1348,11 @@
         renderMessages();
       }
     } catch (err) {
+      /* Ignore aborts from page navigation — generation continues server-side */
+      if (err.name === 'AbortError' || err.name === 'TypeError' && /fetch|network/i.test(err.message)) {
+        /* If page is unloading, don't persist error — the report may still complete server-side */
+        if (document.visibilityState === 'hidden') return;
+      }
       genMsg.genState = 'error';
       genMsg.genError = err.message || 'Network error';
       clearInterval(elapsedTimer);

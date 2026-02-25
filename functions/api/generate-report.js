@@ -29,7 +29,7 @@ Every report must follow this exact structure:
 </head>
 <body>
   <nav class="report-nav">
-    <a href="/reports/hub.html" class="nav-hub">← Hub</a>
+    <a href="/hub" class="nav-hub">← Hub</a>
     <span class="nav-sep">|</span>
     <!-- related report links as .nav-related pills -->
   </nav>

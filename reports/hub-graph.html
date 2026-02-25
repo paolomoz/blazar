@@ -177,6 +177,7 @@ body { font-family: var(--font); background: var(--bg); color: var(--fg); }
 /* ── Generating node ── */
 .node.generating {
   animation: gen-pulse 2s ease-in-out infinite;
+  cursor: default;
 }
 .node.generating::after {
   border-color: var(--blue) !important; border-width: 3px; inset: -5px;
@@ -743,13 +744,20 @@ function render() {
         </div>
       </div>`;
 
-    /* Hover highlights neighbors; click navigates */
+    /* Hover highlights neighbors; click navigates (skip generating nodes) */
     el.addEventListener('mouseenter', () => highlightNode(i));
     el.addEventListener('mouseleave', () => clearHighlight());
     el.addEventListener('click', (ev) => {
       ev.stopPropagation();
+      if (r._generating) return;
       if (r.file) {
-        window.location.href = r.file;
+        /* Open in new tab while a report is generating to preserve the SSE stream */
+        const isGenerating = graphReports.some(gr => gr._generating);
+        if (isGenerating) {
+          window.open(r.file, '_blank');
+        } else {
+          window.location.href = r.file;
+        }
       }
     });
 
