@@ -575,18 +575,34 @@
   }
 
   /* ── Report spec extraction ── */
+  /* Tolerant regex: closing ::: is optional (stream may cut off), whitespace flexible */
+  const SPEC_RE = /:::REPORT_SPEC\s*\n([\s\S]*?)(?:\n:::|\n?$)/;
+  const SPEC_STRIP_RE = /:::REPORT_SPEC\s*\n[\s\S]*?(?:\n:::|\n?$)/g;
+
   function extractReportSpec(text) {
-    const match = text.match(/:::REPORT_SPEC\s*\n([\s\S]*?)\n:::/);
+    const match = text.match(SPEC_RE);
     if (!match) return null;
+    let json = match[1].trim();
+    /* If JSON was cut off mid-stream, try to salvage by closing braces */
+    if (json && !json.endsWith('}')) {
+      const openBraces = (json.match(/\{/g) || []).length;
+      const closeBraces = (json.match(/\}/g) || []).length;
+      json += '}'.repeat(Math.max(0, openBraces - closeBraces));
+    }
     try {
-      return JSON.parse(match[1]);
+      return JSON.parse(json);
     } catch {
       return null;
     }
   }
 
   function stripReportSpec(text) {
-    return text.replace(/:::REPORT_SPEC\s*\n[\s\S]*?\n:::/g, '').trim();
+    /* First try the complete block (with or without closing :::) */
+    let result = text.replace(SPEC_STRIP_RE, '').trim();
+    /* Also hide any partial/streaming spec block that hasn't closed yet */
+    const partialIdx = result.indexOf(':::REPORT_SPEC');
+    if (partialIdx >= 0) result = result.slice(0, partialIdx).trim();
+    return result;
   }
 
   /* ── Markdown renderer ── */

@@ -991,11 +991,14 @@ async function init() {
 init();
 
 /* ═══════════════════════════════════════════
-   14. Live event handlers
+   14. Live event handlers — animated
    ═══════════════════════════════════════════ */
+
+/* Phase 1: Generating — inject node at category centroid, no layout recompute */
 window.addEventListener('blazar-report-generating', (e) => {
   const d = e.detail;
   if (!d || !d.id) return;
+
   const idx = manifest.findIndex(r => r.id === d.id);
   if (idx >= 0) manifest.splice(idx, 1);
   manifest.push({
@@ -1009,18 +1012,64 @@ window.addEventListener('blazar-report-generating', (e) => {
     related: d.related || [],
     _generating: true,
   });
-  graphReports = manifest.map(normalizeReport);
-  rebuildGraph();
-  applyTransform();
+
+  /* Add to graph without rebuilding edges or simulation */
+  const newReport = normalizeReport(manifest[manifest.length - 1]);
+  graphReports.push(newReport);
+  const newIdx = graphReports.length - 1;
+
+  /* Position at category centroid (or seed fallback) */
+  const cat = newReport.cat;
+  const region = regions[cat];
+  const newPosX = new Float64Array(graphReports.length);
+  const newPosY = new Float64Array(graphReports.length);
+  newPosX.set(posX); newPosY.set(posY);
+  if (region) {
+    newPosX[newIdx] = region.cx;
+    newPosY[newIdx] = region.cy;
+  } else {
+    const seed = catSeeds[cat] || catSeeds.infra;
+    newPosX[newIdx] = seed.x;
+    newPosY[newIdx] = seed.y;
+  }
+  posX = newPosX;
+  posY = newPosY;
+  neighbors.push(new Set());
+
+  /* Render with entrance animation */
+  enteringNodeId = d.id;
+  render();
+  updateStats();
+
+  /* Auto-pan if node is off-screen */
+  const W = graphEl.clientWidth, H = graphEl.clientHeight;
+  const nodeScreenX = posX[newIdx] * W * scale + panX;
+  const nodeScreenY = posY[newIdx] * H * scale + panY;
+  if (nodeScreenX < 0 || nodeScreenX > W || nodeScreenY < 0 || nodeScreenY > H) {
+    panX = W / 2 - posX[newIdx] * W * scale;
+    panY = H / 2 - posY[newIdx] * H * scale;
+    applyTransform(true);
+  }
 });
 
+/* Phase 2: Generated — full rebuild with animated settle */
 window.addEventListener('blazar-report-generated', (e) => {
   const entry = e.detail?.manifest;
   if (!entry || !entry.id) return;
+
+  /* Capture current positions for animation */
+  animateFromPositions = {};
+  graphReports.forEach((r, i) => {
+    animateFromPositions[r.id] = { x: posX[i], y: posY[i] };
+  });
+
+  /* Update manifest */
   const idx = manifest.findIndex(r => r.id === entry.id);
   if (idx >= 0) { manifest[idx] = entry; }
   else { manifest.push(entry); }
   graphReports = manifest.map(normalizeReport);
+
+  /* Full rebuild — render() will animate from old to new positions */
   rebuildGraph();
   applyTransform();
 });
@@ -1028,7 +1077,12 @@ window.addEventListener('blazar-report-generated', (e) => {
 /* ═══════════════════════════════════════════
    15. Resize handlers
    ═══════════════════════════════════════════ */
-new ResizeObserver(() => { render(); applyTransform(); }).observe(graphEl);
+new ResizeObserver(() => {
+  animateFromPositions = null;
+  enteringNodeId = null;
+  render();
+  applyTransform();
+}).observe(graphEl);
 </script>
 <script src="chat.js"></script>
 </body>

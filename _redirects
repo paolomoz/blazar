@@ -1,5 +1,5 @@
 # Root and /reports redirect to hub
-/ /reports/hub 302
+/ /reports/hub-graph 302
 /reports /reports/hub 302
 /hub /reports/hub-graph 302
 
