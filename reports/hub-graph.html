@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blazar — Network Graph</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700;900&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue: #3B63FB; --blue-light: #EBF0FF;
+  --amber: #CB6F10; --amber-bg: #FFF5EB;
+  --green: #12805C; --green-bg: #EDFCF2;
+  --purple: #7A6AFD; --purple-bg: #F3F0FF;
+  --red: #D7373F; --red-bg: #FFF0F0;
+  --bg: #FAFAFA; --bg-white: #FFFFFF;
+  --fg: #292929; --fg-heading: #131313; --fg-muted: #717171;
+  --border: #E1E1E1;
+  --shadow: 0 2px 8px rgba(0,0,0,0.08), 0 0 1px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08);
+  --font: 'Source Sans Pro', -apple-system, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+body { font-family: var(--font); background: var(--bg); color: var(--fg); }
+.app { display: flex; flex-direction: column; height: 100vh; }
+
+/* ── Header ── */
+.header {
+  background: var(--bg-white); border-bottom: 1px solid var(--border);
+  padding: 12px 24px; display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0; z-index: 100;
+}
+.header-left { display: flex; align-items: center; gap: 12px; }
+.header h1 { font-size: 18px; font-weight: 900; color: var(--fg-heading); }
+.header-subtitle { font-size: 12px; color: var(--fg-muted); }
+.header-logo { width: 32px; height: 32px; border-radius: 8px; }
+.hub-link {
+  font-size: 13px; font-weight: 600; color: var(--fg-muted);
+  text-decoration: none; display: flex; align-items: center; gap: 6px;
+  padding: 6px 14px; border-radius: 9999px; border: 1px solid var(--border);
+  background: var(--bg-white); transition: all 0.15s;
+}
+.hub-link:hover { color: var(--fg); border-color: var(--blue); text-decoration: none; }
+
+/* ── Filter Bar ── */
+.filter-bar {
+  background: var(--bg-white); border-bottom: 1px solid var(--border);
+  padding: 8px 24px; display: flex; align-items: center; gap: 16px;
+  flex-shrink: 0; z-index: 99; flex-wrap: wrap;
+}
+.filter-group { display: flex; align-items: center; gap: 6px; }
+.filter-label { font-size: 11px; font-weight: 700; color: var(--fg-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-right: 2px; }
+.filter-sep { width: 1px; height: 20px; background: var(--border); margin: 0 4px; }
+.filter-pill {
+  padding: 4px 12px; border-radius: 9999px;
+  border: 1px solid var(--border); background: var(--bg-white);
+  font-family: var(--font); font-size: 12px; font-weight: 600;
+  color: var(--fg-muted); cursor: pointer; transition: all 0.15s;
+  display: flex; align-items: center; gap: 4px; white-space: nowrap;
+}
+.filter-pill:hover { border-color: var(--fg-muted); color: var(--fg); }
+.filter-pill.active { color: var(--fg-heading); }
+.filter-pill.active[data-cat="audit"] { border-color: var(--amber); background: var(--amber-bg); color: var(--amber); }
+.filter-pill.active[data-cat="brand"] { border-color: var(--purple); background: var(--purple-bg); color: var(--purple); }
+.filter-pill.active[data-cat="performance"] { border-color: var(--red); background: var(--red-bg); color: var(--red); }
+.filter-pill.active[data-cat="optimization"] { border-color: var(--green); background: var(--green-bg); color: var(--green); }
+.filter-pill.active[data-cat="content"] { border-color: var(--blue); background: var(--blue-light); color: var(--blue); }
+.filter-pill.active[data-cat="infra"] { border-color: var(--fg-muted); background: var(--bg); color: var(--fg-muted); }
+.filter-pill .pill-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.search-box {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 9999px; padding: 4px 14px; transition: all 0.2s;
+}
+.search-box:focus-within { border-color: var(--blue); background: var(--blue-light); }
+.search-box svg { width: 13px; height: 13px; color: var(--fg-muted); flex-shrink: 0; }
+.search-box input {
+  background: none; border: none; outline: none;
+  font-family: var(--font); font-size: 12px; color: var(--fg); width: 140px;
+}
+.search-box input::placeholder { color: var(--fg-muted); }
+
+/* ── Graph Canvas ── */
+.graph { flex: 1; position: relative; overflow: hidden; cursor: grab; }
+.graph:active { cursor: grabbing; }
+.graph-canvas {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  transform-origin: 0 0;
+}
+.graph-svg {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 1;
+}
+
+/* ── Nodes ── */
+.node {
+  position: absolute; border-radius: 50%; z-index: 10;
+  transform: translate(-50%, -50%);
+  cursor: pointer; transition: transform 0.2s ease, opacity 0.3s ease;
+}
+.node::after {
+  content: ''; position: absolute; inset: -3px;
+  border-radius: 50%; border: 2px solid transparent;
+  transition: border-color 0.2s;
+}
+.node:hover { transform: translate(-50%, -50%) scale(1.5); z-index: 30; }
+.node:hover::after { border-color: currentColor; }
+.node:hover .node-label { opacity: 1; transform: translateX(-50%) translateY(0); }
+.node:hover .node-card { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+
+.node-label {
+  position: absolute; top: calc(100% + 8px); left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  white-space: nowrap; font-size: 11px; font-weight: 700;
+  color: var(--fg-heading); text-shadow: 0 1px 4px rgba(255,255,255,0.9), 0 0 8px var(--bg);
+  opacity: 0; transition: all 0.2s; pointer-events: none;
+  max-width: 160px; text-overflow: ellipsis; overflow: hidden; text-align: center;
+}
+.node.show-label .node-label {
+  opacity: 0.7; transform: translateX(-50%) translateY(0);
+}
+.node.neighbor .node-label,
+.node.focused .node-label,
+.node.search-match .node-label {
+  opacity: 1; transform: translateX(-50%) translateY(0);
+}
+
+.node-card {
+  position: absolute; top: calc(100% + 28px); left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  width: 240px; background: var(--bg-white);
+  border: 1px solid var(--border); border-radius: 10px;
+  padding: 0; opacity: 0; transition: all 0.2s;
+  pointer-events: none; box-shadow: var(--shadow-lg); z-index: 40;
+  overflow: hidden;
+}
+.card-accent { height: 3px; }
+.card-body { padding: 10px 14px; }
+.card-title { font-size: 12px; font-weight: 700; color: var(--fg-heading); line-height: 1.3; margin-bottom: 4px; }
+.card-summary { font-size: 10px; color: var(--fg-muted); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.card-meta { display: flex; align-items: center; justify-content: space-between; padding: 6px 14px; background: var(--bg); border-top: 1px solid var(--border); font-size: 9px; color: var(--fg-muted); }
+.card-badge { padding: 1px 7px; border-radius: 9999px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+
+/* ── Region labels ── */
+.region-bg {
+  position: absolute; border-radius: 50%;
+  pointer-events: none; z-index: 0;
+  transform: translate(-50%, -50%);
+}
+.region-label {
+  position: absolute; z-index: 2; pointer-events: none;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+.region-label-name {
+  font-size: 15px; font-weight: 900; letter-spacing: 0.12em;
+  text-transform: uppercase; opacity: 0.18;
+}
+.region-label-count {
+  font-size: 11px; font-weight: 600; opacity: 0.25; margin-top: 2px;
+}
+.region-label-exp {
+  font-size: 9px; font-weight: 400; opacity: 0.18; margin-top: 4px;
+  line-height: 1.4; max-width: 140px;
+}
+
+/* ── Node states ── */
+.node.faded { opacity: 0.06 !important; pointer-events: none; }
+.node.faded:hover { transform: translate(-50%, -50%) scale(1); }
+.node.neighbor { z-index: 20; }
+.node.neighbor::after { border-color: currentColor; opacity: 0.5; }
+.node.focused { z-index: 25; }
+.node.focused::after { border-color: currentColor; border-width: 3px; inset: -4px; }
+
+/* ── Generating node ── */
+.node.generating {
+  animation: gen-pulse 2s ease-in-out infinite;
+}
+.node.generating::after {
+  border-color: var(--blue) !important; border-width: 3px; inset: -5px;
+  animation: gen-border-pulse 2s ease-in-out infinite;
+}
+@keyframes gen-pulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -50%) scale(1.3); }
+}
+@keyframes gen-border-pulse {
+  0%, 100% { border-color: var(--blue); opacity: 1; }
+  50% { border-color: #A8BFFF; opacity: 0.5; }
+}
+
+/* ── Controls ── */
+.zoom-controls {
+  position: absolute; bottom: 20px; right: 20px;
+  display: flex; flex-direction: column; gap: 4px; z-index: 50;
+}
+.zoom-btn {
+  width: 36px; height: 36px; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--bg-white);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 18px; font-weight: 600;
+  color: var(--fg-muted); font-family: var(--font);
+  box-shadow: var(--shadow); transition: all 0.15s;
+}
+.zoom-btn:hover { color: var(--fg); border-color: var(--blue); }
+
+.legend {
+  position: absolute; bottom: 20px; left: 20px;
+  display: flex; gap: 12px; font-size: 11px; color: var(--fg-muted);
+  z-index: 50; background: rgba(250,250,250,0.92); backdrop-filter: blur(8px);
+  padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border);
+}
+.legend-item { display: flex; align-items: center; gap: 4px; }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+.stats-bar {
+  position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+  z-index: 50; display: flex; gap: 16px; font-size: 11px; color: var(--fg-muted);
+  background: rgba(250,250,250,0.92); backdrop-filter: blur(8px);
+  padding: 6px 16px; border-radius: 9999px; border: 1px solid var(--border);
+}
+.stats-bar strong { color: var(--fg-heading); }
+
+/* ── Loading state ── */
+.loading-msg {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 14px; color: var(--fg-muted); font-weight: 600;
+}
+
+@media (max-width: 640px) {
+  .header { padding: 10px 16px; }
+  .header h1 { font-size: 16px; }
+  .header-subtitle { display: none; }
+  .filter-bar { padding: 6px 16px; gap: 10px; }
+  .legend { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="header">
+    <div class="header-left">
+      <img src="blazar-logo-36.svg" width="32" height="32" alt="" class="header-logo">
+      <div><h1>Blazar</h1><div class="header-subtitle">Network Graph</div></div>
+    </div>
+    <a class="hub-link" href="hub.html">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="9"/><line x1="12" y1="15" x2="12" y2="22"/><line x1="2" y1="12" x2="9" y2="12"/><line x1="15" y1="12" x2="22" y2="12"/></svg>
+      Hub
+    </a>
+  </header>
+
+  <div class="filter-bar">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Search reports..." id="search-input">
+    </div>
+    <div class="filter-sep"></div>
+    <div class="filter-group" id="cat-filters">
+      <span class="filter-label">Category</span>
+    </div>
+  </div>
+
+  <div class="graph" id="graph">
+    <div class="loading-msg" id="loading-msg">Loading reports&hellip;</div>
+    <div class="graph-canvas" id="graph-canvas">
+      <svg class="graph-svg" id="graph-svg"></svg>
+    </div>
+    <div class="zoom-controls">
+      <button class="zoom-btn" id="zoom-in">+</button>
+      <button class="zoom-btn" id="zoom-reset" style="font-size:11px;">1:1</button>
+      <button class="zoom-btn" id="zoom-out">&minus;</button>
+    </div>
+    <div class="legend" id="legend"></div>
+    <div class="stats-bar" id="stats-bar"></div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════
+   1. Constants
+   ═══════════════════════════════════════════ */
+const CAT = {
+  audit:        { hex:'#CB6F10', bg:'#FFF5EB', label:'Audit' },
+  brand:        { hex:'#7A6AFD', bg:'#F3F0FF', label:'Brand' },
+  performance:  { hex:'#D7373F', bg:'#FFF0F0', label:'Performance' },
+  optimization: { hex:'#12805C', bg:'#EDFCF2', label:'Optimization' },
+  content:      { hex:'#3B63FB', bg:'#EBF0FF', label:'Content' },
+  infra:        { hex:'#717171', bg:'#F2F2F2', label:'Infra' },
+};
+
+function mulberry32(seed) {
+  return function() {
+    seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+    var t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+
+const catSeeds = {
+  audit:       { x: 0.22, y: 0.30 },
+  brand:       { x: 0.55, y: 0.22 },
+  performance: { x: 0.78, y: 0.45 },
+  optimization:{ x: 0.30, y: 0.72 },
+  content:     { x: 0.65, y: 0.75 },
+  infra:       { x: 0.50, y: 0.50 },
+};
+
+/* ═══════════════════════════════════════════
+   2. normalizeReport — manifest → graph node
+   ═══════════════════════════════════════════ */
+function normalizeReport(m) {
+  const related = m.related || [];
+  let exp = 'unknown';
+  if (m.id.startsWith('aem-live-')) exp = 'aem.live';
+  else if (m.id.includes('-')) {
+    // Try to derive from prefix before last hyphenated word
+    const parts = m.id.split('-');
+    if (parts.length >= 2) exp = parts.slice(0, -1).join('-');
+  }
+  return {
+    id: m.id,
+    title: m.title,
+    cat: m.category || 'audit',
+    exp,
+    size: related.length === 0 ? 1 : related.length <= 2 ? 2 : 3,
+    summary: m.summary || '',
+    date: m.date || '',
+    file: m.file || '',
+    related,
+    _generating: !!m._generating,
+  };
+}
+
+/* ═══════════════════════════════════════════
+   3. State
+   ═══════════════════════════════════════════ */
+let graphReports = [];
+let edges = [];
+let neighbors = [];
+let posX, posY;
+let regions = {};
+
+/* ═══════════════════════════════════════════
+   4. buildEdges
+   ═══════════════════════════════════════════ */
+function buildEdges(reports) {
+  const idxById = {};
+  reports.forEach((r, i) => { idxById[r.id] = i; });
+
+  const edgeSet = new Set();
+  const result = [];
+  function addEdge(a, b, type) {
+    const key = a < b ? a + '|' + b : b + '|' + a;
+    if (edgeSet.has(key)) return;
+    edgeSet.add(key);
+    if (idxById[a] !== undefined && idxById[b] !== undefined)
+      result.push({ a: idxById[a], b: idxById[b], type });
+  }
+
+  /* Explicit related */
+  reports.forEach(r => {
+    (r.related || []).forEach(rid => {
+      if (idxById[rid] !== undefined) addEdge(r.id, rid, 'related');
+    });
+  });
+
+  /* Same category + same experience → connect all pairs */
+  const byCatExp = {};
+  reports.forEach(r => {
+    const k = r.cat + '|' + r.exp;
+    if (!byCatExp[k]) byCatExp[k] = [];
+    byCatExp[k].push(r.id);
+  });
+  Object.values(byCatExp).forEach(ids => {
+    for (let i = 0; i < ids.length; i++)
+      for (let j = i + 1; j < ids.length; j++)
+        addEdge(ids[i], ids[j], 'cluster');
+  });
+
+  /* Same experience, different category → connect ~18% */
+  const byExp = {};
+  reports.forEach(r => {
+    if (!byExp[r.exp]) byExp[r.exp] = [];
+    byExp[r.exp].push(r.id);
+  });
+  const rng = mulberry32(99);
+  Object.values(byExp).forEach(ids => {
+    for (let i = 0; i < ids.length; i++)
+      for (let j = i + 1; j < ids.length; j++) {
+        if (reports[idxById[ids[i]]].cat !== reports[idxById[ids[j]]].cat && rng() < 0.18)
+          addEdge(ids[i], ids[j], 'cross');
+      }
+  });
+
+  /* Same category, different experience → sparse bridges */
+  const byCat = {};
+  reports.forEach(r => {
+    if (!byCat[r.cat]) byCat[r.cat] = [];
+    byCat[r.cat].push(r.id);
+  });
+  Object.values(byCat).forEach(ids => {
+    for (let i = 0; i < ids.length; i++)
+      for (let j = i + 1; j < ids.length; j++) {
+        if (reports[idxById[ids[i]]].exp !== reports[idxById[ids[j]]].exp && rng() < 0.12)
+          addEdge(ids[i], ids[j], 'bridge');
+      }
+  });
+
+  return result;
+}
+
+/* ═══════════════════════════════════════════
+   5. runSimulation — force-directed layout
+   ═══════════════════════════════════════════ */
+function runSimulation(reports, edgeList) {
+  const N = reports.length;
+  if (N === 0) return { posX: new Float64Array(0), posY: new Float64Array(0) };
+
+  const px = new Float64Array(N);
+  const py = new Float64Array(N);
+  const vx = new Float64Array(N);
+  const vy = new Float64Array(N);
+
+  const W_SIM = 1200, H_SIM = 900;
+  const ITERATIONS = 500;
+  const repulseK = 800;
+  const attractK = 0.006;
+  const gravityK = 0.007;
+  const clusterK = 0.02;
+  const damping = 0.3;
+  const restLen = 70;
+
+  const catIndices = {};
+  reports.forEach((r, i) => {
+    if (!catIndices[r.cat]) catIndices[r.cat] = [];
+    catIndices[r.cat].push(i);
+  });
+
+  const simRng = mulberry32(42);
+  reports.forEach((r, i) => {
+    const seed = catSeeds[r.cat] || catSeeds.infra;
+    px[i] = seed.x * W_SIM + (simRng() - 0.5) * 240;
+    py[i] = seed.y * H_SIM + (simRng() - 0.5) * 200;
+  });
+
+  for (let iter = 0; iter < ITERATIONS; iter++) {
+    const alpha = 1 - iter / ITERATIONS;
+    const maxDisp = Math.max(2, 40 * alpha);
+
+    const fX = new Float64Array(N);
+    const fY = new Float64Array(N);
+
+    /* Repulsion (all pairs) */
+    for (let i = 0; i < N; i++) {
+      for (let j = i + 1; j < N; j++) {
+        let dx = px[j] - px[i];
+        let dy = py[j] - py[i];
+        let dist2 = dx * dx + dy * dy;
+        if (dist2 < 1) dist2 = 1;
+        let dist = Math.sqrt(dist2);
+        let k = reports[i].cat === reports[j].cat ? repulseK * 0.7 : repulseK;
+        let force = k / dist2 * alpha;
+        let fx = (dx / dist) * force;
+        let fy = (dy / dist) * force;
+        fX[i] -= fx; fY[i] -= fy;
+        fX[j] += fx; fY[j] += fy;
+      }
+    }
+
+    /* Attraction (edges) */
+    edgeList.forEach(e => {
+      let dx = px[e.b] - px[e.a];
+      let dy = py[e.b] - py[e.a];
+      let dist = Math.sqrt(dx * dx + dy * dy) || 1;
+      let displacement = dist - restLen;
+      let strength = e.type === 'cluster' ? attractK * 1.2
+                   : e.type === 'related' ? attractK * 0.9
+                   : attractK * 0.3;
+      let force = displacement * strength;
+      let fx = (dx / dist) * force;
+      let fy = (dy / dist) * force;
+      fX[e.a] += fx; fY[e.a] += fy;
+      fX[e.b] -= fx; fY[e.b] -= fy;
+    });
+
+    /* Cluster gravity */
+    Object.values(catIndices).forEach(indices => {
+      let cx = 0, cy = 0;
+      indices.forEach(i => { cx += px[i]; cy += py[i]; });
+      cx /= indices.length; cy /= indices.length;
+      indices.forEach(i => {
+        fX[i] += (cx - px[i]) * clusterK;
+        fY[i] += (cy - py[i]) * clusterK;
+      });
+    });
+
+    /* Global center gravity */
+    for (let i = 0; i < N; i++) {
+      fX[i] += (W_SIM / 2 - px[i]) * gravityK;
+      fY[i] += (H_SIM / 2 - py[i]) * gravityK;
+    }
+
+    /* Apply forces with displacement cap */
+    for (let i = 0; i < N; i++) {
+      vx[i] = (vx[i] + fX[i]) * damping;
+      vy[i] = (vy[i] + fY[i]) * damping;
+      let speed = Math.sqrt(vx[i] * vx[i] + vy[i] * vy[i]);
+      if (speed > maxDisp) {
+        vx[i] = vx[i] / speed * maxDisp;
+        vy[i] = vy[i] / speed * maxDisp;
+      }
+      px[i] += vx[i];
+      py[i] += vy[i];
+      if (px[i] < 30) { px[i] = 30; vx[i] *= -0.5; }
+      if (px[i] > W_SIM - 30) { px[i] = W_SIM - 30; vx[i] *= -0.5; }
+      if (py[i] < 30) { py[i] = 30; vy[i] *= -0.5; }
+      if (py[i] > H_SIM - 30) { py[i] = H_SIM - 30; vy[i] *= -0.5; }
+    }
+  }
+
+  /* Normalize to 0-1 */
+  let bMinX = Infinity, bMaxX = -Infinity, bMinY = Infinity, bMaxY = -Infinity;
+  for (let i = 0; i < N; i++) {
+    bMinX = Math.min(bMinX, px[i]); bMaxX = Math.max(bMaxX, px[i]);
+    bMinY = Math.min(bMinY, py[i]); bMaxY = Math.max(bMaxY, py[i]);
+  }
+  const bW = bMaxX - bMinX || 1, bH = bMaxY - bMinY || 1;
+  const pad = 0.06;
+  for (let i = 0; i < N; i++) {
+    px[i] = pad + (px[i] - bMinX) / bW * (1 - 2 * pad);
+    py[i] = pad + (py[i] - bMinY) / bH * (1 - 2 * pad);
+  }
+
+  return { posX: px, posY: py };
+}
+
+/* ═══════════════════════════════════════════
+   6. computeRegions — category centroids
+   ═══════════════════════════════════════════ */
+function computeRegions(reports, px, py) {
+  const result = {};
+  Object.keys(CAT).forEach(cat => {
+    const indices = reports.map((r, i) => r.cat === cat ? i : -1).filter(i => i >= 0);
+    if (!indices.length) return;
+    let cx = 0, cy = 0;
+    indices.forEach(i => { cx += px[i]; cy += py[i]; });
+    cx /= indices.length; cy /= indices.length;
+    let maxR = 0;
+    indices.forEach(i => {
+      const d = Math.sqrt((px[i] - cx) ** 2 + (py[i] - cy) ** 2);
+      if (d > maxR) maxR = d;
+    });
+    const exps = [...new Set(indices.map(i => reports[i].exp))];
+    result[cat] = { cx, cy, radius: maxR + 0.04, count: indices.length, exps };
+  });
+  return result;
+}
+
+/* ═══════════════════════════════════════════
+   7. rebuildGraph — orchestrator
+   ═══════════════════════════════════════════ */
+function rebuildGraph() {
+  edges = buildEdges(graphReports);
+  neighbors = graphReports.map(() => new Set());
+  edges.forEach(e => { neighbors[e.a].add(e.b); neighbors[e.b].add(e.a); });
+
+  const sim = runSimulation(graphReports, edges);
+  posX = sim.posX;
+  posY = sim.posY;
+
+  regions = computeRegions(graphReports, posX, posY);
+
+  populateFilters();
+  render();
+  updateStats();
+}
+
+/* ═══════════════════════════════════════════
+   8. populateFilters
+   ═══════════════════════════════════════════ */
+function populateFilters() {
+  const catCounts = {};
+  graphReports.forEach(r => { catCounts[r.cat] = (catCounts[r.cat] || 0) + 1; });
+
+  const catFiltersEl = document.getElementById('cat-filters');
+  // Keep the label, remove pills
+  catFiltersEl.querySelectorAll('.filter-pill').forEach(p => p.remove());
+  Object.entries(CAT).forEach(([cat, meta]) => {
+    if (!catCounts[cat]) return;
+    const btn = document.createElement('button');
+    btn.className = 'filter-pill active';
+    btn.dataset.cat = cat;
+    btn.innerHTML = `<span class="pill-dot" style="background:${meta.hex}"></span> ${meta.label} <span style="font-size:10px;opacity:0.6">${catCounts[cat]}</span>`;
+    btn.addEventListener('click', () => { btn.classList.toggle('active'); applyFilters(); });
+    catFiltersEl.appendChild(btn);
+  });
+
+  // Build legend dynamically from used categories
+  const legendEl = document.getElementById('legend');
+  legendEl.innerHTML = Object.entries(CAT)
+    .filter(([cat]) => catCounts[cat])
+    .map(([, meta]) => `<div class="legend-item"><div class="legend-dot" style="background:${meta.hex}"></div> ${meta.label}</div>`)
+    .join('');
+}
+
+function updateStats() {
+  document.getElementById('stats-bar').innerHTML =
+    `<span><strong>${graphReports.length}</strong> reports</span><span><strong>${edges.length}</strong> connections</span>`;
+}
+
+/* ═══════════════════════════════════════════
+   9. render — regions + edges + nodes
+   ═══════════════════════════════════════════ */
+const graphEl = document.getElementById('graph');
+const canvas = document.getElementById('graph-canvas');
+const svg = document.getElementById('graph-svg');
+
+function render() {
+  if (!graphReports.length) return;
+  const W = graphEl.clientWidth;
+  const H = graphEl.clientHeight;
+  canvas.querySelectorAll('.node, .region-bg, .region-label').forEach(n => n.remove());
+  svg.innerHTML = '';
+  svg.setAttribute('width', W); svg.setAttribute('height', H);
+
+  /* ── Region backgrounds + labels ── */
+  Object.entries(regions).forEach(([cat, reg]) => {
+    const meta = CAT[cat];
+    if (!meta) return;
+    const cx = reg.cx * W, cy = reg.cy * H;
+    const r = reg.radius * Math.max(W, H);
+
+    const bg = document.createElement('div');
+    bg.className = 'region-bg';
+    bg.style.left = cx + 'px';
+    bg.style.top = cy + 'px';
+    bg.style.width = r * 2 + 'px';
+    bg.style.height = r * 2 + 'px';
+    bg.style.background = `radial-gradient(circle, ${meta.hex}0D 0%, ${meta.hex}05 50%, transparent 72%)`;
+    canvas.appendChild(bg);
+
+    const lbl = document.createElement('div');
+    lbl.className = 'region-label';
+    lbl.style.left = cx + 'px';
+    lbl.style.top = cy + 'px';
+    lbl.style.color = meta.hex;
+    lbl.innerHTML = `
+      <div class="region-label-name">${meta.label}</div>
+      <div class="region-label-count">${reg.count} report${reg.count !== 1 ? 's' : ''}</div>
+      <div class="region-label-exp">${reg.exps.join(' \u00B7 ')}</div>`;
+    canvas.appendChild(lbl);
+  });
+
+  const eRng = mulberry32(77);
+
+  /* ── Edges ── */
+  edges.forEach(e => {
+    const x1 = posX[e.a] * W, y1 = posY[e.a] * H;
+    const x2 = posX[e.b] * W, y2 = posY[e.b] * H;
+    const catA = graphReports[e.a].cat;
+    const catB = graphReports[e.b].cat;
+    const color = catA === catB ? (CAT[catA]?.hex || '#999') : '#999';
+    const opacity = e.type === 'cluster' ? 0.12 : e.type === 'related' ? 0.18 : 0.06;
+
+    const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+    const dx = x2 - x1, dy = y2 - y1;
+    const curvature = (0.15 + eRng() * 0.3) * (eRng() > 0.5 ? 1 : -1);
+    const cx = mx - dy * curvature;
+    const cy = my + dx * curvature;
+
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', `M${x1},${y1} Q${cx},${cy} ${x2},${y2}`);
+    path.setAttribute('fill', 'none');
+    path.setAttribute('stroke', color);
+    path.setAttribute('stroke-width', e.type === 'related' ? '1.2' : '0.8');
+    path.setAttribute('opacity', opacity);
+    path.dataset.a = e.a;
+    path.dataset.b = e.b;
+    svg.appendChild(path);
+  });
+
+  /* ── Nodes ── */
+  graphReports.forEach((r, i) => {
+    const x = posX[i] * W;
+    const y = posY[i] * H;
+    const conns = neighbors[i] ? neighbors[i].size : 0;
+    const radius = Math.max(6, 4 + conns * 2.5);
+    const meta = CAT[r.cat] || CAT.infra;
+
+    const el = document.createElement('div');
+    el.className = 'node' + (r._generating ? ' generating' : '');
+    el.dataset.idx = i;
+    el.dataset.id = r.id;
+    el.dataset.cat = r.cat;
+    el.dataset.exp = r.exp;
+    el.dataset.title = r.title.toLowerCase();
+    el.style.left = x + 'px';
+    el.style.top = y + 'px';
+    el.style.width = radius * 2 + 'px';
+    el.style.height = radius * 2 + 'px';
+    el.style.background = meta.hex;
+    el.style.color = meta.hex;
+
+    const summaryText = r._generating ? 'Report is being generated\u2026' : r.summary;
+    const dateText = r._generating ? 'Generating\u2026' : (r.date ? r.date.slice(5) : '');
+
+    el.innerHTML = `
+      <div class="node-label">${r.title}</div>
+      <div class="node-card">
+        <div class="card-accent" style="background:${meta.hex}"></div>
+        <div class="card-body">
+          <div class="card-title">${r.title}</div>
+          <div class="card-summary">${summaryText}</div>
+        </div>
+        <div class="card-meta">
+          <span class="card-badge" style="background:${meta.bg};color:${meta.hex}">${meta.label}</span>
+          <span>${r.exp}</span>
+          <span style="font-weight:600">${dateText}</span>
+        </div>
+      </div>`;
+
+    /* Hover highlights neighbors; click navigates */
+    el.addEventListener('mouseenter', () => highlightNode(i));
+    el.addEventListener('mouseleave', () => clearHighlight());
+    el.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      if (r.file) {
+        window.location.href = r.file;
+      }
+    });
+
+    canvas.appendChild(el);
+  });
+
+  /* Show labels: top 10+ by connection count, ensuring every category has at least one */
+  const byConns = graphReports.map((r, i) => ({ i, cat: r.cat, conns: neighbors[i] ? neighbors[i].size : 0 }))
+    .sort((a, b) => b.conns - a.conns);
+  const labelSet = new Set();
+  const catCovered = new Set();
+  // First pass: take top 10 by connections
+  byConns.slice(0, Math.max(10, Math.round(graphReports.length * 0.4))).forEach(r => {
+    labelSet.add(r.i);
+    catCovered.add(r.cat);
+  });
+  // Second pass: ensure every category has at least one label
+  byConns.forEach(r => {
+    if (!catCovered.has(r.cat)) {
+      labelSet.add(r.i);
+      catCovered.add(r.cat);
+    }
+  });
+  canvas.querySelectorAll('.node').forEach(n => {
+    if (labelSet.has(parseInt(n.dataset.idx))) n.classList.add('show-label');
+  });
+}
+
+/* ═══════════════════════════════════════════
+   10. highlightNode / clearHighlight
+   ═══════════════════════════════════════════ */
+function highlightNode(idx) {
+  const nbs = neighbors[idx];
+  if (!nbs) return;
+  document.querySelectorAll('.node').forEach(n => {
+    const ni = parseInt(n.dataset.idx);
+    if (ni === idx) { n.classList.add('focused'); }
+    else if (nbs.has(ni)) { n.classList.add('neighbor'); }
+    else { n.classList.add('faded'); }
+  });
+  svg.querySelectorAll('path').forEach(p => {
+    const a = parseInt(p.dataset.a), b = parseInt(p.dataset.b);
+    if (a === idx || b === idx) {
+      p.setAttribute('opacity', '0.6');
+      p.setAttribute('stroke-width', '2');
+    } else {
+      p.setAttribute('opacity', '0.02');
+    }
+  });
+}
+
+function clearHighlight() {
+  document.querySelectorAll('.node').forEach(n => {
+    n.classList.remove('focused', 'neighbor', 'faded');
+  });
+  resetEdgeOpacity();
+}
+
+function resetEdgeOpacity() {
+  svg.querySelectorAll('path').forEach(p => {
+    const a = parseInt(p.dataset.a), b = parseInt(p.dataset.b);
+    const e = edges.find(e => e.a === a && e.b === b);
+    const opacity = e ? (e.type === 'cluster' ? 0.12 : e.type === 'related' ? 0.18 : 0.06) : 0.1;
+    p.setAttribute('opacity', opacity);
+    p.setAttribute('stroke-width', e && e.type === 'related' ? '1.2' : '0.8');
+  });
+}
+
+/* ═══════════════════════════════════════════
+   11. applyFilters + updateSearchLabels
+   ═══════════════════════════════════════════ */
+function updateSearchLabels() {
+  const query = document.getElementById('search-input').value.toLowerCase().trim();
+  document.querySelectorAll('.node').forEach(el => {
+    el.classList.toggle('search-match', !!query && el.dataset.title.includes(query));
+  });
+}
+
+function applyFilters() {
+  const activeCats = new Set([...document.querySelectorAll('.filter-pill.active')].map(p => p.dataset.cat));
+  const query = document.getElementById('search-input').value.toLowerCase().trim();
+
+  document.querySelectorAll('.node').forEach(el => {
+    const catOk = activeCats.size === 0 || activeCats.has(el.dataset.cat);
+    const searchOk = !query || el.dataset.title.includes(query);
+    el.classList.toggle('faded', !(catOk && searchOk));
+    el.classList.toggle('search-match', !!query && el.dataset.title.includes(query));
+  });
+
+  /* Fade edges where either endpoint is faded */
+  const fadedSet = new Set();
+  document.querySelectorAll('.node.faded').forEach(n => fadedSet.add(parseInt(n.dataset.idx)));
+  resetEdgeOpacity();
+  svg.querySelectorAll('path').forEach(p => {
+    const a = parseInt(p.dataset.a), b = parseInt(p.dataset.b);
+    if (fadedSet.has(a) || fadedSet.has(b)) p.setAttribute('opacity', '0.01');
+  });
+}
+
+document.getElementById('search-input').addEventListener('input', applyFilters);
+
+/* Click background to clear */
+graphEl.addEventListener('click', e => {
+  if (!e.target.closest('.node') && !e.target.closest('.zoom-btn') && !e.target.closest('.filter-bar')) {
+    clearHighlight();
+    updateSearchLabels();
+  }
+});
+
+/* ═══════════════════════════════════════════
+   12. Pan & Zoom (cursor-centered)
+   ═══════════════════════════════════════════ */
+let scale = 1, panX = 0, panY = 0;
+let isPanning = false, startPanX, startPanY;
+
+function applyTransform(smooth) {
+  if (smooth) {
+    canvas.style.transition = 'transform 0.3s ease-out';
+    setTimeout(() => { canvas.style.transition = ''; }, 310);
+  }
+  canvas.style.transform = `translate(${panX}px,${panY}px) scale(${scale})`;
+}
+
+function zoomTo(ns, px, py, smooth) {
+  ns = Math.max(0.3, Math.min(6, ns));
+  const wx = (px - panX) / scale, wy = (py - panY) / scale;
+  panX = px - wx * ns; panY = py - wy * ns;
+  scale = ns; applyTransform(smooth);
+}
+
+graphEl.addEventListener('mousedown', e => {
+  if (e.target.closest('.node') || e.target.closest('.zoom-btn')) return;
+  isPanning = true; startPanX = e.clientX - panX; startPanY = e.clientY - panY;
+});
+window.addEventListener('mousemove', e => {
+  if (!isPanning) return;
+  panX = e.clientX - startPanX; panY = e.clientY - startPanY; applyTransform();
+});
+window.addEventListener('mouseup', () => { isPanning = false; });
+
+graphEl.addEventListener('wheel', e => {
+  e.preventDefault();
+  const rect = graphEl.getBoundingClientRect();
+  zoomTo(scale * (e.deltaY > 0 ? 0.92 : 1.08), e.clientX - rect.left, e.clientY - rect.top, false);
+}, { passive: false });
+
+document.getElementById('zoom-in').addEventListener('click', () => {
+  const r = graphEl.getBoundingClientRect(); zoomTo(scale * 1.3, r.width / 2, r.height / 2, true);
+});
+document.getElementById('zoom-out').addEventListener('click', () => {
+  const r = graphEl.getBoundingClientRect(); zoomTo(scale / 1.3, r.width / 2, r.height / 2, true);
+});
+document.getElementById('zoom-reset').addEventListener('click', () => {
+  scale = 1; panX = 0; panY = 0; applyTransform(true);
+});
+graphEl.addEventListener('dblclick', e => {
+  if (e.target.closest('.node') || e.target.closest('.zoom-btn')) return;
+  const r = graphEl.getBoundingClientRect();
+  zoomTo(scale * 2, e.clientX - r.left, e.clientY - r.top, true);
+});
+
+/* ═══════════════════════════════════════════
+   13. init — async manifest load → rebuildGraph
+   ═══════════════════════════════════════════ */
+let manifest = [];
+
+async function init() {
+  /* Load static manifest */
+  try {
+    const resp = await fetch('manifest.json');
+    if (resp.ok) manifest = await resp.json();
+  } catch {}
+
+  /* Merge generated reports from KV via API */
+  try {
+    const resp = await fetch('/api/manifest');
+    if (resp.ok) {
+      const entries = await resp.json();
+      if (Array.isArray(entries)) {
+        const existingIds = new Set(manifest.map(r => r.id));
+        entries.forEach(entry => {
+          if (!existingIds.has(entry.id)) manifest.push(entry);
+        });
+      }
+    }
+  } catch {}
+
+  /* Normalize and build graph */
+  graphReports = manifest.map(normalizeReport);
+  document.getElementById('loading-msg').style.display = 'none';
+  rebuildGraph();
+}
+init();
+
+/* ═══════════════════════════════════════════
+   14. Live event handlers
+   ═══════════════════════════════════════════ */
+window.addEventListener('blazar-report-generating', (e) => {
+  const d = e.detail;
+  if (!d || !d.id) return;
+  const idx = manifest.findIndex(r => r.id === d.id);
+  if (idx >= 0) manifest.splice(idx, 1);
+  manifest.push({
+    id: d.id,
+    file: '/r/' + d.id,
+    title: d.title || 'Generating report\u2026',
+    subtitle: d.subtitle || '',
+    date: new Date().toISOString().split('T')[0],
+    category: d.category || 'audit',
+    summary: d.summary || '',
+    related: d.related || [],
+    _generating: true,
+  });
+  graphReports = manifest.map(normalizeReport);
+  rebuildGraph();
+  applyTransform();
+});
+
+window.addEventListener('blazar-report-generated', (e) => {
+  const entry = e.detail?.manifest;
+  if (!entry || !entry.id) return;
+  const idx = manifest.findIndex(r => r.id === entry.id);
+  if (idx >= 0) { manifest[idx] = entry; }
+  else { manifest.push(entry); }
+  graphReports = manifest.map(normalizeReport);
+  rebuildGraph();
+  applyTransform();
+});
+
+/* ═══════════════════════════════════════════
+   15. Resize handlers
+   ═══════════════════════════════════════════ */
+new ResizeObserver(() => { render(); applyTransform(); }).observe(graphEl);
+</script>
+<script src="chat.js"></script>
+</body>
+</html>

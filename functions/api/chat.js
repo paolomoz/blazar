@@ -45,7 +45,8 @@ ${reportsContext}
 - Use markdown formatting for readability (bold key numbers, use lists).
 - When suggesting next steps, link to the relevant action plan items.
 - NEVER use markdown tables. Use bullet lists or bold labels instead. For comparisons, use a list like: **Label** — description.
-- Put report links on their own line, not inside parentheses or sentences. Good: "See the full analysis:\\n[Content Gaps](aem-live-content-gaps.html#summary)". Bad: "(see [Content Gaps](aem-live-content-gaps.html#summary))".`;
+- Put report links on their own line, not inside parentheses or sentences. Good: "See the full analysis:\\n[Content Gaps](aem-live-content-gaps.html#summary)". Bad: "(see [Content Gaps](aem-live-content-gaps.html#summary))".
+- CRITICAL: ONLY link to report files and section IDs that are explicitly listed above in "Reports Available". NEVER invent or guess report filenames, section anchors, or hub.html#anchors. If the user asks about a topic spread across multiple reports, reference each relevant report individually — do not fabricate a combined page that does not exist.`;
 }
 
 function writePrompt(reportsContext) {
@@ -104,7 +105,8 @@ After the spec block, add a brief message like "Generating your report now..." T
 - When suggesting next steps, link to the relevant action plan items.
 - NEVER use markdown tables. Use bullet lists or bold labels instead.
 - Put report links on their own line, not inside parentheses or sentences.
-- When proposing a new report, be specific and actionable — not vague.`;
+- When proposing a new report, be specific and actionable — not vague.
+- CRITICAL: ONLY link to report files and section IDs that are explicitly listed above in "Reports Available". NEVER invent or guess report filenames, section anchors, or hub.html#anchors. If the user asks about a topic spread across multiple reports, reference each relevant report individually — do not fabricate a combined page that does not exist.`;
 }
 
 /* ── Load manifest: static file + KV generated reports ── */
