@@ -1,0 +1,280 @@
+[
+  {
+    "id": "aem-live-content-gaps",
+    "file": "aem-live-content-gaps.html",
+    "title": "Content Gaps Analysis: www.aem.live",
+    "date": "2026-02-24",
+    "category": "audit",
+    "summary": "197 indexed pages, 192 sitemap URLs. 10 pages missing from sitemap, 5 sitemap-only pages, 4 broken nav links, 65 missing OG images (33%), 72 stale pages older than 12 months (37%), 17 old branding references to \"Adobe Experience Manager\" instead of \"AEM\".",
+    "related": ["aem-live-action-plan", "aem-live-brand-guidelines"],
+    "sections": [
+      { "id": "summary", "label": "Executive summary with key metrics" },
+      { "id": "distribution", "label": "Content distribution across categories" },
+      { "id": "structural", "label": "Structural issues (sitemap gaps, broken nav links)" },
+      { "id": "metadata", "label": "Metadata problems (missing OG images, descriptions)" },
+      { "id": "freshness", "label": "Content freshness analysis (stale pages by age)" },
+      { "id": "brand", "label": "Branding inconsistencies (old naming references)" },
+      { "id": "inventory", "label": "Full searchable content inventory table (197 pages)" }
+    ]
+  },
+  {
+    "id": "aem-live-action-plan",
+    "file": "aem-live-action-plan.html",
+    "title": "Action Plan: www.aem.live",
+    "date": "2026-02-24",
+    "category": "optimization",
+    "summary": "18 prioritized actions derived from content gaps analysis. 4 critical, 5 high, 5 medium, 4 low priority items covering dead pages, sitemap sync, rebranding, stale content, and monitoring.",
+    "related": ["aem-live-content-gaps", "aem-live-brand-guidelines"],
+    "sections": [
+      { "id": "overview", "label": "Priority summary and execution roadmap" },
+      { "id": "p1", "label": "Critical priority (4 actions): Remove dead /drafts/documentation page, Sync sitemap, Fix broken nav links, Add missing OG images" },
+      { "id": "p2", "label": "High priority (5 actions): Rebrand old AEM references, Triage 72 stale pages, Add meta descriptions, Fix sitemap-only pages, Standardize URLs" },
+      { "id": "p3", "label": "Medium priority (5 actions): Review /drafts, Audit labs content, Update deprecation notices, Consolidate duplicates, Add publication dates" },
+      { "id": "p4", "label": "Low priority (4 actions): Clean query index, Freshness monitoring, Archive obsolete content, Improve nav structure" },
+      { "id": "peer-review", "label": "Independent validation results" }
+    ]
+  },
+  {
+    "id": "aem-live-brand-guidelines",
+    "file": "aem-live-brand-guidelines.html",
+    "title": "Brand Guidelines Extraction: www.aem.live",
+    "date": "2026-02-24",
+    "category": "brand",
+    "summary": "Comprehensive brand analysis across 10 representative pages. 4 positioning pillars, tone spectrum on 7 axes, 6 personality traits with 42 evidence quotes, terminology map, 7 documentation patterns, image quality grades (A+ infrastructure, F accessibility), visual identity extraction.",
+    "related": ["aem-live-brand-opportunities", "aem-live-content-gaps", "aem-live-action-plan"],
+    "sections": [
+      { "id": "positioning", "label": "4 brand positioning pillars (Developer-First, Speed & Performance, Simplicity, Modern Web)" },
+      { "id": "tone", "label": "Tone-of-voice spectrum mapped across 7 axes (Technical↔Accessible, Bold↔Understated, etc.)" },
+      { "id": "personality", "label": "6 personality traits with 42 evidence quotes" },
+      { "id": "terminology", "label": "Brand terminology map (preferred vs. deprecated terms)" },
+      { "id": "structure", "label": "Documentation structure analysis" },
+      { "id": "doc-patterns", "label": "7 documentation patterns identified" },
+      { "id": "images", "label": "Image quality grades (A+ infrastructure, F accessibility, D social sharing)" },
+      { "id": "visual-identity", "label": "Visual identity extraction (colors, typography)" },
+      { "id": "validation", "label": "Cross-validation results" }
+    ]
+  },
+  {
+    "id": "aem-live-brand-opportunities",
+    "file": "aem-live-brand-opportunities.html",
+    "title": "Improvement Opportunities: www.aem.live Brand & Docs",
+    "date": "2026-02-24",
+    "category": "optimization",
+    "summary": "22 prioritized improvement opportunities across accessibility, brand consistency, documentation architecture, and image strategy. 5 critical, 6 high, 6 medium, 5 low. Impact/effort matrix with 4-sprint execution plan.",
+    "related": ["aem-live-brand-guidelines", "aem-live-content-gaps", "aem-live-action-plan"],
+    "sections": [
+      { "id": "overview", "label": "Summary of 22 opportunities with priority breakdown" },
+      { "id": "critical", "label": "5 critical items (alt text, /developer/ 404, block docs, naming consistency, OG tags)" },
+      { "id": "high", "label": "6 high-priority items (how-tos, code examples, asset migration, social images, deduplication, CTAs)" },
+      { "id": "medium", "label": "6 medium-priority items" },
+      { "id": "low", "label": "5 low-priority items" },
+      { "id": "matrix", "label": "Impact/effort matrix with 4-sprint execution plan" },
+      { "id": "validation", "label": "Cross-validation results" }
+    ]
+  },
+  {
+    "id": "aem-live-readability",
+    "file": "aem-live-readability.html",
+    "title": "Content Readability Scoring: www.aem.live",
+    "date": "2026-02-24",
+    "category": "brand",
+    "summary": "10-page readability analysis. FK Grade range 7.8 (homepage) to 13.8 (markup docs). Avg FK Grade 10.8, avg reading ease 46.2. 86% active voice site-wide. 3 pages inaccessible to non-technical stakeholders. Brand claim \"inclusive directness\" partially validated — homepage delivers, developer content does not.",
+    "related": ["aem-live-brand-guidelines", "aem-live-brand-opportunities", "aem-live-content-gaps"],
+    "sections": [
+      { "id": "executive", "label": "Executive summary with key metrics and brand claim assessment" },
+      { "id": "comparison", "label": "Comparison matrix (10 pages ranked by Flesch Reading Ease)" },
+      { "id": "heatmap", "label": "Readability heatmap across metrics" },
+      { "id": "scorecards", "label": "Individual page scorecards with FK grade, jargon, quotes" },
+      { "id": "audience", "label": "Audience accessibility analysis" },
+      { "id": "patterns", "label": "Content patterns identified" },
+      { "id": "brand-test", "label": "Brand claim \"inclusive directness\" test" },
+      { "id": "recommendations", "label": "Recommendations for improvement" },
+      { "id": "validation", "label": "Validation stamp" }
+    ]
+  },
+  {
+    "id": "aem-live-rum-analysis",
+    "file": "aem-live-rum-analysis.html",
+    "title": "Traffic-Weighted Content Intelligence: www.aem.live",
+    "date": "2026-02-24",
+    "category": "performance",
+    "summary": "157K views over 10 days across 152 URLs. 94% desktop traffic. Top 10 pages = 42.6% of all traffic. Cross-references RUM telemetry with static analysis to reshuffle priorities: 5 actions upgraded, 4 downgraded, 4 new from telemetry. 31 stale pages with traffic vs 41 safe to archive. 28 CWV issues, 13.9K JS errors.",
+    "related": ["aem-live-content-gaps", "aem-live-action-plan", "aem-live-brand-guidelines"],
+    "sections": [
+      { "id": "validation", "label": "Data source verification (RUM bundles, sampling methodology)" },
+      { "id": "summary", "label": "Executive summary with traffic KPIs" },
+      { "id": "traffic", "label": "Traffic distribution (top 20 pages by views)" },
+      { "id": "devices", "label": "Device split (94% desktop) and referrer sources" },
+      { "id": "priority-shift", "label": "Priority shift matrix (actions re-ranked by real traffic)" },
+      { "id": "stale", "label": "Stale content triage (with-traffic vs safe-to-archive)" },
+      { "id": "og-gaps", "label": "OG image gaps weighted by traffic" },
+      { "id": "telemetry", "label": "Telemetry-only findings (CWV issues, JS errors)" },
+      { "id": "revised-plan", "label": "Revised 22-action plan with traffic weighting" },
+      { "id": "methodology", "label": "Data collection and sampling methodology" }
+    ]
+  },
+  {
+    "id": "aem-live-seo-signals",
+    "file": "aem-live-seo-signals.html",
+    "title": "SEO Brand Signals: www.aem.live",
+    "date": "2026-02-24",
+    "category": "performance",
+    "summary": "8-page SEO metadata audit. All 8 pages have title/description/OG/Twitter/canonical/single-H1. All 8 missing: lang attribute, og:type, favicon link, hreflang. Only 1/8 has structured data. 3/8 have custom OG images. 7/8 titles lack brand name. Site invisible for own brand keywords in SERP.",
+    "related": ["aem-live-content-gaps", "aem-live-brand-guidelines", "aem-live-brand-opportunities", "aem-live-action-plan"],
+    "sections": [
+      { "id": "scorecard", "label": "SEO signals scorecard (12 metrics, pass/fail grid)" },
+      { "id": "page-metadata", "label": "Page-by-page metadata audit (8 pages)" },
+      { "id": "structured-data", "label": "Structured data analysis (JSON-LD)" },
+      { "id": "heading-hierarchy", "label": "Heading hierarchy review per page" },
+      { "id": "technical-seo", "label": "Technical SEO (robots, performance signals)" },
+      { "id": "robots-sitemap", "label": "Robots.txt and sitemap analysis" },
+      { "id": "serp-presence", "label": "SERP presence and brand visibility" },
+      { "id": "brand-consistency", "label": "Brand consistency in SEO metadata" },
+      { "id": "findings", "label": "Key findings summary" },
+      { "id": "validation", "label": "Validation stamp" }
+    ]
+  },
+  {
+    "id": "aem-live-brand-consistency",
+    "file": "aem-live-brand-consistency.html",
+    "title": "Brand Consistency Scorecard: www.aem.live",
+    "date": "2026-02-24",
+    "category": "brand",
+    "summary": "Page-level brand voice audit across 12 pages scored against 6 personality traits and 7 tone axes. Mean score 76/100. 4 strong alignment, 5 minor drift, 3 significant deviation. FAQ (58) and /business/demo (48) highest-risk. Developer pages avg 82.5 vs docs avg 72.7.",
+    "related": ["aem-live-brand-guidelines", "aem-live-brand-opportunities", "aem-live-content-gaps"],
+    "sections": [
+      { "id": "overview", "label": "Executive overview with mean score and distribution" },
+      { "id": "heatmap", "label": "Trait heatmap (6 brand traits x 12 pages)" },
+      { "id": "rankings", "label": "Page rankings by alignment score" },
+      { "id": "strong", "label": "Strong alignment tier (4 pages: keeping-it-100, tutorial, architecture, golive)" },
+      { "id": "minor", "label": "Minor drift tier (5 pages: authoring, markup, homepage, rum, sharepoint)" },
+      { "id": "significant", "label": "Significant deviation tier (3 pages: custom-headers, faq, demo)" },
+      { "id": "page-details", "label": "All page scores with trait breakdown and tone positioning" },
+      { "id": "systemic", "label": "Systemic findings across all pages" },
+      { "id": "validation", "label": "Validation stamp" }
+    ]
+  },
+  {
+    "id": "aem-live-brand-evolution",
+    "file": "aem-live-brand-evolution.html",
+    "title": "Brand Evolution Timeline: AEM Edge Delivery Services",
+    "date": "2026-02-24",
+    "category": "brand",
+    "summary": "Brand archaeology: 8 years, 6+ names. Helix (2018) to Franklin (2022) to Edge Delivery Services (Oct 2023). ~93% rebrand on aem.live but 40+ GitHub repos still helix-*. hlx.live blocked Dec 2025 (403, not 301). 13 legacy references on live site. Developer API ~30% rebranded.",
+    "related": ["aem-live-brand-guidelines", "aem-live-developer-touchpoints", "aem-live-seo-signals", "aem-live-content-gaps"],
+    "sections": [
+      { "id": "summary", "label": "Executive summary with key naming stats" },
+      { "id": "names", "label": "Complete name roster (6 product names with dates)" },
+      { "id": "timeline", "label": "Full chronological timeline (4 eras)" },
+      { "id": "domains", "label": "Domain archaeology (hlx.page/hlx.live to aem.page/aem.live)" },
+      { "id": "github", "label": "GitHub repo naming audit (40+ helix-* repos)" },
+      { "id": "remnants", "label": "Legacy remnants still on live site" },
+      { "id": "rebrand-score", "label": "Rebrand completeness meter (~93% on aem.live)" },
+      { "id": "seo", "label": "SEO consequences of repeated renamings" },
+      { "id": "community", "label": "Community impact of name changes" },
+      { "id": "analysis", "label": "Strategic analysis and recommendations" },
+      { "id": "validation", "label": "Validation stamp" }
+    ]
+  },
+  {
+    "id": "aem-live-competitor-positioning",
+    "file": "aem-live-competitor-positioning.html",
+    "title": "Competitor Brand Positioning Audit: www.aem.live",
+    "date": "2026-02-24",
+    "category": "brand",
+    "summary": "6-brand competitive analysis across 10 dimensions: aem.live vs Contentful, Sanity, Netlify, Vercel, WordPress VIP. aem.live owns the performance niche (unique Lighthouse 100 promise) and scores highest on educational tone (82). All competitors lead with AI messaging — aem.live does not. 4/6 are developer-first. aem.live and WP VIP hide pricing.",
+    "related": ["aem-live-brand-guidelines", "aem-live-brand-opportunities"],
+    "sections": [
+      { "id": "exec-summary", "label": "Executive summary (6 brands, 10 dimensions, key findings)" },
+      { "id": "positioning-map", "label": "2-axis positioning map (developer/business vs performance/content)" },
+      { "id": "hero-messaging", "label": "Hero messaging comparison across all 6 brands" },
+      { "id": "tone-comparison", "label": "Tone of voice comparison (7 axes mapped per brand)" },
+      { "id": "cta-strategy", "label": "CTA strategy (button copy, free-tier visibility)" },
+      { "id": "audience-focus", "label": "Audience focus (developer-first vs business-first split)" },
+      { "id": "pricing", "label": "Pricing transparency comparison" },
+      { "id": "social-proof", "label": "Social proof strategies per brand" },
+      { "id": "differentiators", "label": "Key differentiators table" },
+      { "id": "profiles", "label": "Full brand profiles (6 detailed cards)" },
+      { "id": "strategic-insights", "label": "Strategic insights and recommendations" }
+    ]
+  },
+  {
+    "id": "aem-live-developer-touchpoints",
+    "file": "aem-live-developer-touchpoints.html",
+    "title": "Developer Touchpoint Brand Audit: www.aem.live",
+    "date": "2026-02-24",
+    "category": "brand",
+    "summary": "Audit of 5 developer touchpoints: 4 GitHub repos, 1 npm package, AGENTS.md. Overall grade B+. 67% naming consistency, 14 legacy \"Helix\" references. Brand voice strongest in Sidekick and AGENTS.md, weakest in CLI (repo still named helix-cli) and npm metadata. .hlxignore, window.hlx namespace persist.",
+    "related": ["aem-live-brand-guidelines", "aem-live-brand-evolution", "aem-live-brand-consistency"],
+    "sections": [
+      { "id": "executive-summary", "label": "Executive summary with B+ grade, 5 touchpoints, 14 helix references" },
+      { "id": "naming-consistency", "label": "Naming consistency audit (AEM vs Helix vs Franklin per artifact)" },
+      { "id": "boilerplate", "label": "aem-boilerplate repo deep-dive" },
+      { "id": "block-collection", "label": "aem-block-collection repo deep-dive" },
+      { "id": "cli", "label": "helix-cli / aem-cli audit (most problematic touchpoint)" },
+      { "id": "sidekick", "label": "aem-sidekick browser extension audit" },
+      { "id": "npm", "label": "npm package metadata audit" },
+      { "id": "agents-md", "label": "AGENTS.md AI coding guidance audit" },
+      { "id": "heatmap", "label": "Brand trait heatmap (6 traits x 5 touchpoints)" },
+      { "id": "inconsistencies", "label": "Critical inconsistencies list" },
+      { "id": "verdict", "label": "Overall verdict with B+ score banner" }
+    ]
+  },
+  {
+    "id": "aem-live-link-equity",
+    "file": "aem-live-link-equity.html",
+    "title": "Internal Link Equity Map: www.aem.live",
+    "date": "2026-02-24",
+    "category": "audit",
+    "summary": "Internal link structure across 197 pages. 14 global nav links, ~70 FAQ content links (accidental hub), 3 legacy hlx.live links, ~100 orphan candidates, 2 complete pagination chains, 2 broken chains, 7 dead-end pages.",
+    "related": ["aem-live-content-gaps", "aem-live-action-plan", "aem-live-brand-opportunities"],
+    "sections": [
+      { "id": "summary", "label": "Executive summary with link structure KPIs" },
+      { "id": "nav-links", "label": "Global navigation links (14 items on every page)" },
+      { "id": "inbound", "label": "Inbound link analysis per page" },
+      { "id": "per-page", "label": "Per-page link audit (9 key pages)" },
+      { "id": "hierarchy", "label": "Site hierarchy tree visualization" },
+      { "id": "pagination", "label": "Pagination chain analysis (complete vs broken)" },
+      { "id": "broken", "label": "Broken internal links" },
+      { "id": "orphans", "label": "Orphan page candidates (~100 pages not linked internally)" },
+      { "id": "dead-ends", "label": "Dead-end pages (7 pages with no outbound links)" },
+      { "id": "outbound-summary", "label": "Outbound link summary" },
+      { "id": "findings", "label": "Key findings and recommendations" }
+    ]
+  },
+  {
+    "id": "aem-live-image-quality",
+    "file": "aem-live-image-quality.html",
+    "title": "Image Quality & AI Improvement: www.aem.live",
+    "date": "2026-02-24",
+    "category": "brand",
+    "summary": "197 pages inventoried: 132 custom images, 65 generic fallbacks. Average brand alignment 3.6/10. 5 candidates analyzed and improved with Gemini 3 Pro — 2 pure generations, 3 improvements. Side-by-side comparisons for homepage, docs, architecture, blog, developer hub.",
+    "related": ["aem-live-brand-guidelines", "aem-live-brand-opportunities", "aem-live-content-gaps"],
+    "sections": [
+      { "id": "comparisons", "label": "AI comparisons (5 side-by-side original vs improved images)" },
+      { "id": "landscape", "label": "Image landscape (inventory: 132 custom, 65 fallback)" },
+      { "id": "benchmarks", "label": "Scoring benchmarks and brand alignment methodology" },
+      { "id": "recommendations", "label": "10 prioritized image improvement recommendations" },
+      { "id": "validation", "label": "Validation stamp" }
+    ]
+  },
+  {
+    "id": "aem-live-performance-validation",
+    "file": "aem-live-performance-validation.html",
+    "title": "Performance Brand Validation: www.aem.live",
+    "date": "2026-02-24",
+    "category": "performance",
+    "summary": "Tests the \"Lighthouse 100\" brand promise. Verdict: SUBSTANTIATED. CrUX field data: LCP 0.8s, INP 50ms, CLS 0.00, TTFB 0.3s. Critical path ~29 KB (under 100 KB limit). All 7 stated performance standards pass. Gap: 100% of images have empty alt=\"\" — accessibility failures prevent true Lighthouse 100.",
+    "related": ["aem-live-brand-guidelines", "aem-live-seo-signals", "aem-live-brand-opportunities"],
+    "sections": [
+      { "id": "verdict", "label": "Verdict (brand promise substantiated with accessibility caveat)" },
+      { "id": "cwv", "label": "Core Web Vitals field data (LCP 0.8s, INP 50ms, CLS 0.00)" },
+      { "id": "standards", "label": "Their stated standards (7 quotes tested against reality)" },
+      { "id": "architecture", "label": "Loading architecture (3-phase eager/lazy/delayed)" },
+      { "id": "pages", "label": "Page-by-page audit" },
+      { "id": "checklist", "label": "Brand promise checklist (pass/fail per claim)" },
+      { "id": "gap", "label": "The accessibility gap (empty alt tags site-wide)" },
+      { "id": "validation", "label": "Validation stamp" }
+    ]
+  }
+]

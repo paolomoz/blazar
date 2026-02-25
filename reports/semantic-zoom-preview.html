@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blazar — Semantic Zoom Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700;900&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue: #3B63FB; --blue-light: #EBF0FF; --blue-bg: rgba(59,99,251,0.07);
+  --amber: #CB6F10; --amber-bg: rgba(203,111,16,0.07);
+  --green: #12805C; --green-bg: rgba(18,128,92,0.07);
+  --purple: #7A6AFD; --purple-bg: rgba(122,106,253,0.07);
+  --red: #D7373F; --red-bg: rgba(215,55,63,0.07);
+  --bg: #F6F5F3; --bg-white: #FFFFFF;
+  --fg: #1A1A2E; --fg-muted: #7A7A8E; --border: #E2E1E5;
+  --shadow: 0 2px 8px rgba(0,0,0,0.06), 0 0 1px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.1), 0 2px 8px rgba(0,0,0,0.06);
+  --font: 'Source Sans Pro', -apple-system, sans-serif;
+  --font-mono: 'Source Code Pro', monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+body { font-family: var(--font); background: var(--bg); color: var(--fg); }
+
+/* ── App Shell ── */
+.app { display: flex; flex-direction: column; height: 100vh; }
+
+/* ── Header ── */
+.header {
+  background: var(--bg-white);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0; z-index: 100;
+}
+.header-left { display: flex; align-items: center; gap: 12px; }
+.header h1 { font-size: 18px; font-weight: 900; color: var(--fg); }
+.header-subtitle { font-size: 12px; color: var(--fg-muted); }
+.header-logo { width: 32px; height: 32px; border-radius: 8px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 600; color: var(--fg-muted);
+}
+.breadcrumb span { opacity: 0.4; }
+.breadcrumb .bc-active { color: var(--fg); opacity: 1; }
+
+/* ── Search ── */
+.search-area { display: flex; align-items: center; gap: 12px; }
+.search-box {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 9999px; padding: 6px 16px;
+  transition: all 0.2s;
+}
+.search-box:focus-within { border-color: var(--blue); background: var(--blue-light); }
+.search-box svg { width: 14px; height: 14px; color: var(--fg-muted); flex-shrink: 0; }
+.search-box input {
+  background: none; border: none; outline: none;
+  color: var(--fg); font-family: var(--font); font-size: 13px;
+  width: 180px;
+}
+.search-box input::placeholder { color: var(--fg-muted); }
+
+/* ── Map Canvas ── */
+.map { flex: 1; position: relative; overflow: hidden; cursor: grab; background: var(--bg); }
+.map:active { cursor: grabbing; }
+.map-canvas {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  transform-origin: 0 0;
+}
+
+/* ── Dot grid background ── */
+.map::before {
+  content: '';
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  background-image: radial-gradient(circle, rgba(0,0,0,0.06) 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none; z-index: 0;
+}
+
+/* ── Connection lines ── */
+.connections-svg {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none; z-index: 1;
+}
+
+/* ── Clusters ── */
+.cluster {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+}
+
+/* ── Cluster Bubble (world level) ── */
+.cluster-bubble {
+  position: relative;
+  border-radius: 50%;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.cluster-bubble:hover { transform: scale(1.06); }
+.cluster-bubble:hover .bubble-ring { opacity: 0.5; }
+
+.bubble-fill {
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  opacity: 0.5;
+}
+.bubble-border {
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  opacity: 0.4;
+}
+.bubble-ring {
+  position: absolute; inset: -6px;
+  opacity: 0.3;
+  transition: opacity 0.2s;
+}
+.bubble-content {
+  position: relative; z-index: 2;
+  text-align: center;
+  pointer-events: none;
+}
+.bubble-count {
+  font-size: 32px; font-weight: 900;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+.bubble-name {
+  font-size: 11px; font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 6px;
+}
+.bubble-experiences {
+  display: flex; gap: 4px; justify-content: center;
+}
+.bubble-exp-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: rgba(0,0,0,0.15);
+}
+.bubble-exp-dot.has-reports { background: rgba(0,0,0,0.4); }
+.bubble-health {
+  font-size: 10px; font-weight: 700;
+  margin-top: 4px; opacity: 0.6;
+}
+
+/* ── Report Tiles (city level) ── */
+.report-tile {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.report-tile:hover { z-index: 20; }
+
+.tile-compact {
+  width: 120px;
+  background: var(--bg-white);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  padding: 8px 10px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+}
+.tile-compact:hover {
+  box-shadow: var(--shadow-lg);
+  border-color: var(--blue);
+  transform: scale(1.08);
+}
+.tile-accent {
+  height: 3px; border-radius: 3px;
+  margin: -8px -10px 8px;
+  border-radius: 8px 8px 0 0;
+}
+.tile-title {
+  font-size: 10px; font-weight: 700; color: var(--fg);
+  line-height: 1.3;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.tile-exp {
+  font-size: 8px; color: var(--fg-muted); margin-top: 3px;
+  font-weight: 600;
+}
+
+/* ── Report Card (street level) ── */
+.tile-detail {
+  width: 160px;
+  background: var(--bg-white);
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.tile-detail:hover {
+  box-shadow: 0 12px 32px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.08);
+  transform: scale(1.04);
+}
+.detail-accent { height: 4px; }
+.detail-body { padding: 10px 12px; }
+.detail-title {
+  font-size: 11px; font-weight: 700; color: var(--fg);
+  line-height: 1.3; margin-bottom: 4px;
+}
+.detail-summary {
+  font-size: 9px; color: var(--fg-muted); line-height: 1.4;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+  overflow: hidden; margin-bottom: 6px;
+}
+.detail-meta {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 8px; color: var(--fg-muted);
+  padding-top: 6px;
+  border-top: 1px solid var(--border);
+}
+.detail-badge {
+  padding: 1px 6px; border-radius: 9999px;
+  font-size: 8px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.04em;
+}
+.detail-user { font-weight: 600; }
+
+/* ═══════════════════════════════════════
+   Semantic Zoom Levels
+   ═══════════════════════════════════════ */
+
+/* World: cluster bubbles only */
+.map[data-zoom="world"] .report-tile { display: none; }
+.map[data-zoom="world"] .cluster-bubble { display: flex; }
+
+/* City: tiles visible, bubbles fade */
+.map[data-zoom="city"] .cluster-bubble { opacity: 0.3; pointer-events: none; }
+.map[data-zoom="city"] .bubble-content { display: none; }
+.map[data-zoom="city"] .bubble-ring { display: none; }
+.map[data-zoom="city"] .tile-compact { display: block; }
+.map[data-zoom="city"] .tile-detail { display: none; }
+
+/* Street: full detail cards */
+.map[data-zoom="street"] .cluster-bubble { opacity: 0.15; pointer-events: none; }
+.map[data-zoom="street"] .bubble-content { display: none; }
+.map[data-zoom="street"] .bubble-ring { display: none; }
+.map[data-zoom="street"] .tile-compact { display: none; }
+.map[data-zoom="street"] .tile-detail { display: block; }
+
+/* ── Zoom Controls ── */
+.zoom-controls {
+  position: absolute;
+  bottom: 20px; right: 20px;
+  display: flex; flex-direction: column;
+  gap: 4px; z-index: 50;
+}
+.zoom-btn {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-white);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 18px; font-weight: 600;
+  color: var(--fg-muted);
+  font-family: var(--font);
+  box-shadow: var(--shadow);
+  transition: all 0.15s;
+}
+.zoom-btn:hover { color: var(--fg); border-color: var(--blue); }
+
+/* ── Zoom level indicator ── */
+.zoom-level {
+  position: absolute;
+  bottom: 74px; right: 20px;
+  z-index: 50;
+  font-size: 10px; font-weight: 600;
+  color: var(--fg-muted);
+  text-align: right;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+.zoom-level .zoom-pct {
+  font-size: 13px; font-weight: 700;
+  color: var(--fg);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Legend ── */
+.legend {
+  position: absolute;
+  bottom: 20px; left: 20px;
+  display: flex; gap: 14px;
+  font-size: 11px; color: var(--fg-muted);
+  z-index: 50;
+  background: var(--bg-white);
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+.legend-item { display: flex; align-items: center; gap: 5px; }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+/* ── Info panel ── */
+.info-panel {
+  position: absolute;
+  top: 16px; right: 16px;
+  z-index: 50;
+  background: var(--bg-white);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 18px;
+  font-size: 12px;
+  color: var(--fg-muted);
+  box-shadow: var(--shadow);
+  max-width: 200px;
+}
+.info-panel .info-stat {
+  display: flex; justify-content: space-between;
+  margin-bottom: 4px;
+}
+.info-panel .info-val { color: var(--fg); font-weight: 700; }
+
+/* ── Concept badge ── */
+.concept-badge {
+  position: absolute;
+  top: 16px; left: 50%; transform: translateX(-50%);
+  z-index: 100;
+  background: var(--blue-light);
+  border: 1px solid rgba(59,99,251,0.2);
+  border-radius: 9999px;
+  padding: 6px 20px;
+  font-size: 11px; font-weight: 700;
+  color: var(--blue);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  pointer-events: none;
+}
+
+/* ── Search highlighting ── */
+.report-tile.dimmed { opacity: 0.1; }
+.cluster.dimmed .cluster-bubble { opacity: 0.15; }
+.cluster.highlighted .cluster-bubble { box-shadow: 0 0 0 3px var(--blue), var(--shadow-lg); }
+.report-tile.highlighted .tile-compact { border-color: var(--blue); box-shadow: 0 0 0 2px var(--blue), var(--shadow-lg); }
+.report-tile.highlighted .tile-detail { border-color: var(--blue); box-shadow: 0 0 0 2px var(--blue), var(--shadow-lg); }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header class="header">
+    <div class="header-left">
+      <img src="blazar-logo-36.svg" width="32" height="32" alt="" class="header-logo">
+      <div>
+        <h1>Blazar</h1>
+        <div class="header-subtitle">Semantic Zoom</div>
+      </div>
+    </div>
+    <div class="breadcrumb" id="breadcrumb">
+      <span class="bc-active">All categories</span>
+    </div>
+    <div class="search-area">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" placeholder="Search reports..." id="search-input">
+      </div>
+    </div>
+  </header>
+
+  <div class="map" id="map" data-zoom="world">
+    <div class="concept-badge">Design Concept — Option A: Semantic Zoom</div>
+    <div class="map-canvas" id="map-canvas">
+      <svg class="connections-svg" id="connections-svg"></svg>
+    </div>
+
+    <div class="zoom-level" id="zoom-level">
+      <div class="zoom-pct">100%</div>
+      <div>world</div>
+    </div>
+    <div class="zoom-controls">
+      <button class="zoom-btn" id="zoom-in">+</button>
+      <button class="zoom-btn" id="zoom-reset" style="font-size:11px;">1:1</button>
+      <button class="zoom-btn" id="zoom-out">&minus;</button>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div> Audit</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div> Optimization</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div> Brand</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div> Content</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div> Performance</div>
+    </div>
+
+    <div class="info-panel">
+      <div class="info-stat"><span>Reports</span><span class="info-val">52</span></div>
+      <div class="info-stat"><span>Categories</span><span class="info-val">5</span></div>
+      <div class="info-stat"><span>Experiences</span><span class="info-val">3</span></div>
+      <div class="info-stat" style="margin-top:8px; padding-top:8px; border-top:1px solid var(--border);"><span>Zoom hint</span><span class="info-val" style="font-size:10px;">Scroll to zoom</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════
+   Semantic Zoom — Option A Mock
+   ════════════════════════════════════════════ */
+
+const catMeta = {
+  audit:        { hex: '#CB6F10', bg: 'rgba(203,111,16,0.08)', label: 'Audit',        health: 72 },
+  brand:        { hex: '#7A6AFD', bg: 'rgba(122,106,253,0.08)', label: 'Brand',        health: 64 },
+  performance:  { hex: '#D7373F', bg: 'rgba(215,55,63,0.08)',   label: 'Performance',  health: 78 },
+  optimization: { hex: '#12805C', bg: 'rgba(18,128,92,0.08)',   label: 'Optimization', health: 56 },
+  content:      { hex: '#3B63FB', bg: 'rgba(59,99,251,0.08)',   label: 'Content',      health: 68 },
+};
+
+/* ── Same 52 reports as galaxy view ── */
+const reports = [
+  { id:'content-gaps', title:'Content Gaps Analysis', cat:'audit', exp:'aem.live', size:3, summary:'197 pages, 72 stale (37%), 65 missing OG images', date:'2026-02-24', user:'paolo' },
+  { id:'link-equity', title:'Internal Link Equity Map', cat:'audit', exp:'aem.live', size:2, summary:'~100 orphan pages, 3 legacy hlx.live links', date:'2026-02-24', user:'paolo' },
+  { id:'action-plan', title:'Action Plan', cat:'optimization', exp:'aem.live', size:3, summary:'18 prioritized actions from content gaps analysis', date:'2026-02-24', user:'paolo' },
+  { id:'brand-guidelines', title:'Brand Guidelines Extraction', cat:'brand', exp:'aem.live', size:3, summary:'4 positioning pillars, tone spectrum, 42 evidence quotes', date:'2026-02-24', user:'paolo' },
+  { id:'brand-opportunities', title:'Improvement Opportunities', cat:'optimization', exp:'aem.live', size:2, summary:'22 prioritized improvements across 4 sprints', date:'2026-02-24', user:'paolo' },
+  { id:'image-quality', title:'Image Quality & AI', cat:'brand', exp:'aem.live', size:2, summary:'Avg brand alignment 3.6/10, AI-generated improvements', date:'2026-02-24', user:'paolo' },
+  { id:'competitor', title:'Competitor Positioning', cat:'brand', exp:'aem.live', size:2, summary:'6-brand analysis across 10 dimensions', date:'2026-02-24', user:'paolo' },
+  { id:'consistency', title:'Brand Consistency Scorecard', cat:'brand', exp:'aem.live', size:2, summary:'Mean score 76/100, FAQ (58) highest risk', date:'2026-02-24', user:'paolo' },
+  { id:'seo-signals', title:'SEO Brand Signals', cat:'performance', exp:'aem.live', size:2, summary:'0/8 lang, 7/8 no structured data', date:'2026-02-24', user:'paolo' },
+  { id:'readability', title:'Readability Scoring', cat:'brand', exp:'aem.live', size:2, summary:'FK 7.8–13.8, 86% active voice', date:'2026-02-24', user:'paolo' },
+  { id:'rum-analysis', title:'RUM Traffic Intelligence', cat:'performance', exp:'aem.live', size:3, summary:'157K views, 152 URLs, priority reshuffling', date:'2026-02-24', user:'paolo' },
+  { id:'brand-evolution', title:'Brand Evolution Timeline', cat:'brand', exp:'aem.live', size:2, summary:'8 years, 6+ names, Helix to EDS', date:'2026-02-24', user:'paolo' },
+  { id:'perf-validation', title:'Performance Validation', cat:'performance', exp:'aem.live', size:2, summary:'Lighthouse 100 substantiated, alt text gap', date:'2026-02-24', user:'paolo' },
+  { id:'dev-touchpoints', title:'Developer Touchpoints', cat:'brand', exp:'aem.live', size:1, summary:'33% AEM-branded, window.hlx main issue', date:'2026-02-24', user:'paolo' },
+  { id:'nav-architecture', title:'Navigation Architecture', cat:'audit', exp:'aem.live', size:1, summary:'IA depth analysis, 4-level nav hierarchy', date:'2026-02-25', user:'marco' },
+  { id:'conversion-funnel', title:'Conversion Funnel Analysis', cat:'optimization', exp:'aem.live', size:2, summary:'Get Started flow, 3-step drop-off pattern', date:'2026-02-25', user:'marco' },
+  { id:'a11y-audit', title:'Accessibility Audit', cat:'audit', exp:'aem.live', size:2, summary:'WCAG 2.1 AA, 83 missing alt texts', date:'2026-02-25', user:'anna' },
+  { id:'cwv-deep', title:'Core Web Vitals Deep Dive', cat:'performance', exp:'aem.live', size:1, summary:'LCP 0.8s, INP 50ms, CLS 0.00', date:'2026-02-25', user:'anna' },
+  { id:'acme-content', title:'Content Inventory', cat:'audit', exp:'acme-store.com', size:2, summary:'342 product pages, 28 category pages, 15 landing pages', date:'2026-02-25', user:'paolo' },
+  { id:'acme-seo', title:'SEO Health Check', cat:'performance', exp:'acme-store.com', size:2, summary:'Domain authority 42, 67 broken backlinks', date:'2026-02-25', user:'marco' },
+  { id:'acme-brand', title:'Brand Voice Analysis', cat:'brand', exp:'acme-store.com', size:3, summary:'Inconsistent tone across product vs marketing', date:'2026-02-25', user:'paolo' },
+  { id:'acme-imagery', title:'Product Imagery Audit', cat:'brand', exp:'acme-store.com', size:2, summary:'40% below 72 DPI, inconsistent backgrounds', date:'2026-02-25', user:'anna' },
+  { id:'acme-schema', title:'Structured Data Coverage', cat:'performance', exp:'acme-store.com', size:1, summary:'Product schema on 89%, missing reviews schema', date:'2026-02-25', user:'marco' },
+  { id:'acme-cart', title:'Cart Abandonment Analysis', cat:'optimization', exp:'acme-store.com', size:3, summary:'68% abandonment, shipping cost reveal at step 3', date:'2026-02-25', user:'anna' },
+  { id:'acme-mobile', title:'Mobile UX Audit', cat:'audit', exp:'acme-store.com', size:2, summary:'12 touch target violations, no bottom nav', date:'2026-02-25', user:'anna' },
+  { id:'acme-perf', title:'Page Speed Analysis', cat:'performance', exp:'acme-store.com', size:2, summary:'LCP 3.2s on mobile, 1.8MB hero images', date:'2026-02-25', user:'marco' },
+  { id:'acme-copy', title:'Product Copy Quality', cat:'content', exp:'acme-store.com', size:2, summary:'45% duplicate descriptions, 12% < 50 words', date:'2026-02-25', user:'paolo' },
+  { id:'acme-search', title:'Site Search Analysis', cat:'optimization', exp:'acme-store.com', size:1, summary:'23% zero-result queries, top missed terms mapped', date:'2026-02-25', user:'marco' },
+  { id:'acme-pricing', title:'Pricing Display Audit', cat:'content', exp:'acme-store.com', size:1, summary:'Inconsistent sale badge rendering, 3 formats', date:'2026-02-25', user:'anna' },
+  { id:'acme-links', title:'Internal Linking Strategy', cat:'audit', exp:'acme-store.com', size:1, summary:'Category crosslinks, related products graph', date:'2026-02-25', user:'paolo' },
+  { id:'acme-comp', title:'Competitor Pricing Intel', cat:'brand', exp:'acme-store.com', size:2, summary:'8 competitors tracked, 12% price undercut avg', date:'2026-02-25', user:'marco' },
+  { id:'acme-reviews', title:'Review Sentiment Analysis', cat:'content', exp:'acme-store.com', size:2, summary:'4.2 avg, shipping complaints in 34% of 1-stars', date:'2026-02-25', user:'anna' },
+  { id:'acme-action', title:'Q1 Optimization Plan', cat:'optimization', exp:'acme-store.com', size:2, summary:'24 actions, estimated 15% conversion lift', date:'2026-02-25', user:'paolo' },
+  { id:'docs-ia', title:'Information Architecture', cat:'audit', exp:'docs.example.dev', size:3, summary:'8 top-level sections, 340 pages, 5-level max depth', date:'2026-02-25', user:'marco' },
+  { id:'docs-search', title:'Search Effectiveness', cat:'optimization', exp:'docs.example.dev', size:2, summary:'Avg 2.3 queries per session, 18% bounce from search', date:'2026-02-25', user:'marco' },
+  { id:'docs-freshness', title:'Content Freshness Map', cat:'audit', exp:'docs.example.dev', size:2, summary:'42% pages not updated in 6+ months', date:'2026-02-25', user:'anna' },
+  { id:'docs-api', title:'API Reference Completeness', cat:'content', exp:'docs.example.dev', size:2, summary:'78% endpoints documented, 12 missing examples', date:'2026-02-25', user:'marco' },
+  { id:'docs-onboard', title:'Onboarding Flow Analysis', cat:'optimization', exp:'docs.example.dev', size:2, summary:'Getting Started → first API call in 4.2 min avg', date:'2026-02-25', user:'anna' },
+  { id:'docs-code', title:'Code Sample Audit', cat:'content', exp:'docs.example.dev', size:1, summary:'67% samples tested, 8 broken since v3.2 migration', date:'2026-02-25', user:'marco' },
+  { id:'docs-nav', title:'Navigation Heatmap', cat:'performance', exp:'docs.example.dev', size:1, summary:'Sidebar clicks: 80% top 3 sections, long tail ignored', date:'2026-02-25', user:'anna' },
+  { id:'docs-voice', title:'Technical Writing Consistency', cat:'brand', exp:'docs.example.dev', size:2, summary:'Style guide adherence 71%, verb tense inconsistency', date:'2026-02-25', user:'paolo' },
+  { id:'docs-i18n', title:'Internationalization Status', cat:'content', exp:'docs.example.dev', size:1, summary:'EN 100%, JP 45%, DE 38%, FR 22%, ES 12%', date:'2026-02-25', user:'paolo' },
+  { id:'docs-a11y', title:'Docs Accessibility Review', cat:'audit', exp:'docs.example.dev', size:1, summary:'Code blocks lack screen reader context, 0 skip links', date:'2026-02-25', user:'anna' },
+  { id:'docs-perf', title:'Docs Site Performance', cat:'performance', exp:'docs.example.dev', size:1, summary:'TTFB 320ms, but search modal adds 800ms JS', date:'2026-02-25', user:'marco' },
+  { id:'docs-seo', title:'Docs SEO Visibility', cat:'performance', exp:'docs.example.dev', size:1, summary:'Ranking for 340 keywords, Stack Overflow outranks 23', date:'2026-02-25', user:'marco' },
+  { id:'docs-linking', title:'Cross-Reference Integrity', cat:'audit', exp:'docs.example.dev', size:1, summary:'14 broken cross-links, 8 circular references', date:'2026-02-25', user:'anna' },
+  { id:'docs-feedback', title:'User Feedback Synthesis', cat:'content', exp:'docs.example.dev', size:2, summary:'430 thumbs-down pages analyzed, top 3 pain points', date:'2026-02-25', user:'paolo' },
+  { id:'docs-action', title:'Docs Improvement Roadmap', cat:'optimization', exp:'docs.example.dev', size:2, summary:'32 items across 3 quarters, search + freshness first', date:'2026-02-25', user:'paolo' },
+  { id:'docs-brand', title:'Brand Alignment in Docs', cat:'brand', exp:'docs.example.dev', size:1, summary:'Logo usage correct, but 4 outdated screenshots', date:'2026-02-25', user:'paolo' },
+  { id:'docs-video', title:'Video Tutorial Coverage', cat:'content', exp:'docs.example.dev', size:1, summary:'12 videos, 3 outdated, no captions on 8', date:'2026-02-25', user:'anna' },
+];
+
+/* ── Cross-category connections ── */
+const crossCatLinks = [
+  ['audit', 'optimization'],
+  ['audit', 'performance'],
+  ['brand', 'optimization'],
+  ['brand', 'content'],
+  ['performance', 'optimization'],
+];
+
+/* ── Cluster layout (virtual coordinates) ── */
+const clusterLayout = {
+  audit:        { cx: 420,  cy: 340 },
+  brand:        { cx: 1200, cy: 300 },
+  performance:  { cx: 820,  cy: 750 },
+  optimization: { cx: 300,  cy: 780 },
+  content:      { cx: 1300, cy: 760 },
+};
+
+/* ════════════════════════════════════════════
+   Rendering
+   ════════════════════════════════════════════ */
+const map = document.getElementById('map');
+const canvas = document.getElementById('map-canvas');
+const connSvg = document.getElementById('connections-svg');
+
+/* Group reports by category */
+const reportsByCat = {};
+reports.forEach(r => {
+  if (!reportsByCat[r.cat]) reportsByCat[r.cat] = [];
+  reportsByCat[r.cat].push(r);
+});
+
+function render() {
+  const W = map.clientWidth;
+  const H = map.clientHeight;
+  canvas.querySelectorAll('.cluster, .report-tile').forEach(n => n.remove());
+  connSvg.innerHTML = '';
+  connSvg.setAttribute('width', W);
+  connSvg.setAttribute('height', H);
+
+  /* ── Scale virtual coords to viewport ── */
+  const vW = 1600, vH = 1050;
+  const sx = W / vW, sy = H / vH;
+
+  /* ── Cross-category connection lines ── */
+  crossCatLinks.forEach(([catA, catB]) => {
+    const a = clusterLayout[catA], b = clusterLayout[catB];
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', a.cx * sx); line.setAttribute('y1', a.cy * sy);
+    line.setAttribute('x2', b.cx * sx); line.setAttribute('y2', b.cy * sy);
+    line.setAttribute('stroke', 'rgba(0,0,0,0.04)');
+    line.setAttribute('stroke-width', '2');
+    line.setAttribute('stroke-dasharray', '6 8');
+    connSvg.appendChild(line);
+  });
+
+  /* ── Render clusters ── */
+  Object.entries(clusterLayout).forEach(([cat, pos]) => {
+    const meta = catMeta[cat];
+    const catReports = reportsByCat[cat] || [];
+    const count = catReports.length;
+    const radius = 70 + Math.sqrt(count) * 22;
+
+    const cluster = document.createElement('div');
+    cluster.className = 'cluster';
+    cluster.dataset.cat = cat;
+    cluster.style.left = (pos.cx * sx) + 'px';
+    cluster.style.top = (pos.cy * sy) + 'px';
+
+    /* Health ring SVG */
+    const ringSize = radius * 2 + 16;
+    const ringR = radius + 4;
+    const circum = 2 * Math.PI * ringR;
+    const dashLen = circum * (meta.health / 100);
+
+    cluster.innerHTML = `
+      <div class="cluster-bubble" style="width:${radius*2}px; height:${radius*2}px;" data-cat="${cat}">
+        <div class="bubble-fill" style="background:${meta.bg}"></div>
+        <div class="bubble-border" style="border-color:${meta.hex}"></div>
+        <svg class="bubble-ring" width="${ringSize}" height="${ringSize}" viewBox="0 0 ${ringSize} ${ringSize}"
+             style="left:${-8}px; top:${-8}px;">
+          <circle cx="${ringSize/2}" cy="${ringSize/2}" r="${ringR}"
+                  fill="none" stroke="${meta.hex}" stroke-width="3" opacity="0.12"/>
+          <circle cx="${ringSize/2}" cy="${ringSize/2}" r="${ringR}"
+                  fill="none" stroke="${meta.hex}" stroke-width="3"
+                  stroke-dasharray="${dashLen} ${circum - dashLen}"
+                  stroke-linecap="round"
+                  transform="rotate(-90 ${ringSize/2} ${ringSize/2})"/>
+        </svg>
+        <div class="bubble-content">
+          <div class="bubble-count" style="color:${meta.hex}">${count}</div>
+          <div class="bubble-name" style="color:${meta.hex}">${meta.label}</div>
+          <div class="bubble-experiences">
+            ${getExpDots(catReports)}
+          </div>
+          <div class="bubble-health">${meta.health}% health</div>
+        </div>
+      </div>
+    `;
+
+    /* Click bubble to zoom into it */
+    cluster.querySelector('.cluster-bubble').addEventListener('click', () => {
+      const rect = map.getBoundingClientRect();
+      const clusterScreenX = parseFloat(cluster.style.left);
+      const clusterScreenY = parseFloat(cluster.style.top);
+      zoomTo(2.2, clusterScreenX, clusterScreenY, true);
+    });
+
+    canvas.appendChild(cluster);
+
+    /* ── Place report tiles within cluster ── */
+    const tilePositions = layoutReportsInCluster(catReports, pos.cx * sx, pos.cy * sy, radius);
+    catReports.forEach((r, i) => {
+      const tp = tilePositions[i];
+      const tile = document.createElement('div');
+      tile.className = 'report-tile';
+      tile.dataset.id = r.id;
+      tile.dataset.title = r.title.toLowerCase();
+      tile.dataset.cat = r.cat;
+      tile.style.left = tp.x + 'px';
+      tile.style.top = tp.y + 'px';
+
+      tile.innerHTML = `
+        <div class="tile-compact">
+          <div class="tile-accent" style="background:${meta.hex}"></div>
+          <div class="tile-title">${r.title}</div>
+          <div class="tile-exp">${r.exp}</div>
+        </div>
+        <div class="tile-detail">
+          <div class="detail-accent" style="background:${meta.hex}"></div>
+          <div class="detail-body">
+            <div class="detail-title">${r.title}</div>
+            <div class="detail-summary">${r.summary}</div>
+            <div class="detail-meta">
+              <span class="detail-badge" style="background:${meta.bg}; color:${meta.hex}">${meta.label}</span>
+              <span>${r.exp}</span>
+              <span class="detail-user">${r.user} · ${r.date.slice(5)}</span>
+            </div>
+          </div>
+        </div>
+      `;
+      canvas.appendChild(tile);
+    });
+  });
+}
+
+/* ── Experience dots for cluster bubble ── */
+function getExpDots(catReports) {
+  const exps = ['aem.live', 'acme-store.com', 'docs.example.dev'];
+  const expColors = { 'aem.live': '#3B63FB', 'acme-store.com': '#12805C', 'docs.example.dev': '#7A6AFD' };
+  const present = new Set(catReports.map(r => r.exp));
+  return exps.map(e =>
+    `<div class="bubble-exp-dot ${present.has(e) ? 'has-reports' : ''}"
+          style="${present.has(e) ? 'background:' + expColors[e] : ''}"
+          title="${e}${present.has(e) ? ' (' + catReports.filter(r => r.exp === e).length + ')' : ''}"></div>`
+  ).join('');
+}
+
+/* ── Arrange reports in concentric rings within cluster ── */
+function layoutReportsInCluster(reps, cx, cy, clusterRadius) {
+  const positions = [];
+  const n = reps.length;
+  if (n === 0) return positions;
+
+  let placed = 0;
+  let ring = 0;
+  const spacing = 55;
+
+  /* Center report */
+  if (placed < n) { positions.push({ x: cx, y: cy }); placed++; }
+  ring = 1;
+
+  while (placed < n) {
+    const ringR = ring * spacing;
+    const capacity = Math.max(1, Math.floor(2 * Math.PI * ringR / spacing));
+    const count = Math.min(capacity, n - placed);
+    const startAngle = -Math.PI / 2 + (ring % 2 ? 0.3 : 0);
+    for (let i = 0; i < count && placed < n; i++) {
+      const angle = startAngle + (i / count) * 2 * Math.PI;
+      positions.push({
+        x: cx + ringR * Math.cos(angle),
+        y: cy + ringR * Math.sin(angle),
+      });
+      placed++;
+    }
+    ring++;
+  }
+  return positions;
+}
+
+/* ════════════════════════════════════════════
+   Pan & Zoom (cursor-centered)
+   ════════════════════════════════════════════ */
+let scale = 1, panX = 0, panY = 0;
+let isPanning = false, startPanX, startPanY;
+const MIN_SCALE = 0.4, MAX_SCALE = 8;
+
+function applyTransform(smooth) {
+  if (smooth) {
+    canvas.style.transition = 'transform 0.35s ease-out';
+    setTimeout(() => { canvas.style.transition = ''; }, 360);
+  }
+  canvas.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
+  updateZoomLevel();
+}
+
+function updateZoomLevel() {
+  let level, label;
+  if (scale < 1.2) { level = 'world'; label = 'world'; }
+  else if (scale < 2.8) { level = 'city'; label = 'city'; }
+  else { level = 'street'; label = 'street'; }
+
+  map.dataset.zoom = level;
+  const indicator = document.getElementById('zoom-level');
+  indicator.innerHTML = `<div class="zoom-pct">${Math.round(scale * 100)}%</div><div>${label}</div>`;
+
+  /* Breadcrumb */
+  const bc = document.getElementById('breadcrumb');
+  if (level === 'world') {
+    bc.innerHTML = '<span class="bc-active">All categories</span>';
+  } else if (level === 'city') {
+    bc.innerHTML = '<span class="bc-active">All categories</span> <span>/</span> <span class="bc-active">Reports</span>';
+  } else {
+    bc.innerHTML = '<span class="bc-active">All categories</span> <span>/</span> <span>Reports</span> <span>/</span> <span class="bc-active">Detail</span>';
+  }
+}
+
+function zoomTo(newScale, pivotX, pivotY, smooth) {
+  newScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, newScale));
+  const wx = (pivotX - panX) / scale;
+  const wy = (pivotY - panY) / scale;
+  panX = pivotX - wx * newScale;
+  panY = pivotY - wy * newScale;
+  scale = newScale;
+  applyTransform(smooth);
+}
+
+/* Mouse pan */
+map.addEventListener('mousedown', e => {
+  if (e.target.closest('.tile-compact') || e.target.closest('.tile-detail') || e.target.closest('.cluster-bubble') || e.target.closest('.zoom-btn')) return;
+  isPanning = true;
+  startPanX = e.clientX - panX;
+  startPanY = e.clientY - panY;
+});
+window.addEventListener('mousemove', e => {
+  if (!isPanning) return;
+  panX = e.clientX - startPanX;
+  panY = e.clientY - startPanY;
+  applyTransform();
+});
+window.addEventListener('mouseup', () => { isPanning = false; });
+
+/* Scroll zoom */
+map.addEventListener('wheel', e => {
+  e.preventDefault();
+  const rect = map.getBoundingClientRect();
+  const pivotX = e.clientX - rect.left;
+  const pivotY = e.clientY - rect.top;
+  const factor = e.deltaY > 0 ? 0.92 : 1.08;
+  zoomTo(scale * factor, pivotX, pivotY, false);
+}, { passive: false });
+
+/* Button zoom */
+document.getElementById('zoom-in').addEventListener('click', () => {
+  const rect = map.getBoundingClientRect();
+  zoomTo(scale * 1.3, rect.width / 2, rect.height / 2, true);
+});
+document.getElementById('zoom-out').addEventListener('click', () => {
+  const rect = map.getBoundingClientRect();
+  zoomTo(scale / 1.3, rect.width / 2, rect.height / 2, true);
+});
+document.getElementById('zoom-reset').addEventListener('click', () => {
+  scale = 1; panX = 0; panY = 0;
+  applyTransform(true);
+});
+
+/* Double-click zoom */
+map.addEventListener('dblclick', e => {
+  if (e.target.closest('.tile-compact') || e.target.closest('.tile-detail') || e.target.closest('.zoom-btn')) return;
+  const rect = map.getBoundingClientRect();
+  zoomTo(scale * 2, e.clientX - rect.left, e.clientY - rect.top, true);
+});
+
+/* ── Search ── */
+const searchInput = document.getElementById('search-input');
+searchInput.addEventListener('input', () => {
+  const q = searchInput.value.toLowerCase().trim();
+  const tiles = document.querySelectorAll('.report-tile');
+  const clusters = document.querySelectorAll('.cluster');
+
+  if (!q) {
+    tiles.forEach(t => t.classList.remove('dimmed', 'highlighted'));
+    clusters.forEach(c => c.classList.remove('dimmed', 'highlighted'));
+    return;
+  }
+
+  const matchingCats = new Set();
+  tiles.forEach(t => {
+    const match = t.dataset.title.includes(q) || t.dataset.cat.includes(q);
+    t.classList.toggle('dimmed', !match);
+    t.classList.toggle('highlighted', match);
+    if (match) matchingCats.add(t.dataset.cat);
+  });
+
+  clusters.forEach(c => {
+    const hasMatch = matchingCats.has(c.dataset.cat);
+    c.classList.toggle('dimmed', !hasMatch && !c.dataset.cat.includes(q));
+    c.classList.toggle('highlighted', hasMatch || c.dataset.cat.includes(q));
+  });
+});
+
+/* ── Init ── */
+render();
+updateZoomLevel();
+window.addEventListener('resize', render);
+</script>
+</body>
+</html>

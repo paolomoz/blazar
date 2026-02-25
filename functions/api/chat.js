@@ -1,58 +1,42 @@
-const REPORTS_CONTEXT = `
-## Reports Available
+/**
+ * Blazar Chat API — Cloudflare Pages Function
+ *
+ * Builds report knowledge dynamically from manifest.json (static reports)
+ * + MANIFEST KV (generated reports). No hardcoded report list.
+ */
 
-### 1. Content Gaps Analysis (aem-live-content-gaps.html)
-197 indexed pages, 192 sitemap URLs. Key findings: 10 pages missing from sitemap, 5 sitemap-only pages, 4 broken nav links, 65 missing OG images (33%), 72 stale pages older than 12 months (37%), 17 old branding references to "Adobe Experience Manager" instead of "AEM".
-Sections:
-- #summary — Executive summary with key metrics
-- #distribution — Content distribution across categories
-- #structural — Structural issues (sitemap gaps, broken nav links)
-- #metadata — Metadata problems (missing OG images, descriptions)
-- #freshness — Content freshness analysis (stale pages by age)
-- #brand — Branding inconsistencies (old naming references)
-- #inventory — Full searchable content inventory table (197 pages)
+function corsHeaders() {
+  return {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+  };
+}
 
-### 2. Action Plan (aem-live-action-plan.html)
-18 prioritized actions derived from content gaps analysis. Organized by priority.
-Sections:
-- #overview — Priority summary and execution roadmap
-- #p1 — Critical priority (4 actions): #a1 Remove dead /drafts/documentation page, #a2 Sync sitemap with query index, #a3 Fix broken nav links, #a4 Add missing OG images to key pages
-- #p2 — High priority (5 actions): #a5 Rebrand old AEM references, #a6 Triage 72 stale pages, #a7 Add meta descriptions, #a8 Fix sitemap-only pages, #a9 Standardize URL patterns
-- #p3 — Medium priority (5 actions): #a10 Review legacy /drafts pages, #a11 Audit labs content, #a12 Update deprecation notices, #a13 Consolidate duplicate content, #a14 Add publication dates
-- #p4 — Low priority (4 actions): #a15 Clean query index, #a16 Implement freshness monitoring, #a17 Archive obsolete content, #a18 Improve nav structure
-- #peer-review — Independent validation results
+/* ── Build REPORTS_CONTEXT from manifest entries ── */
+function buildReportsContext(entries) {
+  let ctx = '## Reports Available\n';
+  entries.forEach((r, i) => {
+    const file = r.file || `${r.id}.html`;
+    ctx += `\n### ${i + 1}. ${r.title} (${file})\n`;
+    ctx += `${r.summary}\n`;
+    if (r.sections && r.sections.length > 0) {
+      ctx += 'Sections:\n';
+      r.sections.forEach(s => {
+        ctx += `- #${s.id} — ${s.label || s.title || s.description}\n`;
+      });
+    }
+  });
+  ctx += '\n### Hub (hub.html)\nCentral navigation hub with mind map and timeline views of all reports.';
+  return ctx;
+}
 
-### 3. Brand Guidelines Extraction (aem-live-brand-guidelines.html)
-Comprehensive brand analysis across 10 representative pages.
-Sections:
-- #positioning — 4 brand positioning pillars (Developer-First, Speed & Performance, Simplicity, Modern Web)
-- #tone — Tone-of-voice spectrum mapped across 7 axes (Technical↔Accessible, Bold↔Understated, etc.)
-- #personality — 6 personality traits with 42 evidence quotes
-- #terminology — Brand terminology map (preferred vs. deprecated terms)
-- #structure — Documentation structure analysis
-- #doc-patterns — 7 documentation patterns identified
-- #images — Image quality grades (A+ infrastructure, F accessibility, D social sharing)
-- #visual-identity — Visual identity extraction (colors, typography)
-- #validation — Cross-validation results
-
-### 4. Improvement Opportunities (aem-live-brand-opportunities.html)
-22 prioritized improvement opportunities across accessibility, brand consistency, documentation architecture, and image strategy.
-Sections:
-- #overview — Summary of 22 opportunities with priority breakdown
-- #critical — 5 critical items (alt text, /developer/ 404, block docs, naming consistency, OG tags)
-- #high — 6 high-priority items (how-tos, code examples, asset migration, social images, deduplication, CTAs)
-- #medium — 6 medium-priority items
-- #low — 5 low-priority items
-- #matrix — Impact/effort matrix with 4-sprint execution plan
-- #validation — Cross-validation results
-
-### Hub (hub.html)
-Central navigation hub with mind map and timeline views of all reports.`;
-
-const READ_PROMPT = `You are Blazar, an AI assistant for the www.aem.live content management analysis dashboard. You help users understand report findings and navigate to specific sections.
+/* ── System prompts (context injected at runtime) ── */
+function readPrompt(reportsContext) {
+  return `You are Blazar, an AI assistant for the www.aem.live content management analysis dashboard. You help users understand report findings and navigate to specific sections.
 
 IMPORTANT: When referencing report content, always include markdown links to the relevant report section using the format [text](report-file.html#section-id). These links work as same-site navigation.
-${REPORTS_CONTEXT}
+${reportsContext}
 
 ## Response Guidelines
 - Be concise and specific. Reference exact numbers from the reports.
@@ -62,11 +46,13 @@ ${REPORTS_CONTEXT}
 - When suggesting next steps, link to the relevant action plan items.
 - NEVER use markdown tables. Use bullet lists or bold labels instead. For comparisons, use a list like: **Label** — description.
 - Put report links on their own line, not inside parentheses or sentences. Good: "See the full analysis:\\n[Content Gaps](aem-live-content-gaps.html#summary)". Bad: "(see [Content Gaps](aem-live-content-gaps.html#summary))".`;
+}
 
-const WRITE_PROMPT = `You are Blazar in **Write mode** — an AI assistant for the www.aem.live content management analysis dashboard. You can both answer questions from existing reports AND propose and generate new analysis reports.
+function writePrompt(reportsContext) {
+  return `You are Blazar in **Write mode** — an AI assistant for the www.aem.live content management analysis dashboard. You can both answer questions from existing reports AND propose and generate new analysis reports.
 
 IMPORTANT: When referencing report content, always include markdown links to the relevant report section using the format [text](report-file.html#section-id). These links work as same-site navigation.
-${REPORTS_CONTEXT}
+${reportsContext}
 
 ## Write Mode Behavior
 
@@ -111,14 +97,6 @@ After the spec block, add a brief message like "Generating your report now..." T
 - Instructions should include all the context from the conversation that would help generate a detailed report
 - Only output the spec block when the user has CONFIRMED they want the report generated
 
-Examples of new report topics that could be generated:
-- Accessibility audit (WCAG compliance across pages)
-- Content performance correlation (RUM data x content attributes)
-- Navigation architecture analysis
-- Mobile experience audit
-- Developer documentation completeness
-- Page speed deep-dive per template type
-
 ## Response Guidelines
 - Be concise and specific. Reference exact numbers from the reports.
 - Always link to the relevant section when discussing specific findings.
@@ -127,6 +105,41 @@ Examples of new report topics that could be generated:
 - NEVER use markdown tables. Use bullet lists or bold labels instead.
 - Put report links on their own line, not inside parentheses or sentences.
 - When proposing a new report, be specific and actionable — not vague.`;
+}
+
+/* ── Load manifest: static file + KV generated reports ── */
+async function loadManifest(env, requestUrl) {
+  let staticEntries = [];
+  let kvEntries = [];
+
+  // 1. Static manifest from manifest.json (served as a static asset)
+  try {
+    const url = new URL('/manifest.json', requestUrl);
+    const resp = await env.ASSETS.fetch(new Request(url));
+    if (resp.ok) {
+      staticEntries = await resp.json();
+    }
+  } catch {
+    // ASSETS binding may not exist in local dev — fall through
+  }
+
+  // 2. Generated reports from MANIFEST KV
+  if (env.MANIFEST) {
+    try {
+      kvEntries = (await env.MANIFEST.get('entries', 'json')) || [];
+    } catch {
+      // KV not available
+    }
+  }
+
+  // Merge: KV entries override static entries with same id, append new ones
+  const merged = new Map(staticEntries.map(e => [e.id, e]));
+  for (const entry of kvEntries) {
+    merged.set(entry.id, { ...merged.get(entry.id), ...entry });
+  }
+
+  return [...merged.values()];
+}
 
 export async function onRequestPost(context) {
   const { request, env } = context;
@@ -149,7 +162,13 @@ export async function onRequestPost(context) {
     });
   }
 
-  const systemPrompt = body.mode === 'write' ? WRITE_PROMPT : READ_PROMPT;
+  // Build report context dynamically from manifest
+  const manifest = await loadManifest(env, request.url);
+  const reportsContext = buildReportsContext(manifest);
+  const systemPrompt = body.mode === 'write'
+    ? writePrompt(reportsContext)
+    : readPrompt(reportsContext);
+
   const messages = [
     { role: 'system', content: systemPrompt },
     ...(body.messages || []),
@@ -192,12 +211,4 @@ export async function onRequestOptions() {
     status: 204,
     headers: corsHeaders(),
   });
-}
-
-function corsHeaders() {
-  return {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
-  };
 }

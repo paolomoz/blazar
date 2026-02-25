@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blazar — Collapsible Clusters + Filters Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700;900&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue: #3B63FB; --blue-light: #EBF0FF;
+  --amber: #CB6F10; --amber-bg: #FFF5EB;
+  --green: #12805C; --green-bg: #EDFCF2;
+  --purple: #7A6AFD; --purple-bg: #F3F0FF;
+  --red: #D7373F; --red-bg: #FFF0F0;
+  --bg: #F8F8F8; --bg-white: #FFFFFF;
+  --fg: #292929; --fg-heading: #131313; --fg-muted: #717171;
+  --border: #E1E1E1;
+  --shadow: 0 2px 8px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04), 0 0 1px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08);
+  --font: 'Source Sans Pro', -apple-system, sans-serif;
+  --font-mono: 'Source Code Pro', monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+body { font-family: var(--font); background: var(--bg); color: var(--fg); }
+
+.app { display: flex; flex-direction: column; height: 100vh; }
+
+/* ── Header ── */
+.header {
+  background: var(--bg-white);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0; z-index: 100;
+}
+.header-left { display: flex; align-items: center; gap: 12px; }
+.header h1 { font-size: 18px; font-weight: 900; color: var(--fg-heading); }
+.header-subtitle { font-size: 12px; color: var(--fg-muted); }
+.header-logo { width: 32px; height: 32px; border-radius: 8px; }
+
+/* ── Filter Bar ── */
+.filter-bar {
+  background: var(--bg-white);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 24px;
+  display: flex; align-items: center; gap: 16px;
+  flex-shrink: 0; z-index: 99;
+  flex-wrap: wrap;
+}
+.filter-group {
+  display: flex; align-items: center; gap: 6px;
+}
+.filter-label {
+  font-size: 11px; font-weight: 700; color: var(--fg-muted);
+  text-transform: uppercase; letter-spacing: 0.06em;
+  margin-right: 2px;
+}
+.filter-sep {
+  width: 1px; height: 20px; background: var(--border);
+  margin: 0 4px;
+}
+.filter-pill {
+  padding: 4px 12px; border-radius: 9999px;
+  border: 1px solid var(--border);
+  background: var(--bg-white);
+  font-family: var(--font); font-size: 12px; font-weight: 600;
+  color: var(--fg-muted);
+  cursor: pointer; transition: all 0.15s;
+  display: flex; align-items: center; gap: 4px;
+  white-space: nowrap;
+}
+.filter-pill:hover { border-color: var(--fg-muted); color: var(--fg); }
+.filter-pill.active { color: var(--fg-heading); }
+.filter-pill.active[data-cat="audit"] { border-color: var(--amber); background: var(--amber-bg); color: var(--amber); }
+.filter-pill.active[data-cat="brand"] { border-color: var(--purple); background: var(--purple-bg); color: var(--purple); }
+.filter-pill.active[data-cat="performance"] { border-color: var(--red); background: var(--red-bg); color: var(--red); }
+.filter-pill.active[data-cat="optimization"] { border-color: var(--green); background: var(--green-bg); color: var(--green); }
+.filter-pill.active[data-cat="content"] { border-color: var(--blue); background: var(--blue-light); color: var(--blue); }
+.filter-pill .pill-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.filter-pill .pill-count { font-size: 10px; opacity: 0.6; }
+
+.user-pill {
+  padding: 4px 10px; border-radius: 9999px;
+  border: 1px solid var(--border);
+  background: var(--bg-white);
+  font-family: var(--font); font-size: 12px; font-weight: 600;
+  color: var(--fg-muted);
+  cursor: pointer; transition: all 0.15s;
+}
+.user-pill:hover { border-color: var(--fg-muted); }
+.user-pill.active { border-color: var(--fg-heading); background: var(--fg-heading); color: #fff; }
+
+.search-box {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 9999px; padding: 4px 14px;
+  transition: all 0.2s;
+}
+.search-box:focus-within { border-color: var(--blue); background: var(--blue-light); }
+.search-box svg { width: 13px; height: 13px; color: var(--fg-muted); flex-shrink: 0; }
+.search-box input {
+  background: none; border: none; outline: none;
+  font-family: var(--font); font-size: 12px; color: var(--fg);
+  width: 140px;
+}
+.search-box input::placeholder { color: var(--fg-muted); }
+
+/* ── Context banner (related-to mode) ── */
+.context-banner {
+  display: none;
+  background: var(--blue-light);
+  border-bottom: 1px solid rgba(59,99,251,0.15);
+  padding: 6px 24px;
+  font-size: 12px; font-weight: 600; color: var(--blue);
+  align-items: center; gap: 8px;
+  flex-shrink: 0; z-index: 98;
+}
+.context-banner.visible { display: flex; }
+.context-clear {
+  background: none; border: none; cursor: pointer;
+  font-size: 14px; color: var(--blue); font-weight: 700;
+  padding: 0 4px; line-height: 1;
+}
+.context-clear:hover { color: var(--red); }
+
+/* ── Map Canvas ── */
+.mindmap { flex: 1; position: relative; overflow: hidden; cursor: grab; }
+.mindmap:active { cursor: grabbing; }
+.mindmap-canvas {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  transform-origin: 0 0;
+}
+
+/* ── SVG edges ── */
+.edges-svg {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none; z-index: 1;
+}
+.edge-hub { stroke: var(--border); stroke-width: 2; opacity: 0.3; fill: none; }
+.edge-exp-cat { stroke-width: 1.5; opacity: 0.25; fill: none; }
+.edge-cat-report { stroke-width: 1; opacity: 0; fill: none; transition: opacity 0.3s; }
+.edge-cat-report.visible { opacity: 0.2; }
+
+/* ── Hub node ── */
+.node-hub {
+  position: absolute; z-index: 15;
+  transform: translate(-50%, -50%);
+  width: 100px; height: 80px;
+  background: #1b1b2f; border-radius: 8px;
+  overflow: hidden; cursor: default;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25), 0 0 0 1px rgba(255,255,255,0.08);
+  display: flex; flex-direction: column;
+}
+.hub-chrome {
+  height: 14px; background: #2a2a3d;
+  display: flex; align-items: center; padding: 0 6px; gap: 3px;
+}
+.hub-chrome span { width: 5px; height: 5px; border-radius: 50%; }
+.hub-chrome span:nth-child(1) { background: #ff5f57; }
+.hub-chrome span:nth-child(2) { background: #febc2e; }
+.hub-chrome span:nth-child(3) { background: #28c840; }
+.hub-body {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(180deg, #1b1b2f, #0d0d26);
+}
+.hub-body span {
+  font-size: 8px; font-weight: 800; color: #fff;
+  text-align: center; line-height: 1.3;
+}
+
+/* ── Experience node ── */
+.node-exp {
+  position: absolute; z-index: 12;
+  transform: translate(-50%, -50%);
+  background: var(--bg-white);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 16px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  cursor: default;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.node-exp:hover { box-shadow: var(--shadow-lg); transform: translate(-50%, -50%) scale(1.04); }
+.exp-name { font-size: 13px; font-weight: 700; color: var(--fg-heading); }
+.exp-count { font-size: 11px; color: var(--fg-muted); font-weight: 600; }
+
+/* ── Category node ── */
+.node-cat {
+  position: absolute; z-index: 14;
+  transform: translate(-50%, -50%);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.cat-pill {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  background: var(--bg-white);
+  border: 2px solid var(--border);
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.cat-pill:hover { box-shadow: var(--shadow-lg); }
+.node-cat.expanded .cat-pill { border-width: 2px; box-shadow: var(--shadow-lg); }
+.cat-pill .cat-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.cat-pill .cat-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+.cat-pill .cat-count {
+  font-size: 10px; font-weight: 700;
+  padding: 1px 6px; border-radius: 9999px;
+  background: var(--bg); color: var(--fg-muted);
+}
+.cat-pill .cat-chevron {
+  width: 12px; height: 12px; color: var(--fg-muted);
+  transition: transform 0.2s;
+}
+.node-cat.expanded .cat-chevron { transform: rotate(90deg); }
+
+/* ── Report card ── */
+.node-report {
+  position: absolute; z-index: 13;
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.node-report.visible {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  pointer-events: auto;
+}
+.report-card {
+  width: 180px;
+  background: var(--bg-white);
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  cursor: pointer;
+  text-decoration: none; color: inherit; display: block;
+  transition: all 0.15s;
+}
+.report-card:hover {
+  box-shadow: var(--shadow-lg);
+  border-color: var(--blue);
+}
+.report-card:hover .rpt-title { color: var(--blue); }
+.rpt-accent { height: 3px; }
+.rpt-body { padding: 10px 12px; }
+.rpt-title {
+  font-size: 12px; font-weight: 700; color: var(--fg-heading);
+  line-height: 1.3; margin-bottom: 4px;
+  transition: color 0.15s;
+}
+.rpt-summary {
+  font-size: 10px; color: var(--fg-muted); line-height: 1.4;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.rpt-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 6px 12px;
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  font-size: 10px; color: var(--fg-muted);
+}
+.rpt-badge {
+  padding: 1px 7px; border-radius: 9999px;
+  font-size: 9px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.03em;
+}
+
+/* ── Faded state (filter/search) ── */
+.node-report.faded, .node-cat.faded, .node-exp.faded { opacity: 0.08 !important; }
+.node-report.faded { pointer-events: none; }
+.node-report.related-highlight .report-card {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 2px var(--blue), var(--shadow-lg);
+}
+
+/* ── Zoom controls ── */
+.zoom-controls {
+  position: absolute; bottom: 20px; right: 20px;
+  display: flex; flex-direction: column; gap: 4px; z-index: 50;
+}
+.zoom-btn {
+  width: 36px; height: 36px; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--bg-white);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 18px; font-weight: 600;
+  color: var(--fg-muted); font-family: var(--font);
+  box-shadow: var(--shadow); transition: all 0.15s;
+}
+.zoom-btn:hover { color: var(--fg); border-color: var(--blue); }
+
+/* ── Legend ── */
+.legend {
+  position: absolute; bottom: 20px; left: 20px;
+  display: flex; gap: 12px; font-size: 11px; color: var(--fg-muted);
+  z-index: 50; background: rgba(248,248,248,0.9);
+  backdrop-filter: blur(8px); padding: 8px 14px;
+  border-radius: 8px; border: 1px solid var(--border);
+}
+.legend-item { display: flex; align-items: center; gap: 4px; }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+/* ── Concept badge ── */
+.concept-badge {
+  position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+  z-index: 60; background: var(--blue-light);
+  border: 1px solid rgba(59,99,251,0.2);
+  border-radius: 9999px; padding: 5px 18px;
+  font-size: 11px; font-weight: 700; color: var(--blue);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  pointer-events: none;
+}
+
+/* ── Stats ── */
+.stats-bar {
+  position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+  z-index: 50; display: flex; gap: 16px;
+  font-size: 11px; color: var(--fg-muted);
+  background: rgba(248,248,248,0.9); backdrop-filter: blur(8px);
+  padding: 6px 16px; border-radius: 9999px;
+  border: 1px solid var(--border);
+}
+.stats-bar strong { color: var(--fg-heading); }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header class="header">
+    <div class="header-left">
+      <img src="blazar-logo-36.svg" width="32" height="32" alt="" class="header-logo">
+      <div>
+        <h1>Blazar</h1>
+        <div class="header-subtitle">Collapsible Clusters + Filters</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Filter Bar -->
+  <div class="filter-bar" id="filter-bar">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Search reports..." id="search-input">
+    </div>
+    <div class="filter-sep"></div>
+    <div class="filter-group" id="cat-filters">
+      <span class="filter-label">Category</span>
+      <button class="filter-pill active" data-cat="audit"><span class="pill-dot" style="background:var(--amber)"></span> Audit <span class="pill-count" id="count-audit"></span></button>
+      <button class="filter-pill active" data-cat="brand"><span class="pill-dot" style="background:var(--purple)"></span> Brand <span class="pill-count" id="count-brand"></span></button>
+      <button class="filter-pill active" data-cat="performance"><span class="pill-dot" style="background:var(--red)"></span> Perf <span class="pill-count" id="count-performance"></span></button>
+      <button class="filter-pill active" data-cat="optimization"><span class="pill-dot" style="background:var(--green)"></span> Optim <span class="pill-count" id="count-optimization"></span></button>
+      <button class="filter-pill active" data-cat="content"><span class="pill-dot" style="background:var(--blue)"></span> Content <span class="pill-count" id="count-content"></span></button>
+    </div>
+    <div class="filter-sep"></div>
+    <div class="filter-group" id="user-filters">
+      <span class="filter-label">Author</span>
+    </div>
+  </div>
+
+  <!-- Context banner for related-to mode -->
+  <div class="context-banner" id="context-banner">
+    <span>Showing reports related to:</span>
+    <strong id="context-title"></strong>
+    <button class="context-clear" id="context-clear" title="Clear">&times;</button>
+  </div>
+
+  <!-- Mind map -->
+  <div class="mindmap" id="mindmap">
+    <div class="concept-badge">Design Concept — Option B+C: Clusters + Filters</div>
+    <div class="mindmap-canvas" id="mindmap-canvas">
+      <svg class="edges-svg" id="edges-svg"></svg>
+    </div>
+
+    <div class="zoom-controls">
+      <button class="zoom-btn" id="zoom-in">+</button>
+      <button class="zoom-btn" id="zoom-reset" style="font-size:11px;">1:1</button>
+      <button class="zoom-btn" id="zoom-out">&minus;</button>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div> Audit</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div> Optimization</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div> Brand</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div> Content</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div> Performance</div>
+    </div>
+
+    <div class="stats-bar" id="stats-bar"></div>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════
+   Option B+C — Collapsible Clusters + Filters
+   ════════════════════════════════════════════ */
+
+const catMeta = {
+  audit:        { hex: '#CB6F10', bg: '#FFF5EB', label: 'Audit' },
+  brand:        { hex: '#7A6AFD', bg: '#F3F0FF', label: 'Brand' },
+  performance:  { hex: '#D7373F', bg: '#FFF0F0', label: 'Performance' },
+  optimization: { hex: '#12805C', bg: '#EDFCF2', label: 'Optimization' },
+  content:      { hex: '#3B63FB', bg: '#EBF0FF', label: 'Content' },
+};
+
+const reports = [
+  { id:'content-gaps', title:'Content Gaps Analysis', cat:'audit', exp:'aem.live', size:3, summary:'197 pages, 72 stale (37%), 65 missing OG images', date:'2026-02-24', user:'paolo', related:['action-plan','link-equity','brand-guidelines'] },
+  { id:'link-equity', title:'Internal Link Equity Map', cat:'audit', exp:'aem.live', size:2, summary:'~100 orphan pages, 3 legacy hlx.live links', date:'2026-02-24', user:'paolo', related:['content-gaps','nav-architecture'] },
+  { id:'action-plan', title:'Action Plan', cat:'optimization', exp:'aem.live', size:3, summary:'18 prioritized actions from content gaps analysis', date:'2026-02-24', user:'paolo', related:['content-gaps','brand-opportunities'] },
+  { id:'brand-guidelines', title:'Brand Guidelines Extraction', cat:'brand', exp:'aem.live', size:3, summary:'4 positioning pillars, tone spectrum, 42 evidence quotes', date:'2026-02-24', user:'paolo', related:['brand-opportunities','consistency','readability','competitor'] },
+  { id:'brand-opportunities', title:'Improvement Opportunities', cat:'optimization', exp:'aem.live', size:2, summary:'22 prioritized improvements across 4 sprints', date:'2026-02-24', user:'paolo', related:['brand-guidelines','action-plan'] },
+  { id:'image-quality', title:'Image Quality & AI', cat:'brand', exp:'aem.live', size:2, summary:'Avg brand alignment 3.6/10, AI-generated improvements', date:'2026-02-24', user:'paolo', related:['brand-guidelines'] },
+  { id:'competitor', title:'Competitor Positioning', cat:'brand', exp:'aem.live', size:2, summary:'6-brand analysis across 10 dimensions', date:'2026-02-24', user:'paolo', related:['brand-guidelines'] },
+  { id:'consistency', title:'Brand Consistency Scorecard', cat:'brand', exp:'aem.live', size:2, summary:'Mean score 76/100, FAQ (58) highest risk', date:'2026-02-24', user:'paolo', related:['brand-guidelines','readability'] },
+  { id:'seo-signals', title:'SEO Brand Signals', cat:'performance', exp:'aem.live', size:2, summary:'0/8 lang, 7/8 no structured data', date:'2026-02-24', user:'paolo', related:['rum-analysis','perf-validation'] },
+  { id:'readability', title:'Readability Scoring', cat:'brand', exp:'aem.live', size:2, summary:'FK 7.8–13.8, 86% active voice', date:'2026-02-24', user:'paolo', related:['brand-guidelines','consistency'] },
+  { id:'rum-analysis', title:'RUM Traffic Intelligence', cat:'performance', exp:'aem.live', size:3, summary:'157K views, 152 URLs, priority reshuffling', date:'2026-02-24', user:'paolo', related:['seo-signals','perf-validation','content-gaps'] },
+  { id:'brand-evolution', title:'Brand Evolution Timeline', cat:'brand', exp:'aem.live', size:2, summary:'8 years, 6+ names, Helix to EDS', date:'2026-02-24', user:'paolo', related:['dev-touchpoints'] },
+  { id:'perf-validation', title:'Performance Validation', cat:'performance', exp:'aem.live', size:2, summary:'Lighthouse 100 substantiated, alt text gap', date:'2026-02-24', user:'paolo', related:['rum-analysis','seo-signals'] },
+  { id:'dev-touchpoints', title:'Developer Touchpoints', cat:'brand', exp:'aem.live', size:1, summary:'33% AEM-branded, window.hlx main issue', date:'2026-02-24', user:'paolo', related:['brand-evolution'] },
+  { id:'nav-architecture', title:'Navigation Architecture', cat:'audit', exp:'aem.live', size:1, summary:'IA depth analysis, 4-level nav hierarchy', date:'2026-02-25', user:'marco', related:['link-equity'] },
+  { id:'conversion-funnel', title:'Conversion Funnel Analysis', cat:'optimization', exp:'aem.live', size:2, summary:'Get Started flow, 3-step drop-off pattern', date:'2026-02-25', user:'marco', related:['action-plan'] },
+  { id:'a11y-audit', title:'Accessibility Audit', cat:'audit', exp:'aem.live', size:2, summary:'WCAG 2.1 AA, 83 missing alt texts', date:'2026-02-25', user:'anna', related:['perf-validation'] },
+  { id:'cwv-deep', title:'Core Web Vitals Deep Dive', cat:'performance', exp:'aem.live', size:1, summary:'LCP 0.8s, INP 50ms, CLS 0.00', date:'2026-02-25', user:'anna', related:['rum-analysis'] },
+  { id:'acme-content', title:'Content Inventory', cat:'audit', exp:'acme-store.com', size:2, summary:'342 product pages, 28 category pages', date:'2026-02-25', user:'paolo', related:['acme-links'] },
+  { id:'acme-seo', title:'SEO Health Check', cat:'performance', exp:'acme-store.com', size:2, summary:'Domain authority 42, 67 broken backlinks', date:'2026-02-25', user:'marco', related:['acme-perf','acme-schema'] },
+  { id:'acme-brand', title:'Brand Voice Analysis', cat:'brand', exp:'acme-store.com', size:3, summary:'Inconsistent tone across product vs marketing', date:'2026-02-25', user:'paolo', related:['acme-imagery','acme-comp'] },
+  { id:'acme-imagery', title:'Product Imagery Audit', cat:'brand', exp:'acme-store.com', size:2, summary:'40% below 72 DPI, inconsistent backgrounds', date:'2026-02-25', user:'anna', related:['acme-brand'] },
+  { id:'acme-schema', title:'Structured Data Coverage', cat:'performance', exp:'acme-store.com', size:1, summary:'Product schema on 89%, missing reviews schema', date:'2026-02-25', user:'marco', related:['acme-seo'] },
+  { id:'acme-cart', title:'Cart Abandonment Analysis', cat:'optimization', exp:'acme-store.com', size:3, summary:'68% abandonment, shipping cost reveal at step 3', date:'2026-02-25', user:'anna', related:['acme-mobile','acme-action'] },
+  { id:'acme-mobile', title:'Mobile UX Audit', cat:'audit', exp:'acme-store.com', size:2, summary:'12 touch target violations, no bottom nav', date:'2026-02-25', user:'anna', related:['acme-cart'] },
+  { id:'acme-perf', title:'Page Speed Analysis', cat:'performance', exp:'acme-store.com', size:2, summary:'LCP 3.2s on mobile, 1.8MB hero images', date:'2026-02-25', user:'marco', related:['acme-seo'] },
+  { id:'acme-copy', title:'Product Copy Quality', cat:'content', exp:'acme-store.com', size:2, summary:'45% duplicate descriptions, 12% < 50 words', date:'2026-02-25', user:'paolo', related:['acme-reviews'] },
+  { id:'acme-search', title:'Site Search Analysis', cat:'optimization', exp:'acme-store.com', size:1, summary:'23% zero-result queries, top missed terms mapped', date:'2026-02-25', user:'marco', related:['acme-action'] },
+  { id:'acme-pricing', title:'Pricing Display Audit', cat:'content', exp:'acme-store.com', size:1, summary:'Inconsistent sale badge rendering, 3 formats', date:'2026-02-25', user:'anna', related:['acme-comp'] },
+  { id:'acme-links', title:'Internal Linking Strategy', cat:'audit', exp:'acme-store.com', size:1, summary:'Category crosslinks, related products graph', date:'2026-02-25', user:'paolo', related:['acme-content'] },
+  { id:'acme-comp', title:'Competitor Pricing Intel', cat:'brand', exp:'acme-store.com', size:2, summary:'8 competitors tracked, 12% price undercut avg', date:'2026-02-25', user:'marco', related:['acme-brand'] },
+  { id:'acme-reviews', title:'Review Sentiment Analysis', cat:'content', exp:'acme-store.com', size:2, summary:'4.2 avg, shipping complaints in 34% of 1-stars', date:'2026-02-25', user:'anna', related:['acme-copy'] },
+  { id:'acme-action', title:'Q1 Optimization Plan', cat:'optimization', exp:'acme-store.com', size:2, summary:'24 actions, estimated 15% conversion lift', date:'2026-02-25', user:'paolo', related:['acme-cart','acme-search'] },
+  { id:'docs-ia', title:'Information Architecture', cat:'audit', exp:'docs.example.dev', size:3, summary:'8 top-level sections, 340 pages, 5-level max depth', date:'2026-02-25', user:'marco', related:['docs-nav'] },
+  { id:'docs-search', title:'Search Effectiveness', cat:'optimization', exp:'docs.example.dev', size:2, summary:'Avg 2.3 queries per session, 18% bounce', date:'2026-02-25', user:'marco', related:['docs-onboard','docs-action'] },
+  { id:'docs-freshness', title:'Content Freshness Map', cat:'audit', exp:'docs.example.dev', size:2, summary:'42% pages not updated in 6+ months', date:'2026-02-25', user:'anna', related:['docs-api'] },
+  { id:'docs-api', title:'API Reference Completeness', cat:'content', exp:'docs.example.dev', size:2, summary:'78% endpoints documented, 12 missing examples', date:'2026-02-25', user:'marco', related:['docs-code','docs-freshness'] },
+  { id:'docs-onboard', title:'Onboarding Flow Analysis', cat:'optimization', exp:'docs.example.dev', size:2, summary:'Getting Started → first API call in 4.2 min avg', date:'2026-02-25', user:'anna', related:['docs-search'] },
+  { id:'docs-code', title:'Code Sample Audit', cat:'content', exp:'docs.example.dev', size:1, summary:'67% samples tested, 8 broken since v3.2 migration', date:'2026-02-25', user:'marco', related:['docs-api'] },
+  { id:'docs-nav', title:'Navigation Heatmap', cat:'performance', exp:'docs.example.dev', size:1, summary:'Sidebar clicks: 80% top 3 sections', date:'2026-02-25', user:'anna', related:['docs-ia'] },
+  { id:'docs-voice', title:'Technical Writing Consistency', cat:'brand', exp:'docs.example.dev', size:2, summary:'Style guide adherence 71%, verb tense inconsistency', date:'2026-02-25', user:'paolo', related:['docs-brand'] },
+  { id:'docs-i18n', title:'Internationalization Status', cat:'content', exp:'docs.example.dev', size:1, summary:'EN 100%, JP 45%, DE 38%, FR 22%, ES 12%', date:'2026-02-25', user:'paolo', related:[] },
+  { id:'docs-a11y', title:'Docs Accessibility Review', cat:'audit', exp:'docs.example.dev', size:1, summary:'Code blocks lack screen reader context', date:'2026-02-25', user:'anna', related:['docs-linking'] },
+  { id:'docs-perf', title:'Docs Site Performance', cat:'performance', exp:'docs.example.dev', size:1, summary:'TTFB 320ms, but search modal adds 800ms JS', date:'2026-02-25', user:'marco', related:['docs-seo'] },
+  { id:'docs-seo', title:'Docs SEO Visibility', cat:'performance', exp:'docs.example.dev', size:1, summary:'Ranking for 340 keywords, SO outranks 23', date:'2026-02-25', user:'marco', related:['docs-perf'] },
+  { id:'docs-linking', title:'Cross-Reference Integrity', cat:'audit', exp:'docs.example.dev', size:1, summary:'14 broken cross-links, 8 circular references', date:'2026-02-25', user:'anna', related:['docs-a11y'] },
+  { id:'docs-feedback', title:'User Feedback Synthesis', cat:'content', exp:'docs.example.dev', size:2, summary:'430 thumbs-down pages analyzed, top 3 pain points', date:'2026-02-25', user:'paolo', related:['docs-action'] },
+  { id:'docs-action', title:'Docs Improvement Roadmap', cat:'optimization', exp:'docs.example.dev', size:2, summary:'32 items across 3 quarters, search first', date:'2026-02-25', user:'paolo', related:['docs-search','docs-feedback'] },
+  { id:'docs-brand', title:'Brand Alignment in Docs', cat:'brand', exp:'docs.example.dev', size:1, summary:'Logo usage correct, but 4 outdated screenshots', date:'2026-02-25', user:'paolo', related:['docs-voice'] },
+  { id:'docs-video', title:'Video Tutorial Coverage', cat:'content', exp:'docs.example.dev', size:1, summary:'12 videos, 3 outdated, no captions on 8', date:'2026-02-25', user:'anna', related:[] },
+];
+
+/* ── Experience & layout config ── */
+const expMeta = {
+  'aem.live':          { label: 'www.aem.live',      color: '#3B63FB' },
+  'acme-store.com':    { label: 'acme-store.com',    color: '#12805C' },
+  'docs.example.dev':  { label: 'docs.example.dev',  color: '#7A6AFD' },
+};
+
+/* Virtual coordinate space */
+const VW = 3200, VH = 2400;
+const HUB = { x: VW / 2, y: VH / 2 };
+
+/* Experience positions — spread around hub */
+const expPositions = {
+  'aem.live':         { x: 900,  y: 700 },
+  'acme-store.com':   { x: 2400, y: 650 },
+  'docs.example.dev': { x: 1650, y: 1700 },
+};
+const EXP_RADIUS = 450;  // hub → experience distance
+const CAT_RADIUS = 320;  // experience → category distance
+const RPT_RADIUS = 340;  // category → report distance
+
+/* ════════════════════════════════════════════
+   State
+   ════════════════════════════════════════════ */
+const expandedCats = new Set(); // "exp|cat" keys
+let relatedToId = null;
+
+/* ════════════════════════════════════════════
+   Rendering
+   ════════════════════════════════════════════ */
+const mindmap = document.getElementById('mindmap');
+const canvas = document.getElementById('mindmap-canvas');
+const edgesSvg = document.getElementById('edges-svg');
+
+/* Group reports */
+const reportsByExpCat = {};
+const reportsByExp = {};
+reports.forEach(r => {
+  const key = r.exp + '|' + r.cat;
+  if (!reportsByExpCat[key]) reportsByExpCat[key] = [];
+  reportsByExpCat[key].push(r);
+  if (!reportsByExp[r.exp]) reportsByExp[r.exp] = [];
+  reportsByExp[r.exp].push(r);
+});
+
+/* Populate filter counts */
+const catCounts = {};
+reports.forEach(r => { catCounts[r.cat] = (catCounts[r.cat] || 0) + 1; });
+Object.entries(catCounts).forEach(([cat, count]) => {
+  const el = document.getElementById('count-' + cat);
+  if (el) el.textContent = count;
+});
+
+/* User filter pills */
+const users = [...new Set(reports.map(r => r.user))].sort();
+const userFilterGroup = document.getElementById('user-filters');
+users.forEach(u => {
+  const btn = document.createElement('button');
+  btn.className = 'user-pill active';
+  btn.dataset.user = u;
+  btn.textContent = u;
+  userFilterGroup.appendChild(btn);
+});
+
+/* Stats bar */
+document.getElementById('stats-bar').innerHTML =
+  `<span><strong>${reports.length}</strong> reports</span>` +
+  `<span><strong>${Object.keys(expMeta).length}</strong> experiences</span>` +
+  `<span><strong>${users.length}</strong> contributors</span>` +
+  `<span>Click a category to expand</span>`;
+
+function render() {
+  const W = mindmap.clientWidth;
+  const H = mindmap.clientHeight;
+  canvas.querySelectorAll('.node-hub, .node-exp, .node-cat, .node-report').forEach(n => n.remove());
+  edgesSvg.innerHTML = '';
+  edgesSvg.setAttribute('width', W);
+  edgesSvg.setAttribute('height', H);
+
+  const sx = W / VW, sy = H / VH;
+  const s = (vx, vy) => ({ x: vx * sx, y: vy * sy });
+
+  const hub = s(HUB.x, HUB.y);
+
+  /* ── Hub node ── */
+  const hubEl = document.createElement('div');
+  hubEl.className = 'node-hub';
+  hubEl.style.left = hub.x + 'px';
+  hubEl.style.top = hub.y + 'px';
+  hubEl.innerHTML = `
+    <div class="hub-chrome"><span></span><span></span><span></span></div>
+    <div class="hub-body"><span>Blazar<br>Hub</span></div>`;
+  canvas.appendChild(hubEl);
+
+  const allCatPositions = {}; // "exp|cat" → {x,y}
+  const allReportPositions = {}; // id → {x,y}
+
+  Object.entries(expPositions).forEach(([expId, vPos]) => {
+    const expScreen = s(vPos.x, vPos.y);
+    const expReports = reportsByExp[expId] || [];
+    const expCats = [...new Set(expReports.map(r => r.cat))];
+
+    /* ── Hub → Experience edge ── */
+    addEdge(hub.x, hub.y, expScreen.x, expScreen.y, 'edge-hub');
+
+    /* ── Experience node ── */
+    const expEl = document.createElement('div');
+    expEl.className = 'node-exp';
+    expEl.dataset.exp = expId;
+    expEl.style.left = expScreen.x + 'px';
+    expEl.style.top = expScreen.y + 'px';
+    expEl.innerHTML = `
+      <div class="exp-name">${expMeta[expId].label}</div>
+      <div class="exp-count">${expReports.length} reports</div>`;
+    canvas.appendChild(expEl);
+
+    /* ── Angle from hub to experience (for category arc direction) ── */
+    const baseAngle = Math.atan2(vPos.y - HUB.y, vPos.x - HUB.x);
+    const arcSpan = Math.PI * 1.1;
+    const startAngle = baseAngle - arcSpan / 2;
+
+    expCats.forEach((cat, ci) => {
+      const catAngle = expCats.length === 1
+        ? baseAngle
+        : startAngle + (ci / (expCats.length - 1)) * arcSpan;
+
+      const catVx = vPos.x + CAT_RADIUS * Math.cos(catAngle);
+      const catVy = vPos.y + CAT_RADIUS * Math.sin(catAngle);
+      const catScreen = s(catVx, catVy);
+      const catKey = expId + '|' + cat;
+      allCatPositions[catKey] = catScreen;
+      const meta = catMeta[cat];
+      const catReports = reportsByExpCat[catKey] || [];
+
+      /* ── Experience → Category edge ── */
+      addCurveEdge(expScreen.x, expScreen.y, catScreen.x, catScreen.y, 'edge-exp-cat', meta.hex);
+
+      /* ── Category pill ── */
+      const catEl = document.createElement('div');
+      catEl.className = 'node-cat' + (expandedCats.has(catKey) ? ' expanded' : '');
+      catEl.dataset.cat = cat;
+      catEl.dataset.key = catKey;
+      catEl.style.left = catScreen.x + 'px';
+      catEl.style.top = catScreen.y + 'px';
+      catEl.innerHTML = `
+        <div class="cat-pill" style="border-color:${meta.hex}">
+          <span class="cat-dot" style="background:${meta.hex}"></span>
+          <span class="cat-label" style="color:${meta.hex}">${meta.label}</span>
+          <span class="cat-count">${catReports.length}</span>
+          <svg class="cat-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>`;
+
+      catEl.querySelector('.cat-pill').addEventListener('click', () => {
+        if (expandedCats.has(catKey)) expandedCats.delete(catKey);
+        else expandedCats.add(catKey);
+        render();
+        applyTransform();
+        applyFilters();
+      });
+      canvas.appendChild(catEl);
+
+      /* ── Report cards (fan out from category) ── */
+      const rptArcSpan = Math.min(Math.PI * 1.0, catReports.length * 0.35);
+      const rptStartAngle = catAngle - rptArcSpan / 2;
+      const isExpanded = expandedCats.has(catKey);
+
+      catReports.forEach((r, ri) => {
+        const rAngle = catReports.length === 1
+          ? catAngle
+          : rptStartAngle + (ri / (catReports.length - 1)) * rptArcSpan;
+        const rVx = catVx + RPT_RADIUS * Math.cos(rAngle);
+        const rVy = catVy + RPT_RADIUS * Math.sin(rAngle);
+        const rScreen = s(rVx, rVy);
+        allReportPositions[r.id] = rScreen;
+
+        /* ── Category → Report edge ── */
+        const edgeCls = 'edge-cat-report' + (isExpanded ? ' visible' : '');
+        addCurveEdge(catScreen.x, catScreen.y, rScreen.x, rScreen.y, edgeCls, meta.hex);
+
+        /* ── Report card ── */
+        const rEl = document.createElement('div');
+        rEl.className = 'node-report' + (isExpanded ? ' visible' : '');
+        rEl.dataset.id = r.id;
+        rEl.dataset.cat = r.cat;
+        rEl.dataset.user = r.user;
+        rEl.dataset.title = r.title.toLowerCase();
+        rEl.style.left = rScreen.x + 'px';
+        rEl.style.top = rScreen.y + 'px';
+        if (isExpanded) rEl.style.transitionDelay = (ri * 0.04) + 's';
+
+        rEl.innerHTML = `
+          <div class="report-card">
+            <div class="rpt-accent" style="background:${meta.hex}"></div>
+            <div class="rpt-body">
+              <div class="rpt-title">${r.title}</div>
+              <div class="rpt-summary">${r.summary}</div>
+            </div>
+            <div class="rpt-footer">
+              <span class="rpt-badge" style="background:${meta.bg}; color:${meta.hex}">${meta.label}</span>
+              <span>${r.user} · ${r.date.slice(5)}</span>
+            </div>
+          </div>`;
+
+        /* Click report → related-to mode */
+        rEl.querySelector('.report-card').addEventListener('click', (ev) => {
+          ev.stopPropagation();
+          activateRelatedMode(r);
+        });
+
+        canvas.appendChild(rEl);
+      });
+    });
+  });
+}
+
+function addEdge(x1, y1, x2, y2, cls) {
+  const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  line.setAttribute('x1', x1); line.setAttribute('y1', y1);
+  line.setAttribute('x2', x2); line.setAttribute('y2', y2);
+  line.setAttribute('class', cls);
+  edgesSvg.appendChild(line);
+}
+
+function addCurveEdge(x1, y1, x2, y2, cls, color) {
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  const dx = x2 - x1, dy = y2 - y1;
+  const cx1 = x1 + dx * 0.5, cy1 = y1 + dy * 0.1;
+  const cx2 = x1 + dx * 0.5, cy2 = y1 + dy * 0.9;
+  path.setAttribute('d', `M${x1},${y1} C${cx1},${cy1} ${cx2},${cy2} ${x2},${y2}`);
+  path.setAttribute('class', cls);
+  path.style.stroke = color;
+  edgesSvg.appendChild(path);
+}
+
+/* ════════════════════════════════════════════
+   Pan & Zoom (cursor-centered)
+   ════════════════════════════════════════════ */
+let scale = 1, panX = 0, panY = 0;
+let isPanning = false, startPanX, startPanY;
+
+function applyTransform(smooth) {
+  if (smooth) {
+    canvas.style.transition = 'transform 0.3s ease-out';
+    setTimeout(() => { canvas.style.transition = ''; }, 310);
+  }
+  canvas.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
+}
+
+function zoomTo(newScale, px, py, smooth) {
+  newScale = Math.max(0.3, Math.min(5, newScale));
+  const wx = (px - panX) / scale;
+  const wy = (py - panY) / scale;
+  panX = px - wx * newScale;
+  panY = py - wy * newScale;
+  scale = newScale;
+  applyTransform(smooth);
+}
+
+mindmap.addEventListener('mousedown', e => {
+  if (e.target.closest('.cat-pill') || e.target.closest('.report-card') || e.target.closest('.zoom-btn')) return;
+  isPanning = true;
+  startPanX = e.clientX - panX;
+  startPanY = e.clientY - panY;
+});
+window.addEventListener('mousemove', e => {
+  if (!isPanning) return;
+  panX = e.clientX - startPanX;
+  panY = e.clientY - startPanY;
+  applyTransform();
+});
+window.addEventListener('mouseup', () => { isPanning = false; });
+
+mindmap.addEventListener('wheel', e => {
+  e.preventDefault();
+  const rect = mindmap.getBoundingClientRect();
+  zoomTo(scale * (e.deltaY > 0 ? 0.92 : 1.08), e.clientX - rect.left, e.clientY - rect.top, false);
+}, { passive: false });
+
+document.getElementById('zoom-in').addEventListener('click', () => {
+  const rect = mindmap.getBoundingClientRect();
+  zoomTo(scale * 1.3, rect.width / 2, rect.height / 2, true);
+});
+document.getElementById('zoom-out').addEventListener('click', () => {
+  const rect = mindmap.getBoundingClientRect();
+  zoomTo(scale / 1.3, rect.width / 2, rect.height / 2, true);
+});
+document.getElementById('zoom-reset').addEventListener('click', () => {
+  scale = 1; panX = 0; panY = 0; applyTransform(true);
+});
+
+mindmap.addEventListener('dblclick', e => {
+  if (e.target.closest('.cat-pill') || e.target.closest('.report-card') || e.target.closest('.zoom-btn')) return;
+  const rect = mindmap.getBoundingClientRect();
+  zoomTo(scale * 2, e.clientX - rect.left, e.clientY - rect.top, true);
+});
+
+/* ════════════════════════════════════════════
+   Filtering
+   ════════════════════════════════════════════ */
+function applyFilters() {
+  const activeCats = new Set([...document.querySelectorAll('.filter-pill.active')].map(p => p.dataset.cat));
+  const activeUsers = new Set([...document.querySelectorAll('.user-pill.active')].map(p => p.dataset.user));
+  const query = document.getElementById('search-input').value.toLowerCase().trim();
+
+  const relatedIds = relatedToId ? new Set(
+    (reports.find(r => r.id === relatedToId)?.related || []).concat(relatedToId)
+  ) : null;
+
+  document.querySelectorAll('.node-report').forEach(el => {
+    const catMatch = activeCats.size === 0 || activeCats.has(el.dataset.cat);
+    const userMatch = activeUsers.size === 0 || activeUsers.has(el.dataset.user);
+    const searchMatch = !query || el.dataset.title.includes(query);
+    const relatedMatch = !relatedIds || relatedIds.has(el.dataset.id);
+    const visible = catMatch && userMatch && searchMatch && relatedMatch;
+
+    el.classList.toggle('faded', !visible);
+    el.classList.toggle('related-highlight', !!relatedIds && relatedIds.has(el.dataset.id) && el.dataset.id !== relatedToId);
+  });
+
+  document.querySelectorAll('.node-cat').forEach(el => {
+    const catMatch = activeCats.size === 0 || activeCats.has(el.dataset.cat);
+    const searchMatch = !query || el.dataset.cat.includes(query);
+    el.classList.toggle('faded', !catMatch && !searchMatch);
+  });
+
+  document.querySelectorAll('.node-exp').forEach(el => {
+    /* Fade experience if all its categories are faded */
+    const expId = el.dataset.exp;
+    const expCats = [...new Set((reportsByExp[expId] || []).map(r => r.cat))];
+    const anyActive = expCats.some(c => activeCats.size === 0 || activeCats.has(c));
+    el.classList.toggle('faded', !anyActive);
+  });
+}
+
+/* Category filter toggles */
+document.querySelectorAll('.filter-pill').forEach(pill => {
+  pill.addEventListener('click', () => {
+    pill.classList.toggle('active');
+    applyFilters();
+  });
+});
+
+/* User filter toggles */
+document.addEventListener('click', e => {
+  if (e.target.closest('.user-pill')) {
+    e.target.closest('.user-pill').classList.toggle('active');
+    applyFilters();
+  }
+});
+
+/* Search */
+document.getElementById('search-input').addEventListener('input', applyFilters);
+
+/* ════════════════════════════════════════════
+   Related-to mode
+   ════════════════════════════════════════════ */
+function activateRelatedMode(report) {
+  relatedToId = report.id;
+  const banner = document.getElementById('context-banner');
+  document.getElementById('context-title').textContent = report.title;
+  banner.classList.add('visible');
+
+  /* Auto-expand categories that contain related reports */
+  const relatedIds = new Set((report.related || []).concat(report.id));
+  reports.forEach(r => {
+    if (relatedIds.has(r.id)) {
+      expandedCats.add(r.exp + '|' + r.cat);
+    }
+  });
+
+  render();
+  applyTransform();
+  applyFilters();
+}
+
+function clearRelatedMode() {
+  relatedToId = null;
+  document.getElementById('context-banner').classList.remove('visible');
+  applyFilters();
+}
+
+document.getElementById('context-clear').addEventListener('click', clearRelatedMode);
+
+/* Click background to clear related mode */
+mindmap.addEventListener('click', e => {
+  if (relatedToId && !e.target.closest('.report-card') && !e.target.closest('.cat-pill')) {
+    clearRelatedMode();
+  }
+});
+
+/* ════════════════════════════════════════════
+   Init
+   ════════════════════════════════════════════ */
+/* Start with aem.live brand expanded as demo */
+expandedCats.add('aem.live|brand');
+
+render();
+applyTransform();
+applyFilters();
+window.addEventListener('resize', () => { render(); applyTransform(); applyFilters(); });
+</script>
+</body>
+</html>

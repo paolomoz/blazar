@@ -304,6 +304,29 @@ a:hover { text-decoration: underline; }
 .report-badge[data-cat="performance"] { background: var(--red-bg); color: var(--red); }
 .report-badge[data-cat="infra"] { background: var(--bg); color: var(--fg-muted); }
 
+/* Generating report card */
+.node-report.generating {
+  border: 2px solid var(--blue);
+  animation: gen-card-pulse 2s ease-in-out infinite;
+}
+.node-report.generating .report-accent {
+  background: linear-gradient(90deg, var(--blue) 0%, var(--cyan) 50%, var(--blue) 100%);
+  background-size: 200% 100%;
+  animation: gen-shimmer 1.5s linear infinite;
+}
+.node-report.generating .report-summary {
+  color: var(--blue);
+  font-style: italic;
+}
+@keyframes gen-card-pulse {
+  0%, 100% { border-color: var(--blue); box-shadow: var(--shadow-card); }
+  50% { border-color: #A8BFFF; box-shadow: 0 0 16px rgba(59,99,251,0.15), var(--shadow-card); }
+}
+@keyframes gen-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
 /* ── Zoom controls ── */
 .zoom-controls {
   position: absolute;
@@ -498,127 +521,9 @@ a:hover { text-decoration: underline; }
 
 <script>
 /* ────────────────────────────────────────────
-   Manifest — keep in sync with reports/README.md
+   Manifest — loaded from /manifest.json (single source of truth)
    ──────────────────────────────────────────── */
-const manifest = [
-  {
-    id: "aem-live-content-gaps",
-    file: "aem-live-content-gaps.html",
-    title: "Content Gaps Analysis: www.aem.live",
-    date: "2026-02-24",
-    category: "audit",
-    summary: "197 indexed pages, 192 sitemap URLs. 10 pages missing from sitemap, 5 sitemap-only pages, 4 broken nav links, 65 missing OG images, 72 stale pages (37%), 17 old branding references.",
-    related: ["aem-live-action-plan", "aem-live-brand-guidelines"]
-  },
-  {
-    id: "aem-live-action-plan",
-    file: "aem-live-action-plan.html",
-    title: "Action Plan: www.aem.live",
-    date: "2026-02-24",
-    category: "optimization",
-    summary: "18 prioritized actions derived from content gaps analysis. 4 critical, 5 high, 5 medium, 4 low priority items covering dead pages, sitemap sync, rebranding, stale content, and monitoring.",
-    related: ["aem-live-content-gaps", "aem-live-brand-guidelines"]
-  },
-  {
-    id: "aem-live-brand-guidelines",
-    file: "aem-live-brand-guidelines.html",
-    title: "Brand Guidelines Extraction: www.aem.live",
-    date: "2026-02-24",
-    category: "brand",
-    summary: "Comprehensive brand analysis across 10 pages. 4 positioning pillars, tone spectrum on 7 axes, 6 personality traits with 42 evidence quotes, terminology map, 7 documentation patterns, image quality grades (A+ infrastructure, F accessibility), visual identity extraction.",
-    related: ["aem-live-brand-opportunities", "aem-live-content-gaps", "aem-live-action-plan"]
-  },
-  {
-    id: "aem-live-brand-opportunities",
-    file: "aem-live-brand-opportunities.html",
-    title: "Improvement Opportunities: www.aem.live Brand & Docs",
-    date: "2026-02-24",
-    category: "optimization",
-    summary: "22 prioritized improvements across accessibility, brand consistency, documentation architecture, and image strategy. 5 critical, 6 high, 6 medium, 5 low. Impact/effort matrix with 4-sprint execution plan.",
-    related: ["aem-live-brand-guidelines", "aem-live-content-gaps", "aem-live-action-plan"]
-  },
-  {
-    id: "aem-live-link-equity",
-    file: "aem-live-link-equity.html",
-    title: "Internal Link Equity Map: www.aem.live",
-    date: "2026-02-24",
-    category: "audit",
-    summary: "Internal link structure across 197 pages. 14 global nav links, ~60 FAQ content links (accidental hub), 3 legacy hlx.live links, ~100 orphan candidates, 2 complete pagination chains, 2 broken chains, 7 dead-end pages.",
-    related: ["aem-live-content-gaps", "aem-live-action-plan", "aem-live-brand-opportunities"]
-  },
-  {
-    id: "aem-live-image-quality",
-    file: "aem-live-image-quality.html",
-    title: "Image Quality & AI Improvement: www.aem.live",
-    date: "2026-02-24",
-    category: "brand",
-    summary: "197 pages inventoried (132 custom, 65 fallback). 5 candidates analyzed by Gemini: avg brand alignment 3.6/10. AI-generated improved images for homepage, docs, architecture, blog, developer hub. 10 prioritized recommendations.",
-    related: ["aem-live-brand-guidelines", "aem-live-brand-opportunities", "aem-live-content-gaps"]
-  },
-  {
-    id: "aem-live-competitor-positioning",
-    file: "aem-live-competitor-positioning.html",
-    title: "Competitor Brand Positioning Audit: www.aem.live",
-    date: "2026-02-24",
-    category: "brand",
-    summary: "6-brand competitive analysis across 10 dimensions. aem.live vs Contentful, Sanity, Netlify, Vercel, WordPress VIP. Positioning map, tone comparison, CTA strategy, pricing transparency, social proof analysis.",
-    related: ["aem-live-brand-guidelines", "aem-live-brand-opportunities"]
-  },
-  {
-    id: "aem-live-brand-consistency",
-    file: "aem-live-brand-consistency.html",
-    title: "Brand Consistency Scorecard: www.aem.live",
-    date: "2026-02-24",
-    category: "brand",
-    summary: "Page-level brand voice audit across 12 pages. Mean score 76/100. 4 strong alignment, 5 minor drift, 3 significant deviation. FAQ (58) and /business/demo (48) are highest-risk. Developer pages average 82.5 vs docs 72.7.",
-    related: ["aem-live-brand-guidelines", "aem-live-brand-opportunities", "aem-live-content-gaps"]
-  },
-  {
-    id: "aem-live-seo-signals",
-    file: "aem-live-seo-signals.html",
-    title: "SEO Brand Signals: www.aem.live",
-    date: "2026-02-24",
-    category: "performance",
-    summary: "8-page SEO metadata audit. All pages have title/description/OG/Twitter/canonical/single-H1. All 8 missing: lang, og:type, favicon link, hreflang. 7/8 missing structured data. 7/8 titles lack brand name. Site invisible for own brand keywords in SERP.",
-    related: ["aem-live-content-gaps", "aem-live-brand-guidelines", "aem-live-brand-opportunities", "aem-live-action-plan"]
-  },
-  {
-    id: "aem-live-readability",
-    file: "aem-live-readability.html",
-    title: "Content Readability Scoring: www.aem.live",
-    date: "2026-02-24",
-    category: "brand",
-    summary: "10-page readability analysis. FK Grade range 7.8 (homepage) to 13.8 (markup docs). 86% active voice site-wide. 3 pages inaccessible to non-technical stakeholders. 52 undefined acronyms on performance page.",
-    related: ["aem-live-brand-guidelines", "aem-live-brand-opportunities", "aem-live-content-gaps"]
-  },
-  {
-    id: "aem-live-rum-analysis",
-    file: "aem-live-rum-analysis.html",
-    title: "Traffic-Weighted Content Intelligence: www.aem.live",
-    date: "2026-02-24",
-    category: "performance",
-    summary: "157K estimated views over 10 days across 152 URLs. Cross-references RUM telemetry with static content analysis. 5 actions upgraded, 4 downgraded, 4 new from telemetry. 31 stale pages with traffic vs 41 safe to archive. 28 CWV issues.",
-    related: ["aem-live-content-gaps", "aem-live-action-plan", "aem-live-brand-guidelines"]
-  },
-  {
-    id: "aem-live-brand-evolution",
-    file: "aem-live-brand-evolution.html",
-    title: "Brand Evolution Timeline: AEM Edge Delivery Services",
-    date: "2026-02-24",
-    category: "brand",
-    summary: "Brand archaeology: 8 years, 6+ names. Helix (2018) to Franklin (2022) to Edge Delivery Services (2023). hlx.live blocked Dec 2025 (403, not 301). 40+ repos still helix-*. Developer API 30% rebranded.",
-    related: ["aem-live-brand-guidelines", "aem-live-developer-touchpoints", "aem-live-seo-signals", "aem-live-content-gaps"]
-  },
-  {
-    id: "aem-live-performance-validation",
-    file: "aem-live-performance-validation.html",
-    title: "Performance Brand Validation: www.aem.live",
-    date: "2026-02-24",
-    category: "performance",
-    summary: "Tests the 'Lighthouse 100' brand promise. CrUX: LCP 0.8s, INP 50ms, CLS 0.00. Critical path ~29 KB. All 7 performance standards pass. Accessibility failures prevent true Lighthouse 100.",
-    related: ["aem-live-brand-guidelines", "aem-live-seo-signals", "aem-live-brand-opportunities"]
-  }
-];
+let manifest = [];
 
 /* ────────────────────────────────────────────
    Category metadata
@@ -846,19 +751,21 @@ function buildMindmap() {
       canvas.appendChild(el);
     } else if (n.type === 'report') {
       const el = document.createElement('a');
-      el.className = 'node node-report';
+      el.className = 'node node-report' + (n.report._generating ? ' generating' : '');
       el.href = n.report.file;
+      if (n.report._generating) el.target = '_blank';
       el.style.left = n.sx + 'px';
       el.style.top = n.sy + 'px';
+      const summaryText = n.report._generating ? 'Report is being written\u2026' : n.report.summary;
       el.innerHTML = `
         <div class="report-accent" data-cat="${n.report.category}"></div>
         <div class="report-body">
           <div class="report-title">${n.report.title}</div>
-          <div class="report-summary">${n.report.summary}</div>
+          <div class="report-summary">${summaryText}</div>
         </div>
         <div class="report-footer">
           <span class="report-badge" data-cat="${n.report.category}">${categories[n.report.category]?.label || n.report.category}</span>
-          <span>${n.report.date}</span>
+          <span>${n.report._generating ? 'Generating\u2026' : n.report.date}</span>
         </div>`;
       canvas.appendChild(el);
     }
@@ -951,36 +858,78 @@ function formatDate(dateStr) {
 }
 
 /* ────────────────────────────────────────────
-   Dynamic manifest — merge generated reports
+   Live generation events from chat widget
    ──────────────────────────────────────────── */
-async function loadDynamicManifest() {
-  try {
-    const resp = await fetch('/api/manifest');
-    if (!resp.ok) return;
-    const entries = await resp.json();
-    if (!Array.isArray(entries) || entries.length === 0) return;
-    const existingIds = new Set(manifest.map(r => r.id));
-    let added = 0;
-    entries.forEach(entry => {
-      if (!existingIds.has(entry.id)) {
-        manifest.push(entry);
-        added++;
-      }
-    });
-    if (added > 0) {
-      buildMindmap();
-      buildTimeline();
-      applyTransform();
-    }
-  } catch {}
-}
+window.addEventListener('blazar-report-generating', (e) => {
+  const d = e.detail;
+  if (!d || !d.id) return;
+  // Remove existing entry with same id (if re-generating)
+  const idx = manifest.findIndex(r => r.id === d.id);
+  if (idx >= 0) manifest.splice(idx, 1);
+  // Add temp generating entry
+  manifest.push({
+    id: d.id,
+    file: '/r/' + d.id,
+    title: d.title || 'Generating report\u2026',
+    subtitle: d.subtitle || '',
+    date: new Date().toISOString().split('T')[0],
+    category: d.category || 'audit',
+    summary: d.summary || '',
+    related: d.related || [],
+    _generating: true,
+  });
+  buildMindmap();
+  buildTimeline();
+  applyTransform();
+});
+
+window.addEventListener('blazar-report-generated', (e) => {
+  const entry = e.detail?.manifest;
+  if (!entry || !entry.id) return;
+  // Replace the generating entry with the permanent one
+  const idx = manifest.findIndex(r => r.id === entry.id);
+  if (idx >= 0) {
+    manifest[idx] = entry;
+  } else {
+    manifest.push(entry);
+  }
+  buildMindmap();
+  buildTimeline();
+  applyTransform();
+});
 
 /* ────────────────────────────────────────────
-   Init
+   Init — load manifest.json + KV generated reports
    ──────────────────────────────────────────── */
-buildMindmap();
-buildTimeline();
-loadDynamicManifest();
+async function init() {
+  // 1. Load static manifest (single source of truth)
+  try {
+    const resp = await fetch('manifest.json');
+    if (resp.ok) {
+      manifest = await resp.json();
+    }
+  } catch {}
+
+  // 2. Merge generated reports from KV via API
+  try {
+    const resp = await fetch('/api/manifest');
+    if (resp.ok) {
+      const entries = await resp.json();
+      if (Array.isArray(entries)) {
+        const existingIds = new Set(manifest.map(r => r.id));
+        entries.forEach(entry => {
+          if (!existingIds.has(entry.id)) {
+            manifest.push(entry);
+          }
+        });
+      }
+    }
+  } catch {}
+
+  buildMindmap();
+  buildTimeline();
+}
+init();
 
 window.addEventListener('resize', () => {
   buildMindmap();

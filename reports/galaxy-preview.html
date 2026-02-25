@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blazar — Galaxy View Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700;900&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue: #3B63FB;
+  --blue-light: #EBF0FF;
+  --amber: #CB6F10;
+  --green: #12805C;
+  --purple: #7A6AFD;
+  --red: #D7373F;
+  --cyan: #0D7899;
+  --font: 'Source Sans Pro', -apple-system, sans-serif;
+  --font-mono: 'Source Code Pro', monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+body { font-family: var(--font); background: #080B16; color: #E8ECF4; }
+
+/* ── App Shell ── */
+.app { display: flex; flex-direction: column; height: 100vh; }
+
+/* ── Header ── */
+.header {
+  background: rgba(10, 14, 28, 0.95);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  padding: 12px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0; z-index: 100;
+  backdrop-filter: blur(20px);
+}
+.header-left { display: flex; align-items: center; gap: 12px; }
+.header h1 { font-size: 18px; font-weight: 900; color: #fff; letter-spacing: 0.02em; }
+.header-subtitle { font-size: 12px; color: rgba(255,255,255,0.4); }
+.header-logo {
+  width: 32px; height: 32px; border-radius: 8px;
+}
+
+/* ── Search Bar ── */
+.search-area { display: flex; align-items: center; gap: 12px; }
+.search-box {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 9999px; padding: 6px 16px;
+  transition: all 0.2s;
+}
+.search-box:focus-within { border-color: rgba(59,99,251,0.5); background: rgba(59,99,251,0.08); }
+.search-box svg { width: 14px; height: 14px; color: rgba(255,255,255,0.3); flex-shrink: 0; }
+.search-box input {
+  background: none; border: none; outline: none;
+  color: #fff; font-family: var(--font); font-size: 13px;
+  width: 200px;
+}
+.search-box input::placeholder { color: rgba(255,255,255,0.3); }
+
+/* ── Filter Pills ── */
+.filters { display: flex; gap: 6px; }
+.filter-pill {
+  padding: 5px 14px; border-radius: 9999px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: transparent;
+  color: rgba(255,255,255,0.5);
+  font-family: var(--font); font-size: 12px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; gap: 5px;
+}
+.filter-pill:hover { border-color: rgba(255,255,255,0.2); color: rgba(255,255,255,0.8); }
+.filter-pill.active { color: #fff; }
+.filter-pill.active[data-cat="audit"] { border-color: var(--amber); background: rgba(203,111,16,0.15); color: var(--amber); }
+.filter-pill.active[data-cat="brand"] { border-color: var(--purple); background: rgba(122,106,253,0.15); color: var(--purple); }
+.filter-pill.active[data-cat="performance"] { border-color: var(--red); background: rgba(215,55,63,0.15); color: var(--red); }
+.filter-pill.active[data-cat="optimization"] { border-color: var(--green); background: rgba(18,128,92,0.15); color: var(--green); }
+.filter-pill.active[data-cat="content"] { border-color: var(--blue); background: rgba(59,99,251,0.15); color: var(--blue); }
+.filter-pill .pill-dot { width: 6px; height: 6px; border-radius: 50%; }
+.filter-pill .pill-count { opacity: 0.6; font-size: 11px; }
+
+/* ── Galaxy Canvas ── */
+.galaxy { flex: 1; position: relative; overflow: hidden; cursor: crosshair; }
+.galaxy-canvas {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  transform-origin: 0 0;
+}
+
+/* ── Background Stars (ambient) ── */
+.bg-stars {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 0;
+}
+
+/* ── Nebulae (experience regions) ── */
+.nebula {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── Constellation Lines ── */
+.constellation-svg {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none; z-index: 2;
+}
+
+/* ── Stars (report nodes) ── */
+.star {
+  position: absolute;
+  border-radius: 50%;
+  z-index: 10;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  transition: transform 0.2s ease, width 0.2s ease, height 0.2s ease;
+}
+.star::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200%; height: 200%;
+  border-radius: 50%;
+  background: radial-gradient(circle, currentColor 0%, transparent 70%);
+  opacity: 0.15;
+  pointer-events: none;
+}
+.star:hover { transform: translate(-50%, -50%) scale(1.8); z-index: 30; }
+.star:hover .star-label { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+.star:hover .star-card { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+
+/* ── Star Labels ── */
+.star-label {
+  position: absolute;
+  top: calc(100% + 8px); left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  white-space: nowrap;
+  font-size: 11px; font-weight: 600;
+  color: rgba(255,255,255,0.8);
+  text-shadow: 0 1px 6px rgba(0,0,0,0.8);
+  opacity: 0;
+  transition: all 0.2s ease;
+  pointer-events: none;
+  max-width: 180px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  text-align: center;
+}
+/* Always-visible labels for large stars */
+.star.major .star-label {
+  opacity: 0.6;
+  transform: translateX(-50%) translateY(0);
+}
+.star.major:hover .star-label { opacity: 1; }
+
+/* ── Star Hover Card ── */
+.star-card {
+  position: absolute;
+  top: calc(100% + 28px); left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  width: 260px;
+  background: rgba(14, 18, 35, 0.95);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 14px 16px;
+  opacity: 0;
+  transition: all 0.25s ease;
+  pointer-events: none;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+  z-index: 40;
+}
+.star-card .card-accent {
+  height: 3px; border-radius: 3px;
+  margin: -14px -16px 12px;
+  border-radius: 10px 10px 0 0;
+}
+.star-card .card-title {
+  font-size: 13px; font-weight: 700; color: #fff;
+  margin-bottom: 4px; line-height: 1.3;
+}
+.star-card .card-summary {
+  font-size: 11px; color: rgba(255,255,255,0.5);
+  line-height: 1.4;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.star-card .card-meta {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 8px; font-size: 10px; color: rgba(255,255,255,0.3);
+}
+.star-card .card-badge {
+  padding: 2px 8px; border-radius: 9999px;
+  font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+}
+
+/* ═══════════════════════════════════════════
+   Semantic Zoom Levels
+   ═══════════════════════════════════════════ */
+
+/* ── Level 1: Galaxy overview (scale < 0.7) ── */
+/* Only dots visible, no labels, larger experience names */
+.galaxy[data-zoom="galaxy"] .star-label { display: none !important; }
+.galaxy[data-zoom="galaxy"] .star-card { display: none !important; }
+.galaxy[data-zoom="galaxy"] .star:hover { transform: translate(-50%, -50%) scale(1.4); }
+.galaxy[data-zoom="galaxy"] .constellation-svg { opacity: 0.3; }
+.galaxy[data-zoom="galaxy"] .experience-label { opacity: 0.25 !important; }
+
+/* ── Level 2: Constellation (0.7 ≤ scale < 1.4) ── */
+/* Major labels visible, minor on hover — default behavior */
+.galaxy[data-zoom="constellation"] .star:not(.major) .star-label { display: none; }
+.galaxy[data-zoom="constellation"] .star:not(.major):hover .star-label { display: block; opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── Level 3: Neighborhood (1.4 ≤ scale < 2.5) ── */
+/* All labels always visible */
+.galaxy[data-zoom="neighborhood"] .star-label {
+  opacity: 0.7 !important;
+  transform: translateX(-50%) translateY(0) !important;
+}
+.galaxy[data-zoom="neighborhood"] .star:hover .star-label { opacity: 1 !important; }
+.galaxy[data-zoom="neighborhood"] .experience-label { opacity: 0.06 !important; }
+
+/* ── Level 4: Street (scale ≥ 2.5) ── */
+/* Inline detail cards always visible, full info */
+.galaxy[data-zoom="street"] .star-label { display: none !important; }
+.galaxy[data-zoom="street"] .star-card {
+  opacity: 1 !important;
+  transform: translateX(-50%) translateY(0) !important;
+  pointer-events: auto !important;
+}
+.galaxy[data-zoom="street"] .star:hover { transform: translate(-50%, -50%) scale(1.2); }
+.galaxy[data-zoom="street"] .star:hover .star-card {
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(59,99,251,0.4);
+}
+.galaxy[data-zoom="street"] .experience-label { display: none; }
+.galaxy[data-zoom="street"] .constellation-svg { opacity: 0.6; }
+.galaxy[data-zoom="street"] .core { opacity: 0.3; }
+
+/* ── Zoom level indicator ── */
+.zoom-level {
+  position: absolute;
+  bottom: 74px; right: 20px;
+  z-index: 50;
+  font-size: 10px; font-weight: 600;
+  color: rgba(255,255,255,0.3);
+  text-align: right;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  pointer-events: none;
+  transition: all 0.2s;
+}
+.zoom-level .zoom-pct {
+  font-size: 13px; font-weight: 700;
+  color: rgba(255,255,255,0.5);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Center Core (Blazar) ── */
+.core {
+  position: absolute;
+  z-index: 15;
+  transform: translate(-50%, -50%);
+}
+.core-glow {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+    rgba(59,99,251,0.6) 0%,
+    rgba(59,99,251,0.2) 30%,
+    rgba(122,106,253,0.08) 60%,
+    transparent 80%
+  );
+  animation: core-pulse 4s ease-in-out infinite;
+  display: flex; align-items: center; justify-content: center;
+}
+.core-dot {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 20px rgba(59,99,251,0.8), 0 0 60px rgba(59,99,251,0.4);
+}
+.core-label {
+  position: absolute;
+  top: calc(100% + 4px); left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px; font-weight: 700;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  white-space: nowrap;
+}
+@keyframes core-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.15); opacity: 0.8; }
+}
+
+/* ── Experience Labels ── */
+.experience-label {
+  position: absolute;
+  z-index: 5;
+  transform: translate(-50%, -50%);
+  font-size: 13px; font-weight: 700;
+  color: rgba(255,255,255,0.12);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* ── Zoom Controls ── */
+.zoom-controls {
+  position: absolute;
+  bottom: 20px; right: 20px;
+  display: flex; flex-direction: column;
+  gap: 4px; z-index: 50;
+}
+.zoom-btn {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(14,18,35,0.8);
+  backdrop-filter: blur(10px);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 16px; font-weight: 600;
+  color: rgba(255,255,255,0.5);
+  font-family: var(--font);
+  transition: all 0.15s;
+}
+.zoom-btn:hover { color: #fff; border-color: rgba(255,255,255,0.25); }
+
+/* ── Legend ── */
+.legend {
+  position: absolute;
+  bottom: 20px; left: 20px;
+  display: flex; gap: 14px;
+  font-size: 11px; color: rgba(255,255,255,0.4);
+  z-index: 50;
+  background: rgba(14,18,35,0.8);
+  backdrop-filter: blur(10px);
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.legend-item { display: flex; align-items: center; gap: 5px; }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+/* ── Info panel ── */
+.info-panel {
+  position: absolute;
+  top: 16px; right: 16px;
+  z-index: 50;
+  background: rgba(14,18,35,0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 10px;
+  padding: 14px 18px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.5);
+  max-width: 200px;
+}
+.info-panel .info-stat {
+  display: flex; justify-content: space-between;
+  margin-bottom: 4px;
+}
+.info-panel .info-val { color: #fff; font-weight: 700; }
+
+/* ── Twinkling animation ── */
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+@keyframes twinkle-slow {
+  0%, 100% { opacity: 0.15; }
+  50% { opacity: 0.6; }
+}
+.bg-star {
+  position: absolute;
+  border-radius: 50%;
+  background: #fff;
+  pointer-events: none;
+}
+
+/* ── Spotlight search highlight ── */
+.star.dimmed { opacity: 0.08; }
+.star.dimmed:hover { opacity: 0.08; transform: translate(-50%, -50%) scale(1); }
+.star.dimmed .star-label { display: none; }
+.star.highlighted { z-index: 25; }
+.star.highlighted::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300%; height: 300%;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  opacity: 0.3;
+  animation: spotlight-ring 2s ease-in-out infinite;
+}
+@keyframes spotlight-ring {
+  0%, 100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.3; }
+  50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.1; }
+}
+
+/* ── DESIGN CONCEPT label ── */
+.concept-badge {
+  position: absolute;
+  top: 16px; left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  background: rgba(59,99,251,0.15);
+  border: 1px solid rgba(59,99,251,0.3);
+  border-radius: 9999px;
+  padding: 6px 20px;
+  font-size: 11px; font-weight: 700;
+  color: var(--blue);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  pointer-events: none;
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header class="header">
+    <div class="header-left">
+      <img src="blazar-logo-36.svg" width="32" height="32" alt="" class="header-logo">
+      <div>
+        <h1>Blazar</h1>
+        <div class="header-subtitle">Galaxy View</div>
+      </div>
+    </div>
+    <div class="search-area">
+      <div class="filters">
+        <button class="filter-pill active" data-cat="audit">
+          <span class="pill-dot" style="background:var(--amber)"></span>
+          Audit <span class="pill-count">12</span>
+        </button>
+        <button class="filter-pill active" data-cat="brand">
+          <span class="pill-dot" style="background:var(--purple)"></span>
+          Brand <span class="pill-count">16</span>
+        </button>
+        <button class="filter-pill active" data-cat="performance">
+          <span class="pill-dot" style="background:var(--red)"></span>
+          Perf <span class="pill-count">9</span>
+        </button>
+        <button class="filter-pill active" data-cat="optimization">
+          <span class="pill-dot" style="background:var(--green)"></span>
+          Optim <span class="pill-count">8</span>
+        </button>
+        <button class="filter-pill active" data-cat="content">
+          <span class="pill-dot" style="background:var(--blue)"></span>
+          Content <span class="pill-count">7</span>
+        </button>
+      </div>
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" placeholder="Search reports..." id="search-input">
+      </div>
+    </div>
+  </header>
+
+  <div class="galaxy" id="galaxy">
+    <div class="concept-badge">Design Concept — Option D: Galaxy View</div>
+    <div class="galaxy-canvas" id="galaxy-canvas">
+      <svg class="constellation-svg" id="constellation-svg"></svg>
+    </div>
+
+    <div class="zoom-level" id="zoom-level">
+      <div class="zoom-pct">100%</div>
+      <div>constellation</div>
+    </div>
+    <div class="zoom-controls">
+      <button class="zoom-btn" id="zoom-in">+</button>
+      <button class="zoom-btn" id="zoom-reset" style="font-size:11px;">1:1</button>
+      <button class="zoom-btn" id="zoom-out">&minus;</button>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div> Audit</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div> Optimization</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div> Brand</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div> Content</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div> Performance</div>
+      <div class="legend-item" style="margin-left:8px; opacity:0.5;"><span style="width:20px;height:1px;background:rgba(255,255,255,0.3);display:block;"></span> Related</div>
+    </div>
+
+    <div class="info-panel">
+      <div class="info-stat"><span>Reports</span><span class="info-val">52</span></div>
+      <div class="info-stat"><span>Experiences</span><span class="info-val">3</span></div>
+      <div class="info-stat"><span>Contributors</span><span class="info-val">4</span></div>
+      <div class="info-stat" style="margin-top:8px; padding-top:8px; border-top:1px solid rgba(255,255,255,0.06);"><span>Last updated</span><span class="info-val">2 min ago</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════════
+   Galaxy View — Static Mock with Interactive Hover
+   ════════════════════════════════════════════════════ */
+
+const catColors = {
+  audit:        { hex: '#CB6F10', r: 203, g: 111, b: 16 },
+  optimization: { hex: '#12805C', r: 18,  g: 128, b: 92 },
+  brand:        { hex: '#7A6AFD', r: 122, g: 106, b: 253 },
+  content:      { hex: '#3B63FB', r: 59,  g: 99,  b: 251 },
+  performance:  { hex: '#D7373F', r: 215, g: 55,  b: 63 },
+};
+
+const catLabels = {
+  audit: 'Audit', optimization: 'Optimization', brand: 'Brand',
+  content: 'Content', performance: 'Performance',
+};
+
+/* ── Report data — 52 reports across 3 experiences ── */
+const reports = [
+  // ── aem.live (real reports + extensions) ──
+  { id: 'content-gaps', title: 'Content Gaps Analysis', cat: 'audit', exp: 'aem.live', size: 3, summary: '197 pages, 72 stale (37%), 65 missing OG images', date: '2026-02-24', user: 'paolo' },
+  { id: 'link-equity', title: 'Internal Link Equity Map', cat: 'audit', exp: 'aem.live', size: 2, summary: '~100 orphan pages, 3 legacy hlx.live links', date: '2026-02-24', user: 'paolo' },
+  { id: 'action-plan', title: 'Action Plan', cat: 'optimization', exp: 'aem.live', size: 3, summary: '18 prioritized actions from content gaps analysis', date: '2026-02-24', user: 'paolo' },
+  { id: 'brand-guidelines', title: 'Brand Guidelines Extraction', cat: 'brand', exp: 'aem.live', size: 3, summary: '4 positioning pillars, tone spectrum, 42 evidence quotes', date: '2026-02-24', user: 'paolo' },
+  { id: 'brand-opportunities', title: 'Improvement Opportunities', cat: 'optimization', exp: 'aem.live', size: 2, summary: '22 prioritized improvements across 4 sprints', date: '2026-02-24', user: 'paolo' },
+  { id: 'image-quality', title: 'Image Quality & AI', cat: 'brand', exp: 'aem.live', size: 2, summary: 'Avg brand alignment 3.6/10, AI-generated improvements', date: '2026-02-24', user: 'paolo' },
+  { id: 'competitor', title: 'Competitor Positioning', cat: 'brand', exp: 'aem.live', size: 2, summary: '6-brand analysis across 10 dimensions', date: '2026-02-24', user: 'paolo' },
+  { id: 'consistency', title: 'Brand Consistency Scorecard', cat: 'brand', exp: 'aem.live', size: 2, summary: 'Mean score 76/100, FAQ (58) highest risk', date: '2026-02-24', user: 'paolo' },
+  { id: 'seo-signals', title: 'SEO Brand Signals', cat: 'performance', exp: 'aem.live', size: 2, summary: '0/8 lang, 7/8 no structured data', date: '2026-02-24', user: 'paolo' },
+  { id: 'readability', title: 'Readability Scoring', cat: 'brand', exp: 'aem.live', size: 2, summary: 'FK 7.8–13.8, 86% active voice', date: '2026-02-24', user: 'paolo' },
+  { id: 'rum-analysis', title: 'RUM Traffic Intelligence', cat: 'performance', exp: 'aem.live', size: 3, summary: '157K views, 152 URLs, priority reshuffling', date: '2026-02-24', user: 'paolo' },
+  { id: 'brand-evolution', title: 'Brand Evolution Timeline', cat: 'brand', exp: 'aem.live', size: 2, summary: '8 years, 6+ names, Helix to EDS', date: '2026-02-24', user: 'paolo' },
+  { id: 'perf-validation', title: 'Performance Validation', cat: 'performance', exp: 'aem.live', size: 2, summary: 'Lighthouse 100 substantiated, alt text gap', date: '2026-02-24', user: 'paolo' },
+  { id: 'dev-touchpoints', title: 'Developer Touchpoints', cat: 'brand', exp: 'aem.live', size: 1, summary: '33% AEM-branded, window.hlx main issue', date: '2026-02-24', user: 'paolo' },
+  // additional aem.live
+  { id: 'nav-architecture', title: 'Navigation Architecture', cat: 'audit', exp: 'aem.live', size: 1, summary: 'IA depth analysis, 4-level nav hierarchy', date: '2026-02-25', user: 'marco' },
+  { id: 'conversion-funnel', title: 'Conversion Funnel Analysis', cat: 'optimization', exp: 'aem.live', size: 2, summary: 'Get Started flow, 3-step drop-off pattern', date: '2026-02-25', user: 'marco' },
+  { id: 'a11y-audit', title: 'Accessibility Audit', cat: 'audit', exp: 'aem.live', size: 2, summary: 'WCAG 2.1 AA, 83 missing alt texts', date: '2026-02-25', user: 'anna' },
+  { id: 'cwv-deep', title: 'Core Web Vitals Deep Dive', cat: 'performance', exp: 'aem.live', size: 1, summary: 'LCP 0.8s, INP 50ms, CLS 0.00', date: '2026-02-25', user: 'anna' },
+
+  // ── acme-store.com ──
+  { id: 'acme-content', title: 'Content Inventory', cat: 'audit', exp: 'acme-store.com', size: 2, summary: '342 product pages, 28 category pages, 15 landing pages', date: '2026-02-25', user: 'paolo' },
+  { id: 'acme-seo', title: 'SEO Health Check', cat: 'performance', exp: 'acme-store.com', size: 2, summary: 'Domain authority 42, 67 broken backlinks', date: '2026-02-25', user: 'marco' },
+  { id: 'acme-brand', title: 'Brand Voice Analysis', cat: 'brand', exp: 'acme-store.com', size: 3, summary: 'Inconsistent tone across product vs marketing', date: '2026-02-25', user: 'paolo' },
+  { id: 'acme-imagery', title: 'Product Imagery Audit', cat: 'brand', exp: 'acme-store.com', size: 2, summary: '40% below 72 DPI, inconsistent backgrounds', date: '2026-02-25', user: 'anna' },
+  { id: 'acme-schema', title: 'Structured Data Coverage', cat: 'performance', exp: 'acme-store.com', size: 1, summary: 'Product schema on 89%, missing reviews schema', date: '2026-02-25', user: 'marco' },
+  { id: 'acme-cart', title: 'Cart Abandonment Analysis', cat: 'optimization', exp: 'acme-store.com', size: 3, summary: '68% abandonment, shipping cost reveal at step 3', date: '2026-02-25', user: 'anna' },
+  { id: 'acme-mobile', title: 'Mobile UX Audit', cat: 'audit', exp: 'acme-store.com', size: 2, summary: '12 touch target violations, no bottom nav', date: '2026-02-25', user: 'anna' },
+  { id: 'acme-perf', title: 'Page Speed Analysis', cat: 'performance', exp: 'acme-store.com', size: 2, summary: 'LCP 3.2s on mobile, 1.8MB hero images', date: '2026-02-25', user: 'marco' },
+  { id: 'acme-copy', title: 'Product Copy Quality', cat: 'content', exp: 'acme-store.com', size: 2, summary: '45% duplicate descriptions, 12% < 50 words', date: '2026-02-25', user: 'paolo' },
+  { id: 'acme-search', title: 'Site Search Analysis', cat: 'optimization', exp: 'acme-store.com', size: 1, summary: '23% zero-result queries, top missed terms mapped', date: '2026-02-25', user: 'marco' },
+  { id: 'acme-pricing', title: 'Pricing Display Audit', cat: 'content', exp: 'acme-store.com', size: 1, summary: 'Inconsistent sale badge rendering, 3 formats', date: '2026-02-25', user: 'anna' },
+  { id: 'acme-links', title: 'Internal Linking Strategy', cat: 'audit', exp: 'acme-store.com', size: 1, summary: 'Category crosslinks, related products graph', date: '2026-02-25', user: 'paolo' },
+  { id: 'acme-comp', title: 'Competitor Pricing Intel', cat: 'brand', exp: 'acme-store.com', size: 2, summary: '8 competitors tracked, 12% price undercut avg', date: '2026-02-25', user: 'marco' },
+  { id: 'acme-reviews', title: 'Review Sentiment Analysis', cat: 'content', exp: 'acme-store.com', size: 2, summary: '4.2 avg, shipping complaints in 34% of 1-stars', date: '2026-02-25', user: 'anna' },
+  { id: 'acme-action', title: 'Q1 Optimization Plan', cat: 'optimization', exp: 'acme-store.com', size: 2, summary: '24 actions, estimated 15% conversion lift', date: '2026-02-25', user: 'paolo' },
+
+  // ── docs.example.dev ──
+  { id: 'docs-ia', title: 'Information Architecture', cat: 'audit', exp: 'docs.example.dev', size: 3, summary: '8 top-level sections, 340 pages, 5-level max depth', date: '2026-02-25', user: 'marco' },
+  { id: 'docs-search', title: 'Search Effectiveness', cat: 'optimization', exp: 'docs.example.dev', size: 2, summary: 'Avg 2.3 queries per session, 18% bounce from search', date: '2026-02-25', user: 'marco' },
+  { id: 'docs-freshness', title: 'Content Freshness Map', cat: 'audit', exp: 'docs.example.dev', size: 2, summary: '42% pages not updated in 6+ months', date: '2026-02-25', user: 'anna' },
+  { id: 'docs-api', title: 'API Reference Completeness', cat: 'content', exp: 'docs.example.dev', size: 2, summary: '78% endpoints documented, 12 missing examples', date: '2026-02-25', user: 'marco' },
+  { id: 'docs-onboard', title: 'Onboarding Flow Analysis', cat: 'optimization', exp: 'docs.example.dev', size: 2, summary: 'Getting Started → first API call in 4.2 min avg', date: '2026-02-25', user: 'anna' },
+  { id: 'docs-code', title: 'Code Sample Audit', cat: 'content', exp: 'docs.example.dev', size: 1, summary: '67% samples tested, 8 broken since v3.2 migration', date: '2026-02-25', user: 'marco' },
+  { id: 'docs-nav', title: 'Navigation Heatmap', cat: 'performance', exp: 'docs.example.dev', size: 1, summary: 'Sidebar clicks: 80% top 3 sections, long tail ignored', date: '2026-02-25', user: 'anna' },
+  { id: 'docs-voice', title: 'Technical Writing Consistency', cat: 'brand', exp: 'docs.example.dev', size: 2, summary: 'Style guide adherence 71%, verb tense inconsistency', date: '2026-02-25', user: 'paolo' },
+  { id: 'docs-i18n', title: 'Internationalization Status', cat: 'content', exp: 'docs.example.dev', size: 1, summary: 'EN 100%, JP 45%, DE 38%, FR 22%, ES 12%', date: '2026-02-25', user: 'paolo' },
+  { id: 'docs-a11y', title: 'Docs Accessibility Review', cat: 'audit', exp: 'docs.example.dev', size: 1, summary: 'Code blocks lack screen reader context, 0 skip links', date: '2026-02-25', user: 'anna' },
+  { id: 'docs-perf', title: 'Docs Site Performance', cat: 'performance', exp: 'docs.example.dev', size: 1, summary: 'TTFB 320ms, but search modal adds 800ms JS', date: '2026-02-25', user: 'marco' },
+  { id: 'docs-seo', title: 'Docs SEO Visibility', cat: 'performance', exp: 'docs.example.dev', size: 1, summary: 'Ranking for 340 keywords, Stack Overflow outranks 23', date: '2026-02-25', user: 'marco' },
+  { id: 'docs-linking', title: 'Cross-Reference Integrity', cat: 'audit', exp: 'docs.example.dev', size: 1, summary: '14 broken cross-links, 8 circular references', date: '2026-02-25', user: 'anna' },
+  { id: 'docs-feedback', title: 'User Feedback Synthesis', cat: 'content', exp: 'docs.example.dev', size: 2, summary: '430 thumbs-down pages analyzed, top 3 pain points', date: '2026-02-25', user: 'paolo' },
+  { id: 'docs-action', title: 'Docs Improvement Roadmap', cat: 'optimization', exp: 'docs.example.dev', size: 2, summary: '32 items across 3 quarters, search + freshness first', date: '2026-02-25', user: 'paolo' },
+  { id: 'docs-brand', title: 'Brand Alignment in Docs', cat: 'brand', exp: 'docs.example.dev', size: 1, summary: 'Logo usage correct, but 4 outdated screenshots', date: '2026-02-25', user: 'paolo' },
+  { id: 'docs-video', title: 'Video Tutorial Coverage', cat: 'content', exp: 'docs.example.dev', size: 1, summary: '12 videos, 3 outdated, no captions on 8', date: '2026-02-25', user: 'anna' },
+];
+
+/* ── Related links (subset for constellation lines) ── */
+const related = [
+  ['content-gaps', 'action-plan'], ['content-gaps', 'link-equity'], ['brand-guidelines', 'brand-opportunities'],
+  ['brand-guidelines', 'consistency'], ['brand-guidelines', 'readability'], ['rum-analysis', 'seo-signals'],
+  ['rum-analysis', 'perf-validation'], ['image-quality', 'brand-guidelines'], ['competitor', 'brand-guidelines'],
+  ['brand-evolution', 'dev-touchpoints'], ['nav-architecture', 'link-equity'], ['a11y-audit', 'perf-validation'],
+  ['acme-content', 'acme-links'], ['acme-seo', 'acme-perf'], ['acme-brand', 'acme-imagery'],
+  ['acme-cart', 'acme-mobile'], ['acme-copy', 'acme-reviews'], ['acme-action', 'acme-cart'],
+  ['acme-comp', 'acme-brand'], ['acme-schema', 'acme-seo'],
+  ['docs-ia', 'docs-nav'], ['docs-search', 'docs-onboard'], ['docs-freshness', 'docs-api'],
+  ['docs-code', 'docs-api'], ['docs-voice', 'docs-brand'], ['docs-a11y', 'docs-linking'],
+  ['docs-action', 'docs-search'], ['docs-feedback', 'docs-action'], ['docs-perf', 'docs-seo'],
+  // cross-experience
+  ['content-gaps', 'acme-content'], ['seo-signals', 'acme-seo'], ['brand-guidelines', 'acme-brand'],
+  ['a11y-audit', 'docs-a11y'], ['readability', 'docs-voice'],
+];
+
+/* ── Experience regions ── */
+const experiences = [
+  { id: 'aem.live', label: 'www.aem.live', cx: 0.38, cy: 0.45, rx: 0.28, ry: 0.35, color: '59,99,251' },
+  { id: 'acme-store.com', label: 'acme-store.com', cx: 0.72, cy: 0.38, rx: 0.22, ry: 0.30, color: '18,128,92' },
+  { id: 'docs.example.dev', label: 'docs.example.dev', cx: 0.58, cy: 0.72, rx: 0.25, ry: 0.25, color: '122,106,253' },
+];
+
+/* ════════════════════════════════════════════════════
+   Render
+   ════════════════════════════════════════════════════ */
+const galaxy = document.getElementById('galaxy');
+const canvas = document.getElementById('galaxy-canvas');
+const svg = document.getElementById('constellation-svg');
+
+function render() {
+  const W = galaxy.clientWidth;
+  const H = galaxy.clientHeight;
+
+  // Clear
+  canvas.querySelectorAll('.star, .nebula, .experience-label, .core, .bg-star').forEach(n => n.remove());
+  svg.innerHTML = '';
+  svg.setAttribute('width', W);
+  svg.setAttribute('height', H);
+
+  // ── Background stars ──
+  const rng = mulberry32(42);
+  for (let i = 0; i < 200; i++) {
+    const s = document.createElement('div');
+    s.className = 'bg-star';
+    const size = rng() * 2 + 0.5;
+    s.style.width = size + 'px';
+    s.style.height = size + 'px';
+    s.style.left = (rng() * 100) + '%';
+    s.style.top = (rng() * 100) + '%';
+    s.style.opacity = rng() * 0.4 + 0.05;
+    if (rng() > 0.7) {
+      s.style.animation = `twinkle-slow ${3 + rng() * 5}s ease-in-out ${rng() * 5}s infinite`;
+    }
+    canvas.appendChild(s);
+  }
+
+  // ── Nebulae ──
+  experiences.forEach(exp => {
+    const neb = document.createElement('div');
+    neb.className = 'nebula';
+    const nx = exp.cx * W;
+    const ny = exp.cy * H;
+    const nw = exp.rx * W * 2;
+    const nh = exp.ry * H * 2;
+    neb.style.left = (nx - nw / 2) + 'px';
+    neb.style.top = (ny - nh / 2) + 'px';
+    neb.style.width = nw + 'px';
+    neb.style.height = nh + 'px';
+    neb.style.background = `radial-gradient(ellipse, rgba(${exp.color},0.06) 0%, rgba(${exp.color},0.02) 40%, transparent 70%)`;
+    canvas.appendChild(neb);
+
+    const lbl = document.createElement('div');
+    lbl.className = 'experience-label';
+    lbl.style.left = nx + 'px';
+    lbl.style.top = (ny - nh / 2 + 20) + 'px';
+    lbl.textContent = exp.label;
+    canvas.appendChild(lbl);
+  });
+
+  // ── Place stars using seeded positions within experience regions ──
+  const starPositions = {};
+  const expReports = {};
+  experiences.forEach(exp => { expReports[exp.id] = reports.filter(r => r.exp === exp.id); });
+
+  const posRng = mulberry32(137);
+  reports.forEach(r => {
+    const exp = experiences.find(e => e.id === r.exp);
+    if (!exp) return;
+    // Place within experience ellipse with some jitter
+    const angle = posRng() * Math.PI * 2;
+    const dist = 0.3 + posRng() * 0.55;
+    const x = exp.cx * W + Math.cos(angle) * dist * exp.rx * W;
+    const y = exp.cy * H + Math.sin(angle) * dist * exp.ry * H;
+    starPositions[r.id] = { x, y };
+  });
+
+  // ── Constellation lines (SVG) ──
+  related.forEach(([fromId, toId]) => {
+    const from = starPositions[fromId];
+    const to = starPositions[toId];
+    if (!from || !to) return;
+
+    const fromR = reports.find(r => r.id === fromId);
+    const toR = reports.find(r => r.id === toId);
+    const crossExp = fromR && toR && fromR.exp !== toR.exp;
+
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', from.x);
+    line.setAttribute('y1', from.y);
+    line.setAttribute('x2', to.x);
+    line.setAttribute('y2', to.y);
+    line.setAttribute('stroke', crossExp ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.08)');
+    line.setAttribute('stroke-width', crossExp ? '0.5' : '1');
+    if (crossExp) line.setAttribute('stroke-dasharray', '3 6');
+    svg.appendChild(line);
+  });
+
+  // ── Core (Blazar center) ──
+  const core = document.createElement('div');
+  core.className = 'core';
+  core.style.left = (W * 0.5) + 'px';
+  core.style.top = (H * 0.5) + 'px';
+  core.innerHTML = `
+    <div class="core-glow"><div class="core-dot"></div></div>
+    <div class="core-label">Blazar</div>
+  `;
+  canvas.appendChild(core);
+
+  // ── Stars ──
+  reports.forEach(r => {
+    const pos = starPositions[r.id];
+    if (!pos) return;
+
+    const star = document.createElement('div');
+    const baseSize = 4 + r.size * 4; // 8px to 16px
+    const color = catColors[r.cat];
+
+    star.className = 'star' + (r.size >= 3 ? ' major' : '');
+    star.dataset.id = r.id;
+    star.dataset.title = r.title.toLowerCase();
+    star.dataset.cat = r.cat;
+    star.style.left = pos.x + 'px';
+    star.style.top = pos.y + 'px';
+    star.style.width = baseSize + 'px';
+    star.style.height = baseSize + 'px';
+    star.style.background = color.hex;
+    star.style.color = color.hex;
+    star.style.boxShadow = `0 0 ${baseSize}px rgba(${color.r},${color.g},${color.b},0.6), 0 0 ${baseSize * 3}px rgba(${color.r},${color.g},${color.b},0.2)`;
+
+    // twinkle for small stars
+    if (r.size <= 1) {
+      star.style.animation = `twinkle ${3 + posRng() * 4}s ease-in-out ${posRng() * 3}s infinite`;
+    }
+
+    star.innerHTML = `
+      <div class="star-label">${r.title}</div>
+      <div class="star-card">
+        <div class="card-accent" style="background:${color.hex}"></div>
+        <div class="card-title">${r.title}</div>
+        <div class="card-summary">${r.summary}</div>
+        <div class="card-meta">
+          <span class="card-badge" style="background:rgba(${color.r},${color.g},${color.b},0.15); color:${color.hex}">${catLabels[r.cat]}</span>
+          <span>${r.exp}</span>
+          <span>${r.user} &middot; ${r.date.slice(5)}</span>
+        </div>
+      </div>
+    `;
+
+    canvas.appendChild(star);
+  });
+}
+
+/* ── Seeded PRNG ── */
+function mulberry32(seed) {
+  return function() {
+    seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+    var t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+
+/* ── Pan & Zoom (cursor-centered, Google Maps style) ── */
+let scale = 1, panX = 0, panY = 0;
+let isPanning = false, startPanX, startPanY;
+const MIN_SCALE = 0.25, MAX_SCALE = 6;
+
+function applyTransform(smooth) {
+  if (smooth) {
+    canvas.style.transition = 'transform 0.25s ease-out';
+    setTimeout(() => { canvas.style.transition = ''; }, 260);
+  }
+  canvas.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
+  updateZoomLevel();
+}
+
+function updateZoomLevel() {
+  let level, label;
+  if (scale < 0.7) { level = 'galaxy'; label = 'galaxy'; }
+  else if (scale < 1.4) { level = 'constellation'; label = 'constellation'; }
+  else if (scale < 2.5) { level = 'neighborhood'; label = 'neighborhood'; }
+  else { level = 'street'; label = 'street'; }
+
+  galaxy.dataset.zoom = level;
+  const indicator = document.getElementById('zoom-level');
+  indicator.innerHTML = `<div class="zoom-pct">${Math.round(scale * 100)}%</div><div>${label}</div>`;
+}
+
+/* Zoom toward a specific point (in viewport coords) */
+function zoomTo(newScale, pivotX, pivotY, smooth) {
+  newScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, newScale));
+  // World-space point under the pivot before zoom
+  const wx = (pivotX - panX) / scale;
+  const wy = (pivotY - panY) / scale;
+  // Adjust pan so the same world point stays under the pivot
+  panX = pivotX - wx * newScale;
+  panY = pivotY - wy * newScale;
+  scale = newScale;
+  applyTransform(smooth);
+}
+
+/* ── Mouse pan ── */
+galaxy.addEventListener('mousedown', e => {
+  if (e.target.closest('.star-card') || e.target.closest('.zoom-btn')) return;
+  isPanning = true;
+  startPanX = e.clientX - panX;
+  startPanY = e.clientY - panY;
+  galaxy.style.cursor = 'grabbing';
+});
+window.addEventListener('mousemove', e => {
+  if (!isPanning) return;
+  panX = e.clientX - startPanX;
+  panY = e.clientY - startPanY;
+  applyTransform();
+});
+window.addEventListener('mouseup', () => { isPanning = false; galaxy.style.cursor = 'crosshair'; });
+
+/* ── Scroll zoom (cursor-centered) ── */
+galaxy.addEventListener('wheel', e => {
+  e.preventDefault();
+  const rect = galaxy.getBoundingClientRect();
+  const pivotX = e.clientX - rect.left;
+  const pivotY = e.clientY - rect.top;
+  // Multiplicative scaling for smooth feel
+  const factor = e.deltaY > 0 ? 0.92 : 1.08;
+  zoomTo(scale * factor, pivotX, pivotY, false);
+}, { passive: false });
+
+/* ── Button zoom (center of viewport) ── */
+document.getElementById('zoom-in').addEventListener('click', () => {
+  const rect = galaxy.getBoundingClientRect();
+  zoomTo(scale * 1.3, rect.width / 2, rect.height / 2, true);
+});
+document.getElementById('zoom-out').addEventListener('click', () => {
+  const rect = galaxy.getBoundingClientRect();
+  zoomTo(scale / 1.3, rect.width / 2, rect.height / 2, true);
+});
+document.getElementById('zoom-reset').addEventListener('click', () => {
+  scale = 1; panX = 0; panY = 0;
+  applyTransform(true);
+});
+
+/* ── Double-click to zoom in on a spot ── */
+galaxy.addEventListener('dblclick', e => {
+  if (e.target.closest('.star-card') || e.target.closest('.zoom-btn')) return;
+  const rect = galaxy.getBoundingClientRect();
+  const pivotX = e.clientX - rect.left;
+  const pivotY = e.clientY - rect.top;
+  zoomTo(scale * 2, pivotX, pivotY, true);
+});
+
+/* Init zoom level */
+updateZoomLevel();
+
+/* ── Search / Spotlight ── */
+const searchInput = document.getElementById('search-input');
+searchInput.addEventListener('input', () => {
+  const q = searchInput.value.toLowerCase().trim();
+  const stars = document.querySelectorAll('.star');
+  if (!q) {
+    stars.forEach(s => { s.classList.remove('dimmed', 'highlighted'); });
+    return;
+  }
+  stars.forEach(s => {
+    const match = s.dataset.title.includes(q) || s.dataset.cat.includes(q);
+    s.classList.toggle('dimmed', !match);
+    s.classList.toggle('highlighted', match);
+  });
+});
+
+/* ── Category filter toggles ── */
+document.querySelectorAll('.filter-pill').forEach(pill => {
+  pill.addEventListener('click', () => {
+    pill.classList.toggle('active');
+    const activeCats = new Set([...document.querySelectorAll('.filter-pill.active')].map(p => p.dataset.cat));
+    document.querySelectorAll('.star').forEach(s => {
+      if (activeCats.size === 0 || activeCats.has(s.dataset.cat)) {
+        s.style.display = '';
+      } else {
+        s.style.display = 'none';
+      }
+    });
+  });
+});
+
+/* ── Init ── */
+render();
+window.addEventListener('resize', () => { render(); });
+</script>
+</body>
+</html>

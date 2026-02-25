@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blazar — Network Graph Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700;900&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue: #3B63FB; --blue-light: #EBF0FF;
+  --amber: #CB6F10; --amber-bg: #FFF5EB;
+  --green: #12805C; --green-bg: #EDFCF2;
+  --purple: #7A6AFD; --purple-bg: #F3F0FF;
+  --red: #D7373F; --red-bg: #FFF0F0;
+  --bg: #FAFAFA; --bg-white: #FFFFFF;
+  --fg: #292929; --fg-heading: #131313; --fg-muted: #717171;
+  --border: #E1E1E1;
+  --shadow: 0 2px 8px rgba(0,0,0,0.08), 0 0 1px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08);
+  --font: 'Source Sans Pro', -apple-system, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+body { font-family: var(--font); background: var(--bg); color: var(--fg); }
+.app { display: flex; flex-direction: column; height: 100vh; }
+
+/* ── Header ── */
+.header {
+  background: var(--bg-white); border-bottom: 1px solid var(--border);
+  padding: 12px 24px; display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0; z-index: 100;
+}
+.header-left { display: flex; align-items: center; gap: 12px; }
+.header h1 { font-size: 18px; font-weight: 900; color: var(--fg-heading); }
+.header-subtitle { font-size: 12px; color: var(--fg-muted); }
+.header-logo { width: 32px; height: 32px; border-radius: 8px; }
+
+/* ── Filter Bar ── */
+.filter-bar {
+  background: var(--bg-white); border-bottom: 1px solid var(--border);
+  padding: 8px 24px; display: flex; align-items: center; gap: 16px;
+  flex-shrink: 0; z-index: 99; flex-wrap: wrap;
+}
+.filter-group { display: flex; align-items: center; gap: 6px; }
+.filter-label { font-size: 11px; font-weight: 700; color: var(--fg-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-right: 2px; }
+.filter-sep { width: 1px; height: 20px; background: var(--border); margin: 0 4px; }
+.filter-pill {
+  padding: 4px 12px; border-radius: 9999px;
+  border: 1px solid var(--border); background: var(--bg-white);
+  font-family: var(--font); font-size: 12px; font-weight: 600;
+  color: var(--fg-muted); cursor: pointer; transition: all 0.15s;
+  display: flex; align-items: center; gap: 4px; white-space: nowrap;
+}
+.filter-pill:hover { border-color: var(--fg-muted); color: var(--fg); }
+.filter-pill.active { color: var(--fg-heading); }
+.filter-pill.active[data-cat="audit"] { border-color: var(--amber); background: var(--amber-bg); color: var(--amber); }
+.filter-pill.active[data-cat="brand"] { border-color: var(--purple); background: var(--purple-bg); color: var(--purple); }
+.filter-pill.active[data-cat="performance"] { border-color: var(--red); background: var(--red-bg); color: var(--red); }
+.filter-pill.active[data-cat="optimization"] { border-color: var(--green); background: var(--green-bg); color: var(--green); }
+.filter-pill.active[data-cat="content"] { border-color: var(--blue); background: var(--blue-light); color: var(--blue); }
+.filter-pill .pill-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.user-pill {
+  padding: 4px 10px; border-radius: 9999px; border: 1px solid var(--border);
+  background: var(--bg-white); font-family: var(--font); font-size: 12px;
+  font-weight: 600; color: var(--fg-muted); cursor: pointer; transition: all 0.15s;
+}
+.user-pill:hover { border-color: var(--fg-muted); }
+.user-pill.active { border-color: var(--fg-heading); background: var(--fg-heading); color: #fff; }
+.search-box {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 9999px; padding: 4px 14px; transition: all 0.2s;
+}
+.search-box:focus-within { border-color: var(--blue); background: var(--blue-light); }
+.search-box svg { width: 13px; height: 13px; color: var(--fg-muted); flex-shrink: 0; }
+.search-box input {
+  background: none; border: none; outline: none;
+  font-family: var(--font); font-size: 12px; color: var(--fg); width: 140px;
+}
+.search-box input::placeholder { color: var(--fg-muted); }
+
+/* ── Graph Canvas ── */
+.graph { flex: 1; position: relative; overflow: hidden; cursor: grab; }
+.graph:active { cursor: grabbing; }
+.graph-canvas {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  transform-origin: 0 0;
+}
+.graph-svg {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 1;
+}
+
+/* ── Nodes ── */
+.node {
+  position: absolute; border-radius: 50%; z-index: 10;
+  transform: translate(-50%, -50%);
+  cursor: pointer; transition: transform 0.2s ease, opacity 0.3s ease;
+}
+.node::after {
+  content: ''; position: absolute; inset: -3px;
+  border-radius: 50%; border: 2px solid transparent;
+  transition: border-color 0.2s;
+}
+.node:hover { transform: translate(-50%, -50%) scale(1.5); z-index: 30; }
+.node:hover::after { border-color: currentColor; }
+.node:hover .node-label { opacity: 1; transform: translateX(-50%) translateY(0); }
+.node:hover .node-card { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+
+.node-label {
+  position: absolute; top: calc(100% + 8px); left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  white-space: nowrap; font-size: 11px; font-weight: 700;
+  color: var(--fg-heading); text-shadow: 0 1px 4px rgba(255,255,255,0.9), 0 0 8px var(--bg);
+  opacity: 0; transition: all 0.2s; pointer-events: none;
+  max-width: 160px; text-overflow: ellipsis; overflow: hidden; text-align: center;
+}
+.node.show-label .node-label {
+  opacity: 0.7; transform: translateX(-50%) translateY(0);
+}
+.node.neighbor .node-label,
+.node.focused .node-label,
+.node.search-match .node-label {
+  opacity: 1; transform: translateX(-50%) translateY(0);
+}
+
+.node-card {
+  position: absolute; top: calc(100% + 28px); left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  width: 240px; background: var(--bg-white);
+  border: 1px solid var(--border); border-radius: 10px;
+  padding: 0; opacity: 0; transition: all 0.2s;
+  pointer-events: none; box-shadow: var(--shadow-lg); z-index: 40;
+  overflow: hidden;
+}
+.card-accent { height: 3px; }
+.card-body { padding: 10px 14px; }
+.card-title { font-size: 12px; font-weight: 700; color: var(--fg-heading); line-height: 1.3; margin-bottom: 4px; }
+.card-summary { font-size: 10px; color: var(--fg-muted); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.card-meta { display: flex; align-items: center; justify-content: space-between; padding: 6px 14px; background: var(--bg); border-top: 1px solid var(--border); font-size: 9px; color: var(--fg-muted); }
+.card-badge { padding: 1px 7px; border-radius: 9999px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+
+/* ── Region labels ── */
+.region-bg {
+  position: absolute; border-radius: 50%;
+  pointer-events: none; z-index: 0;
+  transform: translate(-50%, -50%);
+}
+.region-label {
+  position: absolute; z-index: 2; pointer-events: none;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+.region-label-name {
+  font-size: 15px; font-weight: 900; letter-spacing: 0.12em;
+  text-transform: uppercase; opacity: 0.18;
+}
+.region-label-count {
+  font-size: 11px; font-weight: 600; opacity: 0.25; margin-top: 2px;
+}
+.region-label-exp {
+  font-size: 9px; font-weight: 400; opacity: 0.18; margin-top: 4px;
+  line-height: 1.4; max-width: 140px;
+}
+
+/* ── Node states ── */
+.node.faded { opacity: 0.06 !important; pointer-events: none; }
+.node.faded:hover { transform: translate(-50%, -50%) scale(1); }
+.node.neighbor { z-index: 20; }
+.node.neighbor::after { border-color: currentColor; opacity: 0.5; }
+.node.focused { z-index: 25; }
+.node.focused::after { border-color: currentColor; border-width: 3px; inset: -4px; }
+
+/* ── Controls ── */
+.zoom-controls {
+  position: absolute; bottom: 20px; right: 20px;
+  display: flex; flex-direction: column; gap: 4px; z-index: 50;
+}
+.zoom-btn {
+  width: 36px; height: 36px; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--bg-white);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 18px; font-weight: 600;
+  color: var(--fg-muted); font-family: var(--font);
+  box-shadow: var(--shadow); transition: all 0.15s;
+}
+.zoom-btn:hover { color: var(--fg); border-color: var(--blue); }
+
+.legend {
+  position: absolute; bottom: 20px; left: 20px;
+  display: flex; gap: 12px; font-size: 11px; color: var(--fg-muted);
+  z-index: 50; background: rgba(250,250,250,0.92); backdrop-filter: blur(8px);
+  padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border);
+}
+.legend-item { display: flex; align-items: center; gap: 4px; }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+.stats-bar {
+  position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+  z-index: 50; display: flex; gap: 16px; font-size: 11px; color: var(--fg-muted);
+  background: rgba(250,250,250,0.92); backdrop-filter: blur(8px);
+  padding: 6px 16px; border-radius: 9999px; border: 1px solid var(--border);
+}
+.stats-bar strong { color: var(--fg-heading); }
+
+.concept-badge {
+  position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+  z-index: 60; background: var(--blue-light);
+  border: 1px solid rgba(59,99,251,0.2); border-radius: 9999px;
+  padding: 5px 18px; font-size: 11px; font-weight: 700; color: var(--blue);
+  text-transform: uppercase; letter-spacing: 0.08em; pointer-events: none;
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="header">
+    <div class="header-left">
+      <img src="blazar-logo-36.svg" width="32" height="32" alt="" class="header-logo">
+      <div><h1>Blazar</h1><div class="header-subtitle">Network Graph</div></div>
+    </div>
+  </header>
+
+  <div class="filter-bar">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Search reports..." id="search-input">
+    </div>
+    <div class="filter-sep"></div>
+    <div class="filter-group" id="cat-filters">
+      <span class="filter-label">Category</span>
+    </div>
+    <div class="filter-sep"></div>
+    <div class="filter-group" id="user-filters">
+      <span class="filter-label">Author</span>
+    </div>
+  </div>
+
+  <div class="graph" id="graph">
+    <div class="concept-badge">Design Concept — B+C Variant: Network Graph</div>
+    <div class="graph-canvas" id="graph-canvas">
+      <svg class="graph-svg" id="graph-svg"></svg>
+    </div>
+    <div class="zoom-controls">
+      <button class="zoom-btn" id="zoom-in">+</button>
+      <button class="zoom-btn" id="zoom-reset" style="font-size:11px;">1:1</button>
+      <button class="zoom-btn" id="zoom-out">&minus;</button>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div> Audit</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div> Optimization</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div> Brand</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div> Content</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div> Performance</div>
+    </div>
+    <div class="stats-bar" id="stats-bar"></div>
+  </div>
+</div>
+
+<script>
+const CAT = {
+  audit:        { hex:'#CB6F10', bg:'#FFF5EB', label:'Audit' },
+  brand:        { hex:'#7A6AFD', bg:'#F3F0FF', label:'Brand' },
+  performance:  { hex:'#D7373F', bg:'#FFF0F0', label:'Performance' },
+  optimization: { hex:'#12805C', bg:'#EDFCF2', label:'Optimization' },
+  content:      { hex:'#3B63FB', bg:'#EBF0FF', label:'Content' },
+};
+
+const reports = [
+  { id:'content-gaps', title:'Content Gaps Analysis', cat:'audit', exp:'aem.live', size:3, summary:'197 pages, 72 stale (37%), 65 missing OG images', date:'2026-02-24', user:'paolo', related:['action-plan','link-equity','brand-guidelines','rum-analysis'] },
+  { id:'link-equity', title:'Internal Link Equity Map', cat:'audit', exp:'aem.live', size:2, summary:'~100 orphan pages, 3 legacy hlx.live links', date:'2026-02-24', user:'paolo', related:['content-gaps','nav-architecture'] },
+  { id:'action-plan', title:'Action Plan', cat:'optimization', exp:'aem.live', size:3, summary:'18 prioritized actions from content gaps analysis', date:'2026-02-24', user:'paolo', related:['content-gaps','brand-opportunities','conversion-funnel'] },
+  { id:'brand-guidelines', title:'Brand Guidelines', cat:'brand', exp:'aem.live', size:3, summary:'4 positioning pillars, tone spectrum, 42 evidence quotes', date:'2026-02-24', user:'paolo', related:['brand-opportunities','consistency','readability','competitor','image-quality','content-gaps'] },
+  { id:'brand-opportunities', title:'Improvement Opportunities', cat:'optimization', exp:'aem.live', size:2, summary:'22 prioritized improvements across 4 sprints', date:'2026-02-24', user:'paolo', related:['brand-guidelines','action-plan'] },
+  { id:'image-quality', title:'Image Quality & AI', cat:'brand', exp:'aem.live', size:2, summary:'Avg brand alignment 3.6/10, AI-generated improvements', date:'2026-02-24', user:'paolo', related:['brand-guidelines','a11y-audit'] },
+  { id:'competitor', title:'Competitor Positioning', cat:'brand', exp:'aem.live', size:2, summary:'6-brand analysis across 10 dimensions', date:'2026-02-24', user:'paolo', related:['brand-guidelines','seo-signals'] },
+  { id:'consistency', title:'Brand Consistency', cat:'brand', exp:'aem.live', size:2, summary:'Mean score 76/100, FAQ (58) highest risk', date:'2026-02-24', user:'paolo', related:['brand-guidelines','readability'] },
+  { id:'seo-signals', title:'SEO Brand Signals', cat:'performance', exp:'aem.live', size:2, summary:'0/8 lang, 7/8 no structured data', date:'2026-02-24', user:'paolo', related:['rum-analysis','perf-validation','competitor'] },
+  { id:'readability', title:'Readability Scoring', cat:'brand', exp:'aem.live', size:2, summary:'FK 7.8–13.8, 86% active voice', date:'2026-02-24', user:'paolo', related:['brand-guidelines','consistency'] },
+  { id:'rum-analysis', title:'RUM Traffic Intelligence', cat:'performance', exp:'aem.live', size:3, summary:'157K views, 152 URLs, priority reshuffling', date:'2026-02-24', user:'paolo', related:['seo-signals','perf-validation','content-gaps','cwv-deep'] },
+  { id:'brand-evolution', title:'Brand Evolution Timeline', cat:'brand', exp:'aem.live', size:2, summary:'8 years, 6+ names, Helix to EDS', date:'2026-02-24', user:'paolo', related:['dev-touchpoints','brand-guidelines'] },
+  { id:'perf-validation', title:'Performance Validation', cat:'performance', exp:'aem.live', size:2, summary:'Lighthouse 100 substantiated, alt text gap', date:'2026-02-24', user:'paolo', related:['rum-analysis','seo-signals','cwv-deep'] },
+  { id:'dev-touchpoints', title:'Developer Touchpoints', cat:'brand', exp:'aem.live', size:1, summary:'33% AEM-branded, window.hlx main issue', date:'2026-02-24', user:'paolo', related:['brand-evolution'] },
+  { id:'nav-architecture', title:'Navigation Architecture', cat:'audit', exp:'aem.live', size:1, summary:'IA depth analysis, 4-level nav hierarchy', date:'2026-02-25', user:'marco', related:['link-equity','content-gaps'] },
+  { id:'conversion-funnel', title:'Conversion Funnel', cat:'optimization', exp:'aem.live', size:2, summary:'Get Started flow, 3-step drop-off pattern', date:'2026-02-25', user:'marco', related:['action-plan'] },
+  { id:'a11y-audit', title:'Accessibility Audit', cat:'audit', exp:'aem.live', size:2, summary:'WCAG 2.1 AA, 83 missing alt texts', date:'2026-02-25', user:'anna', related:['perf-validation','image-quality'] },
+  { id:'cwv-deep', title:'Core Web Vitals Deep Dive', cat:'performance', exp:'aem.live', size:1, summary:'LCP 0.8s, INP 50ms, CLS 0.00', date:'2026-02-25', user:'anna', related:['rum-analysis','perf-validation'] },
+  { id:'acme-content', title:'Content Inventory', cat:'audit', exp:'acme-store.com', size:2, summary:'342 product pages, 28 category pages', date:'2026-02-25', user:'paolo', related:['acme-links','acme-copy'] },
+  { id:'acme-seo', title:'SEO Health Check', cat:'performance', exp:'acme-store.com', size:2, summary:'Domain authority 42, 67 broken backlinks', date:'2026-02-25', user:'marco', related:['acme-perf','acme-schema'] },
+  { id:'acme-brand', title:'Brand Voice Analysis', cat:'brand', exp:'acme-store.com', size:3, summary:'Inconsistent tone across product vs marketing', date:'2026-02-25', user:'paolo', related:['acme-imagery','acme-comp','acme-copy'] },
+  { id:'acme-imagery', title:'Product Imagery Audit', cat:'brand', exp:'acme-store.com', size:2, summary:'40% below 72 DPI, inconsistent backgrounds', date:'2026-02-25', user:'anna', related:['acme-brand'] },
+  { id:'acme-schema', title:'Structured Data Coverage', cat:'performance', exp:'acme-store.com', size:1, summary:'Product schema on 89%, missing reviews', date:'2026-02-25', user:'marco', related:['acme-seo','acme-reviews'] },
+  { id:'acme-cart', title:'Cart Abandonment', cat:'optimization', exp:'acme-store.com', size:3, summary:'68% abandonment, shipping cost at step 3', date:'2026-02-25', user:'anna', related:['acme-mobile','acme-action','acme-perf'] },
+  { id:'acme-mobile', title:'Mobile UX Audit', cat:'audit', exp:'acme-store.com', size:2, summary:'12 touch target violations, no bottom nav', date:'2026-02-25', user:'anna', related:['acme-cart','acme-perf'] },
+  { id:'acme-perf', title:'Page Speed Analysis', cat:'performance', exp:'acme-store.com', size:2, summary:'LCP 3.2s on mobile, 1.8MB hero images', date:'2026-02-25', user:'marco', related:['acme-seo','acme-mobile','acme-cart'] },
+  { id:'acme-copy', title:'Product Copy Quality', cat:'content', exp:'acme-store.com', size:2, summary:'45% duplicate descriptions, 12% < 50 words', date:'2026-02-25', user:'paolo', related:['acme-reviews','acme-brand','acme-content'] },
+  { id:'acme-search', title:'Site Search Analysis', cat:'optimization', exp:'acme-store.com', size:1, summary:'23% zero-result queries, top missed terms', date:'2026-02-25', user:'marco', related:['acme-action','acme-content'] },
+  { id:'acme-pricing', title:'Pricing Display Audit', cat:'content', exp:'acme-store.com', size:1, summary:'Inconsistent sale badge rendering, 3 formats', date:'2026-02-25', user:'anna', related:['acme-comp'] },
+  { id:'acme-links', title:'Internal Linking Strategy', cat:'audit', exp:'acme-store.com', size:1, summary:'Category crosslinks, related products graph', date:'2026-02-25', user:'paolo', related:['acme-content'] },
+  { id:'acme-comp', title:'Competitor Pricing Intel', cat:'brand', exp:'acme-store.com', size:2, summary:'8 competitors tracked, 12% price undercut', date:'2026-02-25', user:'marco', related:['acme-brand','acme-pricing'] },
+  { id:'acme-reviews', title:'Review Sentiment', cat:'content', exp:'acme-store.com', size:2, summary:'4.2 avg, shipping complaints in 34% of 1-stars', date:'2026-02-25', user:'anna', related:['acme-copy','acme-schema'] },
+  { id:'acme-action', title:'Q1 Optimization Plan', cat:'optimization', exp:'acme-store.com', size:2, summary:'24 actions, estimated 15% conversion lift', date:'2026-02-25', user:'paolo', related:['acme-cart','acme-search'] },
+  { id:'docs-ia', title:'Information Architecture', cat:'audit', exp:'docs.example.dev', size:3, summary:'8 top-level sections, 340 pages, 5-level depth', date:'2026-02-25', user:'marco', related:['docs-nav','docs-freshness','docs-linking'] },
+  { id:'docs-search', title:'Search Effectiveness', cat:'optimization', exp:'docs.example.dev', size:2, summary:'Avg 2.3 queries per session, 18% bounce', date:'2026-02-25', user:'marco', related:['docs-onboard','docs-action'] },
+  { id:'docs-freshness', title:'Content Freshness Map', cat:'audit', exp:'docs.example.dev', size:2, summary:'42% pages not updated in 6+ months', date:'2026-02-25', user:'anna', related:['docs-api','docs-ia'] },
+  { id:'docs-api', title:'API Reference Completeness', cat:'content', exp:'docs.example.dev', size:2, summary:'78% endpoints documented, 12 missing examples', date:'2026-02-25', user:'marco', related:['docs-code','docs-freshness'] },
+  { id:'docs-onboard', title:'Onboarding Flow Analysis', cat:'optimization', exp:'docs.example.dev', size:2, summary:'Getting Started → first API call in 4.2 min', date:'2026-02-25', user:'anna', related:['docs-search','docs-api'] },
+  { id:'docs-code', title:'Code Sample Audit', cat:'content', exp:'docs.example.dev', size:1, summary:'67% samples tested, 8 broken since v3.2', date:'2026-02-25', user:'marco', related:['docs-api'] },
+  { id:'docs-nav', title:'Navigation Heatmap', cat:'performance', exp:'docs.example.dev', size:1, summary:'Sidebar clicks: 80% top 3 sections', date:'2026-02-25', user:'anna', related:['docs-ia'] },
+  { id:'docs-voice', title:'Writing Consistency', cat:'brand', exp:'docs.example.dev', size:2, summary:'Style guide adherence 71%, verb tense issues', date:'2026-02-25', user:'paolo', related:['docs-brand','docs-feedback'] },
+  { id:'docs-i18n', title:'Internationalization Status', cat:'content', exp:'docs.example.dev', size:1, summary:'EN 100%, JP 45%, DE 38%, FR 22%', date:'2026-02-25', user:'paolo', related:['docs-api'] },
+  { id:'docs-a11y', title:'Docs Accessibility', cat:'audit', exp:'docs.example.dev', size:1, summary:'Code blocks lack screen reader context', date:'2026-02-25', user:'anna', related:['docs-linking'] },
+  { id:'docs-perf', title:'Docs Site Performance', cat:'performance', exp:'docs.example.dev', size:1, summary:'TTFB 320ms, search modal adds 800ms', date:'2026-02-25', user:'marco', related:['docs-seo','docs-nav'] },
+  { id:'docs-seo', title:'Docs SEO Visibility', cat:'performance', exp:'docs.example.dev', size:1, summary:'340 keywords, Stack Overflow outranks 23', date:'2026-02-25', user:'marco', related:['docs-perf'] },
+  { id:'docs-linking', title:'Cross-Reference Integrity', cat:'audit', exp:'docs.example.dev', size:1, summary:'14 broken cross-links, 8 circular refs', date:'2026-02-25', user:'anna', related:['docs-a11y','docs-ia'] },
+  { id:'docs-feedback', title:'User Feedback Synthesis', cat:'content', exp:'docs.example.dev', size:2, summary:'430 thumbs-down pages, top 3 pain points', date:'2026-02-25', user:'paolo', related:['docs-action','docs-voice'] },
+  { id:'docs-action', title:'Docs Improvement Roadmap', cat:'optimization', exp:'docs.example.dev', size:2, summary:'32 items across 3 quarters', date:'2026-02-25', user:'paolo', related:['docs-search','docs-feedback'] },
+  { id:'docs-brand', title:'Brand Alignment in Docs', cat:'brand', exp:'docs.example.dev', size:1, summary:'Logo correct, 4 outdated screenshots', date:'2026-02-25', user:'paolo', related:['docs-voice'] },
+  { id:'docs-video', title:'Video Tutorial Coverage', cat:'content', exp:'docs.example.dev', size:1, summary:'12 videos, 3 outdated, no captions on 8', date:'2026-02-25', user:'anna', related:['docs-api','docs-onboard'] },
+];
+
+const idxById = {};
+reports.forEach((r, i) => { idxById[r.id] = i; });
+
+/* ═══════════════════════════════════════════
+   Build edges — explicit + semantic
+   ═══════════════════════════════════════════ */
+const edgeSet = new Set();
+const edges = [];
+function addEdge(a, b, type) {
+  const key = a < b ? a + '|' + b : b + '|' + a;
+  if (edgeSet.has(key)) return;
+  edgeSet.add(key);
+  edges.push({ a: idxById[a], b: idxById[b], type });
+}
+
+/* Explicit related */
+reports.forEach(r => {
+  (r.related || []).forEach(rid => {
+    if (idxById[rid] !== undefined) addEdge(r.id, rid, 'related');
+  });
+});
+
+/* Same category + same experience → connect all pairs */
+const byCatExp = {};
+reports.forEach(r => {
+  const k = r.cat + '|' + r.exp;
+  if (!byCatExp[k]) byCatExp[k] = [];
+  byCatExp[k].push(r.id);
+});
+Object.values(byCatExp).forEach(ids => {
+  for (let i = 0; i < ids.length; i++)
+    for (let j = i + 1; j < ids.length; j++)
+      addEdge(ids[i], ids[j], 'cluster');
+});
+
+/* Same experience, different category → connect ~25% */
+const byExp = {};
+reports.forEach(r => {
+  if (!byExp[r.exp]) byExp[r.exp] = [];
+  byExp[r.exp].push(r.id);
+});
+const rng = mulberry32(99);
+Object.values(byExp).forEach(ids => {
+  for (let i = 0; i < ids.length; i++)
+    for (let j = i + 1; j < ids.length; j++) {
+      if (reports[idxById[ids[i]]].cat !== reports[idxById[ids[j]]].cat && rng() < 0.18)
+        addEdge(ids[i], ids[j], 'cross');
+    }
+});
+
+/* Same category, different experience → sparse bridges */
+const byCat = {};
+reports.forEach(r => {
+  if (!byCat[r.cat]) byCat[r.cat] = [];
+  byCat[r.cat].push(r.id);
+});
+Object.values(byCat).forEach(ids => {
+  for (let i = 0; i < ids.length; i++)
+    for (let j = i + 1; j < ids.length; j++) {
+      if (reports[idxById[ids[i]]].exp !== reports[idxById[ids[j]]].exp && rng() < 0.12)
+        addEdge(ids[i], ids[j], 'bridge');
+    }
+});
+
+/* Adjacency list for hover highlighting */
+const neighbors = reports.map(() => new Set());
+edges.forEach(e => { neighbors[e.a].add(e.b); neighbors[e.b].add(e.a); });
+
+/* ═══════════════════════════════════════════
+   Force-directed layout
+   ═══════════════════════════════════════════ */
+/* Seed positions by category cluster */
+const catSeeds = {
+  audit:       { x: 0.22, y: 0.30 },
+  brand:       { x: 0.55, y: 0.22 },
+  performance: { x: 0.78, y: 0.45 },
+  optimization:{ x: 0.30, y: 0.72 },
+  content:     { x: 0.65, y: 0.75 },
+};
+
+const N = reports.length;
+const posX = new Float64Array(N);
+const posY = new Float64Array(N);
+const velX = new Float64Array(N);
+const velY = new Float64Array(N);
+
+const pRng = mulberry32(42);
+reports.forEach((r, i) => {
+  const seed = catSeeds[r.cat];
+  posX[i] = seed.x + (pRng() - 0.5) * 0.35;
+  posY[i] = seed.y + (pRng() - 0.5) * 0.35;
+});
+
+/* Run simulation — d3-force-style with displacement capping + cluster gravity */
+const ITERATIONS = 500;
+const repulseK = 800;       // repulsion strength (scaled to canvas coords)
+const attractK = 0.006;     // spring stiffness
+const gravityK = 0.007;     // global center pull
+const clusterK = 0.02;      // pull toward own category centroid
+const damping = 0.3;        // velocity decay per tick
+const restLen = 70;          // ideal edge length
+const W_SIM = 1200, H_SIM = 900;
+
+// Build category index for fast lookup
+const catIndices = {};
+reports.forEach((r, i) => {
+  if (!catIndices[r.cat]) catIndices[r.cat] = [];
+  catIndices[r.cat].push(i);
+});
+
+// Initialize positions in simulation space (tight around seed)
+const simRng = mulberry32(42);
+reports.forEach((r, i) => {
+  const seed = catSeeds[r.cat];
+  posX[i] = seed.x * W_SIM + (simRng() - 0.5) * 240;
+  posY[i] = seed.y * H_SIM + (simRng() - 0.5) * 200;
+});
+
+for (let iter = 0; iter < ITERATIONS; iter++) {
+  const alpha = 1 - iter / ITERATIONS;
+  const maxDisp = Math.max(2, 40 * alpha);
+
+  const fX = new Float64Array(N);
+  const fY = new Float64Array(N);
+
+  /* Repulsion (all pairs — Coulomb) */
+  for (let i = 0; i < N; i++) {
+    for (let j = i + 1; j < N; j++) {
+      let dx = posX[j] - posX[i];
+      let dy = posY[j] - posY[i];
+      let dist2 = dx * dx + dy * dy;
+      if (dist2 < 1) dist2 = 1;
+      let dist = Math.sqrt(dist2);
+      // Weaker repulsion within same category so clusters stay tight
+      let k = reports[i].cat === reports[j].cat ? repulseK * 0.7 : repulseK;
+      let force = k / dist2 * alpha;
+      let fx = (dx / dist) * force;
+      let fy = (dy / dist) * force;
+      fX[i] -= fx; fY[i] -= fy;
+      fX[j] += fx; fY[j] += fy;
+    }
+  }
+
+  /* Attraction (edges — Hooke spring) */
+  edges.forEach(e => {
+    let dx = posX[e.b] - posX[e.a];
+    let dy = posY[e.b] - posY[e.a];
+    let dist = Math.sqrt(dx * dx + dy * dy) || 1;
+    let displacement = dist - restLen;
+    let strength = e.type === 'cluster' ? attractK * 1.2
+                 : e.type === 'related' ? attractK * 0.9
+                 : attractK * 0.3;
+    let force = displacement * strength;
+    let fx = (dx / dist) * force;
+    let fy = (dy / dist) * force;
+    fX[e.a] += fx; fY[e.a] += fy;
+    fX[e.b] -= fx; fY[e.b] -= fy;
+  });
+
+  /* Cluster gravity — pull each node toward live centroid of its category */
+  Object.values(catIndices).forEach(indices => {
+    let cx = 0, cy = 0;
+    indices.forEach(i => { cx += posX[i]; cy += posY[i]; });
+    cx /= indices.length; cy /= indices.length;
+    indices.forEach(i => {
+      fX[i] += (cx - posX[i]) * clusterK;
+      fY[i] += (cy - posY[i]) * clusterK;
+    });
+  });
+
+  /* Global center gravity — very gentle */
+  for (let i = 0; i < N; i++) {
+    fX[i] += (W_SIM / 2 - posX[i]) * gravityK;
+    fY[i] += (H_SIM / 2 - posY[i]) * gravityK;
+  }
+
+  /* Apply forces with displacement cap */
+  for (let i = 0; i < N; i++) {
+    velX[i] = (velX[i] + fX[i]) * damping;
+    velY[i] = (velY[i] + fY[i]) * damping;
+    let speed = Math.sqrt(velX[i] * velX[i] + velY[i] * velY[i]);
+    if (speed > maxDisp) {
+      velX[i] = velX[i] / speed * maxDisp;
+      velY[i] = velY[i] / speed * maxDisp;
+    }
+    posX[i] += velX[i];
+    posY[i] += velY[i];
+    if (posX[i] < 30) { posX[i] = 30; velX[i] *= -0.5; }
+    if (posX[i] > W_SIM - 30) { posX[i] = W_SIM - 30; velX[i] *= -0.5; }
+    if (posY[i] < 30) { posY[i] = 30; velY[i] *= -0.5; }
+    if (posY[i] > H_SIM - 30) { posY[i] = H_SIM - 30; velY[i] *= -0.5; }
+  }
+}
+
+// Normalize to 0-1 range for rendering
+let bMinX = Infinity, bMaxX = -Infinity, bMinY = Infinity, bMaxY = -Infinity;
+for (let i = 0; i < N; i++) {
+  bMinX = Math.min(bMinX, posX[i]); bMaxX = Math.max(bMaxX, posX[i]);
+  bMinY = Math.min(bMinY, posY[i]); bMaxY = Math.max(bMaxY, posY[i]);
+}
+const bW = bMaxX - bMinX || 1, bH = bMaxY - bMinY || 1;
+const pad = 0.06;
+for (let i = 0; i < N; i++) {
+  posX[i] = pad + (posX[i] - bMinX) / bW * (1 - 2 * pad);
+  posY[i] = pad + (posY[i] - bMinY) / bH * (1 - 2 * pad);
+}
+
+/* ═══════════════════════════════════════════
+   Compute category regions (centroid + radius)
+   ═══════════════════════════════════════════ */
+const regions = {};
+Object.keys(CAT).forEach(cat => {
+  const indices = reports.map((r, i) => r.cat === cat ? i : -1).filter(i => i >= 0);
+  if (!indices.length) return;
+  let cx = 0, cy = 0;
+  indices.forEach(i => { cx += posX[i]; cy += posY[i]; });
+  cx /= indices.length; cy /= indices.length;
+  let maxR = 0;
+  indices.forEach(i => {
+    const d = Math.sqrt((posX[i] - cx) ** 2 + (posY[i] - cy) ** 2);
+    if (d > maxR) maxR = d;
+  });
+  // Collect unique experiences in this category
+  const exps = [...new Set(indices.map(i => reports[i].exp))];
+  regions[cat] = { cx, cy, radius: maxR + 0.04, count: indices.length, exps };
+});
+
+function mulberry32(seed) {
+  return function() {
+    seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+    var t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+
+/* ═══════════════════════════════════════════
+   Rendering
+   ═══════════════════════════════════════════ */
+const graph = document.getElementById('graph');
+const canvas = document.getElementById('graph-canvas');
+const svg = document.getElementById('graph-svg');
+
+/* Populate filter bar */
+const catCounts = {};
+reports.forEach(r => { catCounts[r.cat] = (catCounts[r.cat] || 0) + 1; });
+const catFiltersEl = document.getElementById('cat-filters');
+Object.entries(CAT).forEach(([cat, meta]) => {
+  const btn = document.createElement('button');
+  btn.className = 'filter-pill active';
+  btn.dataset.cat = cat;
+  btn.innerHTML = `<span class="pill-dot" style="background:${meta.hex}"></span> ${meta.label} <span style="font-size:10px;opacity:0.6">${catCounts[cat]||0}</span>`;
+  catFiltersEl.appendChild(btn);
+});
+
+const users = [...new Set(reports.map(r => r.user))].sort();
+const userFiltersEl = document.getElementById('user-filters');
+users.forEach(u => {
+  const btn = document.createElement('button');
+  btn.className = 'user-pill active';
+  btn.dataset.user = u;
+  btn.textContent = u;
+  userFiltersEl.appendChild(btn);
+});
+
+document.getElementById('stats-bar').innerHTML =
+  `<span><strong>${N}</strong> reports</span><span><strong>${edges.length}</strong> connections</span><span><strong>${users.length}</strong> contributors</span>`;
+
+function render() {
+  const W = graph.clientWidth;
+  const H = graph.clientHeight;
+  canvas.querySelectorAll('.node, .region-bg, .region-label').forEach(n => n.remove());
+  svg.innerHTML = '';
+  svg.setAttribute('width', W); svg.setAttribute('height', H);
+
+  /* ── Region backgrounds + labels ── */
+  Object.entries(regions).forEach(([cat, reg]) => {
+    const meta = CAT[cat];
+    const cx = reg.cx * W, cy = reg.cy * H;
+    const r = reg.radius * Math.max(W, H);
+
+    // Soft radial gradient background
+    const bg = document.createElement('div');
+    bg.className = 'region-bg';
+    bg.style.left = cx + 'px';
+    bg.style.top = cy + 'px';
+    bg.style.width = r * 2 + 'px';
+    bg.style.height = r * 2 + 'px';
+    bg.style.background = `radial-gradient(circle, ${meta.hex}0D 0%, ${meta.hex}05 50%, transparent 72%)`;
+    canvas.appendChild(bg);
+
+    // Label
+    const lbl = document.createElement('div');
+    lbl.className = 'region-label';
+    lbl.style.left = cx + 'px';
+    lbl.style.top = cy + 'px';
+    lbl.style.color = meta.hex;
+    lbl.innerHTML = `
+      <div class="region-label-name">${meta.label}</div>
+      <div class="region-label-count">${reg.count} reports</div>
+      <div class="region-label-exp">${reg.exps.join(' · ')}</div>`;
+    canvas.appendChild(lbl);
+  });
+
+  const eRng = mulberry32(77);
+
+  /* ── Edges ── */
+  edges.forEach(e => {
+    const x1 = posX[e.a] * W, y1 = posY[e.a] * H;
+    const x2 = posX[e.b] * W, y2 = posY[e.b] * H;
+    const catA = reports[e.a].cat;
+    const catB = reports[e.b].cat;
+    const color = catA === catB ? CAT[catA].hex : '#999';
+    const opacity = e.type === 'cluster' ? 0.12 : e.type === 'related' ? 0.18 : 0.06;
+
+    /* Curved arc — offset perpendicular to midpoint */
+    const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+    const dx = x2 - x1, dy = y2 - y1;
+    const len = Math.sqrt(dx * dx + dy * dy) || 1;
+    const curvature = (0.15 + eRng() * 0.3) * (eRng() > 0.5 ? 1 : -1);
+    const cx = mx - dy * curvature;
+    const cy = my + dx * curvature;
+
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', `M${x1},${y1} Q${cx},${cy} ${x2},${y2}`);
+    path.setAttribute('fill', 'none');
+    path.setAttribute('stroke', color);
+    path.setAttribute('stroke-width', e.type === 'related' ? '1.2' : '0.8');
+    path.setAttribute('opacity', opacity);
+    path.dataset.a = e.a;
+    path.dataset.b = e.b;
+    svg.appendChild(path);
+  });
+
+  /* ── Nodes ── */
+  reports.forEach((r, i) => {
+    const x = posX[i] * W;
+    const y = posY[i] * H;
+    const radius = 5 + r.size * 5; // 10 to 20px
+    const meta = CAT[r.cat];
+
+    const el = document.createElement('div');
+    el.className = 'node';
+    el.dataset.idx = i;
+    el.dataset.id = r.id;
+    el.dataset.cat = r.cat;
+    el.dataset.user = r.user;
+    el.dataset.title = r.title.toLowerCase();
+    el.style.left = x + 'px';
+    el.style.top = y + 'px';
+    el.style.width = radius * 2 + 'px';
+    el.style.height = radius * 2 + 'px';
+    el.style.background = meta.hex;
+    el.style.color = meta.hex;
+
+    el.innerHTML = `
+      <div class="node-label">${r.title}</div>
+      <div class="node-card">
+        <div class="card-accent" style="background:${meta.hex}"></div>
+        <div class="card-body">
+          <div class="card-title">${r.title}</div>
+          <div class="card-summary">${r.summary}</div>
+        </div>
+        <div class="card-meta">
+          <span class="card-badge" style="background:${meta.bg};color:${meta.hex}">${meta.label}</span>
+          <span>${r.exp}</span>
+          <span style="font-weight:600">${r.user} · ${r.date.slice(5)}</span>
+        </div>
+      </div>`;
+
+    /* Hover: preview highlight; Click: pin selection */
+    el.addEventListener('mouseenter', () => { if (selectedIdx === null) highlightNode(i); });
+    el.addEventListener('mouseleave', () => { if (selectedIdx === null) clearHighlight(); });
+    el.addEventListener('click', (e) => { e.stopPropagation(); selectNode(i); });
+
+    canvas.appendChild(el);
+  });
+
+  /* Assign .show-label to top 10 nodes by size */
+  const ranked = reports.map((r, i) => ({ i, size: r.size }))
+    .sort((a, b) => b.size - a.size)
+    .slice(0, 10);
+  const topSet = new Set(ranked.map(r => r.i));
+  canvas.querySelectorAll('.node').forEach(n => {
+    if (topSet.has(parseInt(n.dataset.idx))) n.classList.add('show-label');
+  });
+}
+
+/* ═══════════════════════════════════════════
+   Highlight + Selection
+   ═══════════════════════════════════════════ */
+let selectedIdx = null;
+
+function highlightNode(idx) {
+  const nbs = neighbors[idx];
+  document.querySelectorAll('.node').forEach(n => {
+    const ni = parseInt(n.dataset.idx);
+    if (ni === idx) { n.classList.add('focused'); }
+    else if (nbs.has(ni)) { n.classList.add('neighbor'); }
+    else { n.classList.add('faded'); }
+  });
+  svg.querySelectorAll('path').forEach(p => {
+    const a = parseInt(p.dataset.a), b = parseInt(p.dataset.b);
+    if (a === idx || b === idx) {
+      p.setAttribute('opacity', '0.6');
+      p.setAttribute('stroke-width', '2');
+    } else {
+      p.setAttribute('opacity', '0.02');
+    }
+  });
+}
+
+function selectNode(idx) {
+  if (selectedIdx === idx) { selectedIdx = null; clearHighlight(); updateSearchLabels(); return; }
+  selectedIdx = idx;
+  highlightNode(idx);
+}
+
+function clearHighlight() {
+  document.querySelectorAll('.node').forEach(n => {
+    n.classList.remove('focused', 'neighbor', 'faded');
+  });
+  resetEdgeOpacity();
+}
+
+function resetEdgeOpacity() {
+  svg.querySelectorAll('path').forEach(p => {
+    const a = parseInt(p.dataset.a), b = parseInt(p.dataset.b);
+    const e = edges.find(e => e.a === a && e.b === b);
+    const opacity = e ? (e.type === 'cluster' ? 0.12 : e.type === 'related' ? 0.18 : 0.06) : 0.1;
+    p.setAttribute('opacity', opacity);
+    p.setAttribute('stroke-width', e && e.type === 'related' ? '1.2' : '0.8');
+  });
+}
+
+/* ═══════════════════════════════════════════
+   Filtering
+   ═══════════════════════════════════════════ */
+function updateSearchLabels() {
+  const query = document.getElementById('search-input').value.toLowerCase().trim();
+  document.querySelectorAll('.node').forEach(el => {
+    el.classList.toggle('search-match', !!query && el.dataset.title.includes(query));
+  });
+}
+
+function applyFilters() {
+  // Clear selection when filters change
+  if (selectedIdx !== null) { selectedIdx = null; clearHighlight(); }
+
+  const activeCats = new Set([...document.querySelectorAll('.filter-pill.active')].map(p => p.dataset.cat));
+  const activeUsers = new Set([...document.querySelectorAll('.user-pill.active')].map(p => p.dataset.user));
+  const query = document.getElementById('search-input').value.toLowerCase().trim();
+
+  document.querySelectorAll('.node').forEach(el => {
+    const catOk = activeCats.size === 0 || activeCats.has(el.dataset.cat);
+    const userOk = activeUsers.size === 0 || activeUsers.has(el.dataset.user);
+    const searchOk = !query || el.dataset.title.includes(query);
+    el.classList.toggle('faded', !(catOk && userOk && searchOk));
+    el.classList.toggle('search-match', !!query && el.dataset.title.includes(query));
+  });
+
+  /* Fade edges where both endpoints are faded */
+  const fadedSet = new Set();
+  document.querySelectorAll('.node.faded').forEach(n => fadedSet.add(parseInt(n.dataset.idx)));
+  resetEdgeOpacity();
+  svg.querySelectorAll('path').forEach(p => {
+    const a = parseInt(p.dataset.a), b = parseInt(p.dataset.b);
+    if (fadedSet.has(a) || fadedSet.has(b)) p.setAttribute('opacity', '0.01');
+  });
+}
+
+document.querySelectorAll('.filter-pill').forEach(pill => {
+  pill.addEventListener('click', () => { pill.classList.toggle('active'); applyFilters(); });
+});
+document.addEventListener('click', e => {
+  if (e.target.closest('.user-pill')) { e.target.closest('.user-pill').classList.toggle('active'); applyFilters(); }
+});
+document.getElementById('search-input').addEventListener('input', applyFilters);
+
+/* Click on background to deselect */
+graph.addEventListener('click', e => {
+  if (!e.target.closest('.node') && !e.target.closest('.zoom-btn') && !e.target.closest('.filter-bar')) {
+    if (selectedIdx !== null) { selectedIdx = null; clearHighlight(); updateSearchLabels(); }
+  }
+});
+
+/* ═══════════════════════════════════════════
+   Pan & Zoom (cursor-centered)
+   ═══════════════════════════════════════════ */
+let scale = 1, panX = 0, panY = 0;
+let isPanning = false, startPanX, startPanY;
+
+function applyTransform(smooth) {
+  if (smooth) {
+    canvas.style.transition = 'transform 0.3s ease-out';
+    setTimeout(() => { canvas.style.transition = ''; }, 310);
+  }
+  canvas.style.transform = `translate(${panX}px,${panY}px) scale(${scale})`;
+}
+
+function zoomTo(ns, px, py, smooth) {
+  ns = Math.max(0.3, Math.min(6, ns));
+  const wx = (px - panX) / scale, wy = (py - panY) / scale;
+  panX = px - wx * ns; panY = py - wy * ns;
+  scale = ns; applyTransform(smooth);
+}
+
+graph.addEventListener('mousedown', e => {
+  if (e.target.closest('.node') || e.target.closest('.zoom-btn')) return;
+  isPanning = true; startPanX = e.clientX - panX; startPanY = e.clientY - panY;
+});
+window.addEventListener('mousemove', e => {
+  if (!isPanning) return;
+  panX = e.clientX - startPanX; panY = e.clientY - startPanY; applyTransform();
+});
+window.addEventListener('mouseup', () => { isPanning = false; });
+
+graph.addEventListener('wheel', e => {
+  e.preventDefault();
+  const rect = graph.getBoundingClientRect();
+  zoomTo(scale * (e.deltaY > 0 ? 0.92 : 1.08), e.clientX - rect.left, e.clientY - rect.top, false);
+}, { passive: false });
+
+document.getElementById('zoom-in').addEventListener('click', () => {
+  const r = graph.getBoundingClientRect(); zoomTo(scale * 1.3, r.width / 2, r.height / 2, true);
+});
+document.getElementById('zoom-out').addEventListener('click', () => {
+  const r = graph.getBoundingClientRect(); zoomTo(scale / 1.3, r.width / 2, r.height / 2, true);
+});
+document.getElementById('zoom-reset').addEventListener('click', () => {
+  scale = 1; panX = 0; panY = 0; applyTransform(true);
+});
+graph.addEventListener('dblclick', e => {
+  if (e.target.closest('.node') || e.target.closest('.zoom-btn')) return;
+  const r = graph.getBoundingClientRect();
+  zoomTo(scale * 2, e.clientX - r.left, e.clientY - r.top, true);
+});
+
+/* ── Init ── */
+render();
+window.addEventListener('resize', render);
+</script>
+</body>
+</html>
